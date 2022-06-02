@@ -1,0 +1,19 @@
+.boje
+{
+    color: red;
+    background-color: blue;
+}
+.link-decor
+{
+    text-decoration: none;
+    color: orange;
+}
+.navlink
+{
+    background-color: white !important;
+    border: 0.5px solid black !important;
+}
+.margin
+{
+    margin-top: 8vh;
+}

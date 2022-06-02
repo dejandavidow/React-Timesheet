@@ -1,5 +1,5 @@
 import { Button, Form, FormControlProps, InputGroup, Modal} from 'react-bootstrap';
-import React, {useState} from 'react'
+import React, {ChangeEvent, useState} from 'react'
 import { PostClient } from '../service/client.service';
 import { ClientModel } from '../model/clientModel';
 
@@ -57,7 +57,7 @@ const Clientheader = (props: ClientHeaderProps) => {
           <Modal.Title>Create new client</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-        <Form validated={validated} onSubmit={CreateClientHandler}>
+        <Form>
 
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
             <Form.Label>Name:</Form.Label>
@@ -65,7 +65,7 @@ const Clientheader = (props: ClientHeaderProps) => {
             required 
             type="text" 
             value={clientName} 
-            onChange={(e) => setclientName(e.target.value)}/>
+            onChange={(e : ChangeEvent<HTMLInputElement>) => setclientName(e.target.value)}/>
             <Form.Control.Feedback type='invalid'>Name is required</Form.Control.Feedback>
             </Form.Group>
 
@@ -75,21 +75,21 @@ const Clientheader = (props: ClientHeaderProps) => {
             required 
             type="text" 
             value={adress} 
-            onChange={(e) => setAdress(e.target.value)} />
+            onChange={(e : ChangeEvent<HTMLInputElement>) => setAdress(e.target.value)} />
             <Form.Control.Feedback type='invalid'>Adress is required</Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
             <Form.Label>City</Form.Label>
-            <Form.Control type="text" value={city} onChange={(e) => setCity(e.target.value)}/>
+            <Form.Control type="text" value={city} onChange={(e : ChangeEvent<HTMLInputElement>) => setCity(e.target.value)}/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
             <Form.Label>Zip/Postal Code:</Form.Label>
-            <Form.Control type="text" value={postalCode}  onChange={(e) => setpostalCode(e.target.value)}/>
+            <Form.Control type="text" value={postalCode}  onChange={(e : ChangeEvent<HTMLInputElement>) => setpostalCode(e.target.value)}/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
             <Form.Label>Country</Form.Label>
-            <Form.Select aria-label="Default select example" value={country} onChange={(e) => setCountry(e.target.value)}>
+            <Form.Select aria-label="Default select example" value={country} onChange={(e : ChangeEvent<HTMLSelectElement>) => setCountry(e.target.value)}>
             <option>Open this select menu</option>
             <option value="Serbia">Serbia</option>
             <option value="Kongo">Kongo</option>
@@ -102,7 +102,7 @@ const Clientheader = (props: ClientHeaderProps) => {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" type='submit'>Save Changes</Button>
+          <Button variant="primary" onClick={CreateClientHandler}>Create Client</Button>
         </Modal.Footer>
       </Modal>
     <div className='pozadina'>

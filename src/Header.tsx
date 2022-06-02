@@ -1,26 +1,16 @@
-import React from 'react'
-import { Nav } from 'react-bootstrap'
-
+import React from 'react';
+import { Container, Nav, Navbar } from 'react-bootstrap'
+import { Link} from 'react-router-dom';
+import './App.css';
 const Header = () => {
   return (
-  <div>
-        <Nav fill variant="tabs" defaultActiveKey="/home">
-        <Nav.Item>
-    <Nav.Link href="home">TimeSheets</Nav.Link>
-  </Nav.Item>
-  <Nav.Item>
-    <Nav.Link href="/clients">Clients</Nav.Link>
-  </Nav.Item>
-  <Nav.Item>
-    <Nav.Link >Categories</Nav.Link>
-  </Nav.Item>
-  <Nav.Item>
-    <Nav.Link >Projects</Nav.Link>
-  </Nav.Item>
-  <Nav.Item>
-    <Nav.Link >Reports</Nav.Link>
-  </Nav.Item>
-</Nav>
+  <div className='App'>
+    <Container className='margin'>
+    <Nav variant="tabs" className="me-auto justify-content-end">
+      <Nav.Link className="navlink"><Link className='link-decor' to="categories">Category</Link></Nav.Link>
+      <Nav.Link className="navlink"><Link className='link-decor' to="clients">Clients</Link></Nav.Link>
+    </Nav>
+    </Container>
   </div>
   )
 }

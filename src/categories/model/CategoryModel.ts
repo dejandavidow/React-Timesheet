@@ -1,6 +1,6 @@
 export class CategoryModel
 {
-    constructor(public id:string,public name:string)
+    constructor(public id:string | undefined,public name:string)
     {
 
     }

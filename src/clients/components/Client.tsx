@@ -8,7 +8,7 @@ const Client = () => {
   const [clientUpdated,setClientUpdated] = useState<boolean>(false);
   const[letter,setLetter] = useState("");
   return(
-  <div className='container'>
+  <div className='container bgcolor'>
     <Clientheader
      setNewClientCreated={setNewClientCreated}
      searchTerm={searchTerm}
