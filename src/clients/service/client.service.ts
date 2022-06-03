@@ -5,7 +5,7 @@ export const getClients = async(searchterm: string, filterLetter: string, pagenu
     if(searchterm === '' && filterLetter === ''){
         await fetch(`https://localhost:44381/api/Client/?PageNumber=${pagenumber}&PageSize=${pagesize}`, {
             method: 'GET',
-            headers: {'Content-Type': 'application/json'}
+            headers: {'Content-Type': 'application/json'},
         }).then(cl => cl.json()).then(cl => cl.map((c: ClientModel) => response.push(c)))
     }
     else if(searchterm !== '' && filterLetter === ''){
@@ -88,31 +88,8 @@ export const countClients = async(searchterm:string, letter:string) =>
     return response;
     }
 }
-// export const filterClients = async (letter:string,pagenumber:number,pagesize:number) =>
-// {
-//     const response: ClientModel[] = []
-//     const request =
-//     {
-//         method:'GET',
-//         headers: {'Content-Type': 'application/json'}
-//     };
 
 
-//     await fetch(`https://localhost:5001/api/Client/filter?letter=${letter}&PageNumber=${pagenumber}&PageSize=${pagesize}`,request)
-//     .then(response => response.json()).then(cl => cl.map((c: ClientModel) => response.push(c)))     
-//     return response; 
-// }
-// export const countFilterClients = async (letter:string) =>
-// {
-//     const request =
-//     {
-//         method:'GET',
-//         headers: {'Content-Type': 'application/json'}
-//     };
-//     var response :number = await fetch(`https://localhost:5001/api/Client/filter/count?letter=${letter}`,request)
-//     .then(response => response.json())     
-//     return response;
-// }
 
 
 
