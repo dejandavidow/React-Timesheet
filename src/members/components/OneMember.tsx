@@ -1,7 +1,8 @@
 import React from 'react'
 import { CloseButton, ListGroup } from 'react-bootstrap'
-import { deleteCategory } from '../../categories/category-service/category.service'
+
 import { MemberModel } from '../model/MemberModel'
+import { deleteCategory } from '../service/member-service'
 type MemberProps =
 {
     member:{
@@ -22,8 +23,7 @@ const OneMember = ({member,childToParent,setClientDeleted} : MemberProps) => {
     const deleteHandler = (id:string | undefined) =>
     {
         deleteCategory(id);
-        setClientDeleted(true);
-        
+        setClientDeleted(true); 
     }
   return (
     <>

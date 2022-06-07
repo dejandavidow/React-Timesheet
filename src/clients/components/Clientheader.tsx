@@ -13,7 +13,15 @@ type ClientHeaderProps = {
 const Clientheader = (props: ClientHeaderProps) => {
   const [validated, setValidated] = useState(false);
   const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
+  const handleClose = () => {
+    setShow(false);
+    setclientName('');
+    setAdress('');
+    setCity('');
+    setpostalCode('');
+    setCountry('');
+    setValidated(false);
+  }
   const handleShow = () => setShow(true);
   const [clientName,setclientName] = useState("");
   const [adress,setAdress] = useState("");
@@ -41,12 +49,6 @@ const Clientheader = (props: ClientHeaderProps) => {
     setValidated(true);
     PostClient(request);
     props.setNewClientCreated(true);
-    setclientName('');
-    setAdress('');
-    setCity('');
-    setpostalCode('');
-    setCountry('');
-    handleClose();
   }
   return (
       <>
@@ -57,7 +59,7 @@ const Clientheader = (props: ClientHeaderProps) => {
           <Modal.Title>Create new client</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-        <Form>
+        <Form noValidate validated={validated}>
 
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
             <Form.Label>Name:</Form.Label>
