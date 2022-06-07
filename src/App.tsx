@@ -3,6 +3,7 @@ import './App.css'
 import Category from './categories/components/Category';
 import Client from './clients/components/Client';
 import Header from './Header';
+import Member from './members/components/Member';
 function App() {
   return (
     <>
@@ -10,6 +11,7 @@ function App() {
      <Routes>
         <Route path="clients" element={ <Client/> } />
         <Route path="categories" element={ <Category/> } />
+        <Route path="members" element={ <Member/> } />
       </Routes>  
     </>
   )

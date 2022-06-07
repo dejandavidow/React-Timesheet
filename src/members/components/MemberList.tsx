@@ -1,37 +1,34 @@
-import React, { useEffect, useState } from "react";
-import { Button, ListGroup,Modal,Form } from "react-bootstrap";
-import ReactPaginate from "react-paginate";
-import { ClientModel } from "../model/clientModel";
-import { countClients,getClients, UpdateClient } from "../service/client.service";
-import './Client.css';
-import OneClient from "./OneClient";
-
+import React, { useEffect, useState } from 'react'
+import { Button, Form, ListGroup, Modal } from 'react-bootstrap'
+import ReactPaginate from 'react-paginate'
+import { MemberModel } from '../model/MemberModel'
+import { countCategory, getCategories, UpdateCategory } from '../service/member-service'
+import OneMember from './OneMember'
 type ClientListProps = {
-  newClientCreated: boolean,
-  searchTerm:string,
-  setNewClientCreated: (isCreated: boolean) => void,
-  clientDeleted:boolean,
-  setClientDeleted:(isDeleted: boolean) => void
-  clientUpdated:boolean,
-  setClientUpdated:(isUpdated: boolean) => void,
-  setSearchTerm:(c:string) => void,
-  letter: string,
-  setLetter: (l:string) => void
-}
-
-export const ClientList = (props: ClientListProps) => {
-  const [show, setShow] = useState(false);
+    newClientCreated: boolean,
+    searchTerm:string,
+    setNewClientCreated: (isCreated: boolean) => void,
+    clientDeleted:boolean,
+    setClientDeleted:(isDeleted: boolean) => void
+    clientUpdated:boolean,
+    setClientUpdated:(isUpdated: boolean) => void,
+    setSearchTerm:(c:string) => void,
+    letter: string,
+    setLetter: (l:string) => void
+  }
+const MemberList = (props: ClientListProps) => {
+    const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const [clients, setClients] = useState<ClientModel[]>([]);
-  const [childClient,setChildClient] = useState<ClientModel>(new ClientModel('', '', '', '', '', ''));
+  const [members, setMembers] = useState<MemberModel[]>([]);
+  const [childClient,setChildClient] = useState<MemberModel>(new MemberModel('', '', '', '', '', '','',''));
 
   const [pageCount,setpageCount] = useState<number>(0);
   const [pageNumber,setPageNumber] = useState(1);
   const [pageSize,setPageSize] = useState(5);
   useEffect(() => {
-    getClients(props.searchTerm, props.letter, pageNumber,pageSize).then(data => setClients(data));
-    countClients(props.searchTerm, props.letter).then(data => setpageCount(Math.ceil(data/pageSize)));
+    getCategories(props.searchTerm, props.letter, pageNumber,pageSize).then(data => setMembers(data));
+    countCategory(props.searchTerm, props.letter).then(data => setpageCount(Math.ceil(data/pageSize)));
     props.setNewClientCreated(false);
     props.setClientDeleted(false);
     props.setClientUpdated(false);
@@ -40,8 +37,7 @@ const handlePageClick = (e:{selected: number}) =>
 {
 setPageNumber(e.selected+1);
 }
-
-const childToParent = (client:ClientModel) => 
+const childToParent = (client:MemberModel) => 
 {
    setChildClient(client);
    handleShow();
@@ -49,7 +45,7 @@ const childToParent = (client:ClientModel) =>
 const updateClientHandler = () =>
 {
      setChildClient(childClient);
-      UpdateClient(childClient,childClient.id);
+      UpdateCategory(childClient,childClient.id);
       props.setClientUpdated(true);
       handleClose();
 }
@@ -73,9 +69,8 @@ const handleFilter = (event: React.MouseEvent<HTMLButtonElement>) =>
 }
   return (
     <>
-      <div className="container">
-
-      <div className="filteri">
+    <div className='container'>
+    <div className="filteri">
         <button type="button" onClick={handleFilter} value="a" className="filter-buttons">A</button>
         <button type="button" onClick={handleFilter} value="b" className="filter-buttons">B</button>
         <button type="button" onClick={handleFilter} value="c" className="filter-buttons">C</button>
@@ -101,14 +96,13 @@ const handleFilter = (event: React.MouseEvent<HTMLButtonElement>) =>
         <button type="button" onClick={handleFilter} value="w" className="filter-buttons">W</button>
         <button type="button" onClick={handleFilter} value="x" className="filter-buttons">X</button>
         <button type="button" onClick={handleFilter} value="y" className="filter-buttons">Y</button>
-        <button type="button" onClick={handleFilter} value="z" className="filter-buttons">Z</button>
-        
+        <button type="button" onClick={handleFilter} value="z" className="filter-buttons">Z</button>  
       </div>
       <ListGroup className='listgroup'>
-      {clients.map((client) =>
-      <OneClient 
-      key={client.id} 
-      client={client}
+      {members.map((member) =>
+      <OneMember
+      key={member.id} 
+      member={member}
       handleShow={handleShow}
       childToParent={childToParent}
       setClientDeleted={props.setClientDeleted}
@@ -125,38 +119,59 @@ const handleFilter = (event: React.MouseEvent<HTMLButtonElement>) =>
          className="pagination"
          //renderOnZeroPageCount={null}
       />
-
       <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-      <Modal.Title>Update client</Modal.Title>
+      <Modal.Title>Update member</Modal.Title>
       </Modal.Header>
       <Modal.Body>
       <Form>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
             <Form.Label>Name:</Form.Label>
-            <Form.Control type="text" value={childClient?.clientName} name="clientName" onChange={handleChange}/>
+            <Form.Control type="text" value={childClient?.name} name="name" onChange={handleChange}/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label>Adress:</Form.Label>
-            <Form.Control type="text" value={childClient?.adress} name="adress" onChange={handleChange}/>
+            <Form.Label>Username:</Form.Label>
+            <Form.Control type="text" value={childClient?.username} name="username" onChange={handleChange}/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label>City</Form.Label>
-            <Form.Control type="text" value={childClient?.city} name="city" onChange={handleChange}/>
+            <Form.Label>Email</Form.Label>
+            <Form.Control type="text" value={childClient?.email} name="email" onChange={handleChange}/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label>Zip/Postal Code:</Form.Label>
-            <Form.Control type="text" value={childClient?.postalCode} name="postalCode" onChange={handleChange}/>
+            <Form.Label>Hours:</Form.Label>
+            <Form.Control type="text" value={childClient?.hours} name="hours" onChange={handleChange}/>
             </Form.Group>
+             
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label>Country</Form.Label>
-            <Form.Select aria-label="Default select example" value={childClient?.country} onChange={handleChange} name="country">
-            <option>Open this select menu</option>
-            <option value="Serbia">Serbia</option>
-            <option value="Kongo">Kongo</option>
-            <option value="China">China</option>
-            </Form.Select>
+            <Form.Label>Status:</Form.Label>
+            <br></br>
+            <Form.Check inline label="Active" type="radio" name="status" value='active' onChange={handleChange}/>
+            <Form.Check inline label="Inactive" type="radio" name="status" value='inactive' onChange={handleChange}/>
             </Form.Group>
+
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+            <Form.Label>Role:</Form.Label>
+            <br></br>
+            <Form.Check 
+            inline 
+            label="Worker"
+             type="radio"
+             name='role' 
+             aria-label="radio 1"
+             value={childClient?.role} 
+             onChange={handleChange}
+             />
+
+            <Form.Check inline 
+            label="Admin" 
+            name='role'
+            type="radio" 
+            aria-label="radio 1" 
+            value={childClient?.role}
+            onChange={handleChange}
+            />
+            </Form.Group>
+
       </Form>
         </Modal.Body>
         <Modal.Footer>
@@ -168,7 +183,9 @@ const handleFilter = (event: React.MouseEvent<HTMLButtonElement>) =>
           </Button>
         </Modal.Footer>
       </Modal>
-      </div>
-      </>
+    </div>
+    </>
   )
 }
+
+export default MemberList
