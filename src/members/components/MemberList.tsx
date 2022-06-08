@@ -178,7 +178,7 @@ const handleFilter = (event: React.MouseEvent<HTMLButtonElement>) =>
              />
             <Form.Check
             inline 
-            label="Admin" 
+            label="Admin"
             name='role'
             type="radio" 
             aria-label="radio 2" 

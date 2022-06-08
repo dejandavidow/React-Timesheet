@@ -28,6 +28,12 @@ const Projectheader = (props:ClientHeaderProps) => {
     const handleClose = () => {
       
         setValidated(false);
+        setprojectName("");
+        setDescription("");
+        setStatus("");
+        setArchive("");
+        setmemberId("");
+        setclientId("");
         setShow(false);
       }
       const CreateClientHandler = (event : React.FormEvent<HTMLFormElement> & React.MouseEvent<HTMLButtonElement> & React.BaseSyntheticEvent ) =>
@@ -103,8 +109,8 @@ const Projectheader = (props:ClientHeaderProps) => {
             </Form.Group>
           <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
             <Form.Label>Select member</Form.Label>
-            <Form.Select onClick={getMembersHandler} aria-label="Default select example" value={memberId} onChange={(e : ChangeEvent<HTMLSelectElement>) => setmemberId(e.target.value)}>
-            <option>Open menu</option>
+            <Form.Select required isInvalid onClick={getMembersHandler} aria-label="Default select example" value={memberId} onChange={(e : ChangeEvent<HTMLSelectElement>) => setmemberId(e.target.value)}>
+            <option>Open to select member</option>
             {members.map((member) =>
             <option value={member.id}>{member.name}</option>
             )}
@@ -112,8 +118,8 @@ const Projectheader = (props:ClientHeaderProps) => {
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
             <Form.Label>Select client</Form.Label>
-            <Form.Select onClick={getClientsHandler} aria-label="Default select example" value={clientId} onChange={(e : ChangeEvent<HTMLSelectElement>) => setclientId(e.target.value)}>
-            <option>Open menu</option>
+            <Form.Select required isInvalid onClick={getClientsHandler} aria-label="Default select example" value={clientId} onChange={(e : ChangeEvent<HTMLSelectElement>) => setclientId(e.target.value)}>
+            <option>Open to select client</option>
             {clients.map((client) =>
             <option value={client.id}>{client.clientName}</option>
             )}

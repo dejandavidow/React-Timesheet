@@ -23,7 +23,11 @@ type ClientListProps = {
 const ProjectList = (props:ClientListProps) => {
     const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleShow = () =>{
+      setShow(true);
+      getMembers().then(data => setMembers(data));
+      getClientList().then(data => setClients(data))
+  }
   const [projects, setProjects] = useState<ProjectModel[]>([]);
   const [childClient,setChildClient] = useState<ProjectModel>(new ProjectModel('', '', '', '', '', '',''));
   const [validated, setValidated] = useState(false);
@@ -49,12 +53,18 @@ const childToParent = (client:ProjectModel) =>
    setChildClient(client);
    handleShow();
 }
-const updateClientHandler = () =>
+const updateClientHandler = (event : React.FormEvent<HTMLFormElement> & React.MouseEvent<HTMLButtonElement>) =>
 {
-     setChildClient(childClient);
+  const form = event.currentTarget;
+    if (form.checkValidity() === false) 
+    {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    setValidated(true);
+      setChildClient(childClient);
       UpdateCategory(childClient,childClient.id);
       props.setClientUpdated(true);
-      handleClose();
 }
 const handleChange = (evt : React.ChangeEvent<HTMLInputElement> & React.ChangeEvent<HTMLSelectElement>) =>
 {
@@ -140,11 +150,12 @@ const getMembersHandler = () =>
           <Form.Label>Project Name:</Form.Label>
           <Form.Control
           name='projectName' 
-          required 
+          required
+          minLength={3} 
           type="text" 
           value={childClient?.projectName} 
           onChange={handleChange}/>
-          <Form.Control.Feedback type='invalid'>Project Name is required</Form.Control.Feedback>
+          <Form.Control.Feedback type='invalid'>Project Name is required, Min lenght:3</Form.Control.Feedback>
           </Form.Group>
           <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
           <Form.Label>Description:</Form.Label>
@@ -157,7 +168,7 @@ const getMembersHandler = () =>
             <Form.Label>Status:</Form.Label>
             <br></br>
             <Form.Check  inline label="Active" type="radio" name="status" value='active' onChange={handleChange}/>
-            <Form.Check defaultChecked inline label="Inactive" type="radio" name="status" value='inactive' onChange={handleChange}/>
+            <Form.Check  inline label="Inactive" type="radio" name="status" value='inactive' onChange={handleChange}/>
             </Form.Group>
           </Form.Group>
           <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
@@ -166,8 +177,7 @@ const getMembersHandler = () =>
             </Form.Group>
           <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
             <Form.Label>Select member</Form.Label>
-            <Form.Select onClick={getMembersHandler} aria-label="Default select example" value={childClient.memberId} onChange={handleChange} name='memberId'>
-            <option>Open menu</option>
+            <Form.Select value={childClient.memberId} onChange={handleChange} name='memberId'>
             {members.map((member) =>
             <option value={member.id}>{member.name}</option>
             )}
@@ -175,8 +185,7 @@ const getMembersHandler = () =>
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
             <Form.Label>Select client</Form.Label>
-            <Form.Select onClick={getClientsHandler} aria-label="Default select example" value={childClient.clientId} onChange={handleChange} name='clientId'>
-            <option>Open menu</option>
+            <Form.Select  value={childClient.clientId} onChange={handleChange} name='clientId'>
             {clients.map((client) =>
             <option value={client.id}>{client.clientName}</option>
             )}
@@ -188,7 +197,7 @@ const getMembersHandler = () =>
         <Button variant="secondary" onClick={handleClose}>
           Close
         </Button>
-        <Button variant="primary" onClick={updateClientHandler}>Update Project</Button>
+        <Button variant="primary" type='submit' onClick={updateClientHandler}>Update Project</Button>
       </Modal.Footer>
     </Modal>
             </div>
