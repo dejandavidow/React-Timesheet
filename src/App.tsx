@@ -4,6 +4,7 @@ import Category from './categories/components/Category';
 import Client from './clients/components/Client';
 import Header from './Header';
 import Member from './members/components/Member';
+import Project from './projects/componets/Project';
 function App() {
   return (
     <>
@@ -12,6 +13,7 @@ function App() {
         <Route path="clients" element={ <Client/> } />
         <Route path="categories" element={ <Category/> } />
         <Route path="members" element={ <Member/> } />
+        <Route path="projects" element={ <Project/> } />
       </Routes>  
     </>
   )

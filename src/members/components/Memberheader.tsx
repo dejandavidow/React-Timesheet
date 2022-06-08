@@ -125,8 +125,8 @@ const Memberheader = (props: ClientHeaderProps) => {
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
             <Form.Label>Status:</Form.Label>
             <br></br>
-            <Form.Check defaultChecked inline label="Active" type="radio" name="status" value='active' onChange={statusHandler}/>
-            <Form.Check inline label="Inactive" type="radio" name="status" value='inactive' onChange={statusHandler}/>
+            <Form.Check  inline label="Active" type="radio" name="status" value='active' onChange={statusHandler}/>
+            <Form.Check defaultChecked inline label="Inactive" type="radio" name="status" value='inactive' onChange={statusHandler}/>
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">

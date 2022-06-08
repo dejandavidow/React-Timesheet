@@ -88,7 +88,15 @@ export const countClients = async(searchterm:string, letter:string) =>
     return response;
     }
 }
-
+export const getClientList = async(): Promise<ClientModel[]> =>
+{
+    const response: ClientModel[] = []
+        await fetch(`https://localhost:44381/api/Client/`, {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'},
+        }).then(cl => cl.json()).then(cl => cl.map((c: ClientModel) => response.push(c)))
+        return response;
+} 
 
 
 

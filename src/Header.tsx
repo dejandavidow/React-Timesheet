@@ -10,6 +10,7 @@ const Header = () => {
       <Nav.Link className="navlink"><Link className='link-decor' to="categories">Category</Link></Nav.Link>
       <Nav.Link className="navlink"><Link className='link-decor' to="clients">Clients</Link></Nav.Link>
       <Nav.Link className="navlink"><Link className='link-decor' to="members">Members</Link></Nav.Link>
+      <Nav.Link className="navlink"><Link className='link-decor' to="projects">Projects</Link></Nav.Link>
     </Nav>
     </Container>
   </div>

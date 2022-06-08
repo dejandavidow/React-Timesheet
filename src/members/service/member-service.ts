@@ -89,6 +89,16 @@ export const countCategory = async(searchterm:string, letter:string) =>
     return response;
     }
 }
+export const getMembers = async(): Promise<MemberModel[]> =>
+{
+    const response: MemberModel[] = []
+        await fetch(`https://localhost:44381/api/Member/`, {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'}
+        }).then(cl => cl.json()).then(cl => cl.map((c: MemberModel) => response.push(c)))
+        return response;
+}  
+
 
 
 
