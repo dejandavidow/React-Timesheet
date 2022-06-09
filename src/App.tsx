@@ -5,11 +5,13 @@ import Client from './clients/components/Client';
 import Header from './Header';
 import Member from './members/components/Member';
 import Project from './projects/componets/Project';
+import TimeSheet from './timesheet/components/TimeSheet';
 function App() {
   return (
     <>
-     <Header/>
-     <Routes>
+    <Header/>
+      <Routes>
+      <Route path="timesheets" element={<TimeSheet/>}/>
         <Route path="clients" element={ <Client/> } />
         <Route path="categories" element={ <Category/> } />
         <Route path="members" element={ <Member/> } />

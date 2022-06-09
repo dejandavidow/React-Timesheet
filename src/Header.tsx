@@ -7,6 +7,7 @@ const Header = () => {
   <div className='App'>
     <Container className='margin'>
     <Nav variant="tabs" className="me-auto justify-content-end">
+      <Nav.Link className="navlink"><Link className='link-decor' to="timesheets">TimeSheet</Link></Nav.Link>
       <Nav.Link className="navlink"><Link className='link-decor' to="categories">Category</Link></Nav.Link>
       <Nav.Link className="navlink"><Link className='link-decor' to="clients">Clients</Link></Nav.Link>
       <Nav.Link className="navlink"><Link className='link-decor' to="members">Members</Link></Nav.Link>
