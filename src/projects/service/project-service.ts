@@ -90,6 +90,15 @@ export const countCategory = async(searchterm:string, letter:string) =>
     return response;
     }
 }
+export const getProjectList = async(): Promise<ProjectModel[]> =>
+{
+    const response: ProjectModel[] = []
+        await fetch(`https://localhost:44381/api/Project/`, {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'},
+        }).then(cl => cl.json()).then(cl => cl.map((c: ProjectModel) => response.push(c)))
+        return response;
+} 
 
 
 

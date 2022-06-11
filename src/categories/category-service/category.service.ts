@@ -88,6 +88,15 @@ export const countCategory = async(searchterm:string, letter:string) =>
     return response;
     }
 }
+export const getCategoriesList = async(): Promise<CategoryModel[]> =>
+{
+    const response: CategoryModel[] = []
+        await fetch(`https://localhost:44381/api/Category/`, {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'},
+        }).then(cl => cl.json()).then(cl => cl.map((c: CategoryModel) => response.push(c)))
+        return response;
+} 
 
 
 

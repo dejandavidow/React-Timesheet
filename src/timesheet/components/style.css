@@ -1,0 +1,12 @@
+.totalhours
+{
+    background-color: lightgrey !important;
+    width: 100%;
+    height: 6vh;
+}
+.totalhours > p
+{
+    float:right;
+    font-size: larger;
+    margin-top:1vh
+}
