@@ -1,19 +1,24 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, MouseEventHandler, useEffect, useState } from "react";
 import TimeSheetHeader from "./TimeSheetHeader";
 import "antd/dist/antd.css";
 import { getTimeSheets, PostTimeSheet } from "../service/timesheet-service";
 import { TsModel } from "../model/TsModel";
-import FullCalendar, { DateSelectArg, EventContentArg } from "@fullcalendar/react";
+import FullCalendar, { CalendarApi, CustomContentGenerator, DateSelectArg, EventContentArg } from "@fullcalendar/react";
+import bootstrap5Plugin from '@fullcalendar/bootstrap5';
+import timeGridPlugin from '@fullcalendar/timegrid';
 import dayGridPlugin from "@fullcalendar/daygrid";
-import interactionPlugin from '@fullcalendar/interaction'
+import interactionPlugin from '@fullcalendar/interaction';
+import listPlugin, { ListView, NoEventsContentArg } from '@fullcalendar/list';
 import "./style.css";
 import { Modal, Form, Button } from "react-bootstrap";
 import { ClientModel } from "../../clients/model/clientModel";
 import { CategoryModel } from "../../categories/model/CategoryModel";
-import { getCategories, getCategoriesList } from "../../categories/category-service/category.service";
+import { getCategoriesList } from "../../categories/category-service/category.service";
 import { getClientList } from "../../clients/service/client.service";
 import { ProjectModel } from "../../projects/model/ProjectModel";
 import { getProjectList } from "../../projects/service/project-service";
+
+
 const TimeSheet = () => {
   const [timesheets, setTimeSheets] = useState<TsModel[]>([]);
   const [totalTime, setTotalTime] = useState(0);
@@ -38,23 +43,24 @@ const TimeSheet = () => {
   }
     useEffect(() => {
       getTimeSheets().then((data) => setTimeSheets(data));
-    }, []);
+      totalTimeHandler()
+    },[timesheets.length]);
     const renderEventContent = (e: EventContentArg) => {
-      setTotalTime(e.event.extendedProps.time);
       return (
         <>
-          <b>Hours: {e.event.extendedProps.time}</b>
+          <b style={{color: e.event.extendedProps.time > 4 ? 'green': 'red'}}>Hours: {e.event.extendedProps.time}</b>
         </>
       );
     };
     const handleDateSelect = (selectInfo: DateSelectArg) => {
-      handleShow()
+     let calendar = selectInfo.view.calendar
+     calendar.changeView('listWeek')
       setDate(selectInfo.startStr)
     }
     const handlePost = (event : React.FormEvent<HTMLFormElement> & React.MouseEvent<HTMLButtonElement> & React.BaseSyntheticEvent) =>
     {
       const form = event.currentTarget;
-    if (form.checkValidity() === false && clientId === "") 
+    if (form.checkValidity() === false) 
     {
       setValidated(true);
       event.preventDefault();
@@ -86,24 +92,46 @@ const TimeSheet = () => {
     {
       getProjectList().then(data => setProjects(data))
     }
-  return (
+    const totalTimeHandler = () =>{
+      const timearray : number[]= []
+      {timesheets.map((ts) =>
+        {
+          timearray.push(Number(ts.time))
+        }
+        )}
+      var sum = timearray.reduce(function(a, b){
+          return a + b;
+      }, 0);
+      setTotalTime(sum)
+    }
+  return ( 
     <div className="container bgcolor">
       <TimeSheetHeader />
+      <>
       <FullCalendar
-        plugins={[dayGridPlugin,dayGridPlugin,interactionPlugin]}
+        plugins={[dayGridPlugin,timeGridPlugin,interactionPlugin,listPlugin,bootstrap5Plugin]}
+        themeSystem='bootstrap5'
         initialView="dayGridMonth"
+        headerToolbar={{
+          left:'prev',
+          right:'next',
+          center:'title'
+        }}
         eventContent={renderEventContent}
-        events={timesheets}
         selectable={true}
         selectMirror={true}
         select={handleDateSelect}
+        height={600}
+        displayEventTime={false}
+        displayEventEnd={false}
       />
       <div className="container totalhours">
         <p>
           Total Hours:<span style={{ color: "darkorange" }}>{totalTime}</span>
         </p>
       </div>
-      <Modal show={show} onHide={handleClose}>
+      </>
+      {/* <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Create new TimeSheet</Modal.Title>
         </Modal.Header>
@@ -170,7 +198,7 @@ const TimeSheet = () => {
           </Button>
           <Button variant="primary" onClick={handlePost}>Create TimeSheet</Button>
         </Modal.Footer>
-      </Modal>
+      </Modal> */}
     </div>
   );
 };
