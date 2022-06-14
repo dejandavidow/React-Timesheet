@@ -12,7 +12,11 @@ type CategoryHeaderProps = {
 const CategoryHeader = ({setNewCategoryCreated,searchTerm,setSearchTerm,setLetter}:CategoryHeaderProps) => {
   const [validated, setValidated] = useState(false);
   const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
+  const handleClose = () => {
+    setValidated(false);
+    setName('');
+    setShow(false);
+  }
   const handleShow = () => setShow(true);
   const [name,setName] = useState("");
   const CreateCategoryHandler = (event : React.FormEvent<HTMLFormElement> & React.MouseEvent<HTMLButtonElement> ) =>
@@ -31,8 +35,6 @@ const CategoryHeader = ({setNewCategoryCreated,searchTerm,setSearchTerm,setLette
     setValidated(true);
     PostCategory(request);
     setNewCategoryCreated(true);
-    setName('');
-    handleClose();
   }
   return (
     <div>
@@ -44,7 +46,7 @@ const CategoryHeader = ({setNewCategoryCreated,searchTerm,setSearchTerm,setLette
     <Modal.Title>Create new Category</Modal.Title>
     </Modal.Header>
     <Modal.Body>
-    <Form>
+    <Form noValidate validated={validated}>
           <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
           <Form.Label>Name:</Form.Label>
           <Form.Control type="text" value={name} onChange={(e : ChangeEvent<HTMLInputElement>) => setName(e.target.value)}/>

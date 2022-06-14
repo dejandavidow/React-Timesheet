@@ -6,7 +6,7 @@ const Client = () => {
   const [searchTerm,setSearchTerm] = useState("");
   const [clientDeleted,setclientDeleted] = useState<boolean>(false);
   const [clientUpdated,setClientUpdated] = useState<boolean>(false);
-  const[letter,setLetter] = useState("");
+  const [letter,setLetter] = useState("");
   return(
   <div className='container bgcolor'>
     <Clientheader

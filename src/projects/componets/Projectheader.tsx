@@ -55,7 +55,6 @@ const Projectheader = (props:ClientHeaderProps) => {
       memberId,
       clientId,
     }
-    console.log(request);  
     PostCategory(request)
     props.setNewClientCreated(true);
   }

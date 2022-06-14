@@ -23,7 +23,7 @@ export const getClients = async(searchterm: string, filterLetter: string, pagenu
     return response;
 }
 
-export const PostClient = async(body:ClientModel) =>
+export const PostClient = async(body:ClientModel) : Promise<any> =>
 {
     const request =
     {
@@ -32,22 +32,37 @@ export const PostClient = async(body:ClientModel) =>
         body:JSON.stringify(body)
     };
     await fetch('https://localhost:44381/api/Client',request)
-    .then( response => response.json())
+    .then(response =>{
+        const isJson = response.headers.get('content-type')?.includes('application/json');
+        const data = isJson &&  response.json();
+        if (!response.ok) {
+            // get error message from body or default to response status
+            const error = (data && response.body) || response.status;
+            return Promise.reject(error);
+        }
+    })
 }
 
-export const deleteClient = async (id:string | undefined) =>
+export const deleteClient = async (id:string | undefined) : Promise<any>=>
 {
     const request = 
     {
         method: 'DELETE',
         headers: {'Content-Type': 'application/json'}
     }
-      const response = await fetch(`https://localhost:44381/api/Client/${id}`,request)
-      .then(response => response.json())
-      return response;
+      await fetch(`https://localhost:44381/api/Client/${id}`,request)
+      .then(response =>{
+        const isJson = response.headers.get('content-type')?.includes('application/json');
+        const data = isJson &&  response.json();
+        if (!response.ok) {
+            // get error message from body or default to response status
+            const error = (data && response.body) || response.status;
+            return Promise.reject(error);
+        }
+    })
 }
 
-export const UpdateClient = async(body:ClientModel,id:string | undefined) =>
+export const UpdateClient = async(body:ClientModel,id:string | undefined) : Promise<any> =>
 {
     const request =
     {
@@ -56,7 +71,15 @@ export const UpdateClient = async(body:ClientModel,id:string | undefined) =>
         body:JSON.stringify(body)
     };
     await fetch(`https://localhost:44381/api/Client/${id}`,request)
-    .then( response => response.json())
+    .then(response =>{
+        const isJson = response.headers.get('content-type')?.includes('application/json');
+        const data = isJson &&  response.json();
+        if (!response.ok) {
+            // get error message from body or default to response status
+            const error = (data && response.body) || response.status;
+            return Promise.reject(error);
+        }
+    })
 }
 
 export const countClients = async(searchterm:string, letter:string) =>

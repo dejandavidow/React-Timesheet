@@ -1,9 +1,9 @@
-import React, { ChangeEvent, MouseEventHandler, useEffect, useState } from "react";
+import React, {ChangeEvent, useEffect, useState } from "react";
 import TimeSheetHeader from "./TimeSheetHeader";
 import "antd/dist/antd.css";
 import { getTimeSheets, PostTimeSheet } from "../service/timesheet-service";
 import { TsModel } from "../model/TsModel";
-import FullCalendar, { CalendarApi, CustomContentGenerator, DateSelectArg, EventContentArg } from "@fullcalendar/react";
+import FullCalendar, {DateSelectArg,EventContentArg, EventMountArg, EventSourceInput, MountArg, ViewMountArg} from "@fullcalendar/react";
 import bootstrap5Plugin from '@fullcalendar/bootstrap5';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -17,10 +17,11 @@ import { getCategoriesList } from "../../categories/category-service/category.se
 import { getClientList } from "../../clients/service/client.service";
 import { ProjectModel } from "../../projects/model/ProjectModel";
 import { getProjectList } from "../../projects/service/project-service";
+import { EventInput } from "@fullcalendar/core";
 
+const TimeSheet = React.memo(() => {
 
-const TimeSheet = () => {
-  const [timesheets, setTimeSheets] = useState<TsModel[]>([]);
+  const [timesheets, setTimeSheets] = useState<EventInput[]>([]);
   const [totalTime, setTotalTime] = useState(0);
   const [show, setShow] = useState(false);
   const [categoryId,setcategoryId] = useState("");
@@ -34,6 +35,15 @@ const TimeSheet = () => {
   const [overTime,setoverTime] = useState("");
   const [date,setDate] = useState("");
   const [validated, setValidated] = useState(false);
+
+  const handleMount = (e: ViewMountArg) =>
+  {
+    // let view = e.view.calendar.view.type
+    // let start = e.view.activeStart
+    // let end = e.view.activeEnd
+    // getTimeSheets(start.toISOString(),end.toISOString()).then((data) => setTimeSheets(data));
+    // //setCurrentView(view);
+  }
   const handleClose = () => {
     setValidated(false);
     setShow(false);
@@ -42,20 +52,19 @@ const TimeSheet = () => {
      setShow(true);
   }
     useEffect(() => {
-      getTimeSheets().then((data) => setTimeSheets(data));
-      totalTimeHandler()
-    },[timesheets.length]);
+    },[]);
+  
     const renderEventContent = (e: EventContentArg) => {
       return (
         <>
-          <b style={{color: e.event.extendedProps.time > 4 ? 'green': 'red'}}>Hours: {e.event.extendedProps.time}</b>
+          <b style={{backgroundColor:e.event.extendedProps.time > 4 ? 'lightgreen' : 'red',width:'100%',height:'100%'}}>Hours: {e.event.extendedProps.time}</b>
         </>
       );
     };
     const handleDateSelect = (selectInfo: DateSelectArg) => {
-     let calendar = selectInfo.view.calendar
-     calendar.changeView('listWeek')
-      setDate(selectInfo.startStr)
+        let date = selectInfo.startStr
+        setDate(date)
+        handleShow()
     }
     const handlePost = (event : React.FormEvent<HTMLFormElement> & React.MouseEvent<HTMLButtonElement> & React.BaseSyntheticEvent) =>
     {
@@ -92,38 +101,42 @@ const TimeSheet = () => {
     {
       getProjectList().then(data => setProjects(data))
     }
-    const totalTimeHandler = () =>{
-      const timearray : number[]= []
-      {timesheets.map((ts) =>
-        {
-          timearray.push(Number(ts.time))
-        }
-        )}
-      var sum = timearray.reduce(function(a, b){
-          return a + b;
-      }, 0);
-      setTotalTime(sum)
-    }
-  return ( 
-    <div className="container bgcolor">
+    // const totalTimeHandler = () =>{
+    //   const timearray : number[]= []
+    //   {timesheets.map((ts) =>
+    //     {
+    //       timearray.push(Number(ts.time))
+    //     }
+    //     )}
+    //   var sum = timearray.reduce(function(a, b){
+    //       return a + b;
+    //   }, 0);
+    //   setTotalTime(sum)
+    // }
+  return <div className="container bgcolor">
       <TimeSheetHeader />
       <>
       <FullCalendar
         plugins={[dayGridPlugin,timeGridPlugin,interactionPlugin,listPlugin,bootstrap5Plugin]}
         themeSystem='bootstrap5'
-        initialView="dayGridMonth"
+        viewDidMount={handleMount}
+        initialView='dayGridMonth'
         headerToolbar={{
           left:'prev',
           right:'next',
           center:'title'
         }}
+        footerToolbar={{
+          left:'dayGridMonth',
+          right:'listWeek'
+        }}
+        events='https://localhost:44381/api/TimeSheet/'
         eventContent={renderEventContent}
-        selectable={true}
-        selectMirror={true}
         select={handleDateSelect}
         height={600}
         displayEventTime={false}
-        displayEventEnd={false}
+        selectable={true}
+        firstDay={1}
       />
       <div className="container totalhours">
         <p>
@@ -131,7 +144,7 @@ const TimeSheet = () => {
         </p>
       </div>
       </>
-      {/* <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Create new TimeSheet</Modal.Title>
         </Modal.Header>
@@ -198,8 +211,7 @@ const TimeSheet = () => {
           </Button>
           <Button variant="primary" onClick={handlePost}>Create TimeSheet</Button>
         </Modal.Footer>
-      </Modal> */}
+      </Modal>
     </div>
-  );
-};
-export default TimeSheet;
+});
+export default TimeSheet
