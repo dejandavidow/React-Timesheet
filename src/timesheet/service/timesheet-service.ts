@@ -9,6 +9,15 @@ export const getTimeSheets = async (startDate:string,endDate:string) : Promise<T
         }).then(cl => cl.json()).then(cl => cl.map((c: TsModel) => response.push(c)))
         return response;
 }
+export const getFilteredTimeSheets = async (startDate:string,endDate:string,categoryId:string,projectId:string,clientId:string) : Promise<TsModel[]> =>
+{
+    const response: TsModel[] = []
+    await fetch(`https://localhost:44381/api/TimeSheet/filters?FilterStart=${startDate}&FilterEnd=${endDate}&ClientId=${clientId}&ProjectId=${projectId}&CategoryId=${categoryId}`, {
+        method: 'GET',
+        headers: {'Content-Type': 'application/json'},
+    }).then(cl => cl.json()).then(cl => cl.map((c: TsModel) => response.push(c)))
+    return response;
+}
 export const PostTimeSheet = async(body:TsModel): Promise<any> =>
 {
     const request =
@@ -28,6 +37,7 @@ export const PostTimeSheet = async(body:TsModel): Promise<any> =>
         }
     })
 }
+
 // fetch('https://reqres.in/invalid-url', requestOptions)
 // .then(async response => {
 //     const isJson = response.headers.get('content-type')?.includes('application/json');

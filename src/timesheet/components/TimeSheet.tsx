@@ -1,14 +1,13 @@
 import React, {ChangeEvent, useEffect, useState } from "react";
-import TimeSheetHeader from "./TimeSheetHeader";
 import "antd/dist/antd.css";
 import { getTimeSheets, PostTimeSheet } from "../service/timesheet-service";
 import { TsModel } from "../model/TsModel";
-import FullCalendar, {DateSelectArg,EventContentArg, EventMountArg, EventSourceInput, MountArg, ViewMountArg} from "@fullcalendar/react";
+import FullCalendar, {DateSelectArg,EventContentArg, ViewMountArg} from "@fullcalendar/react";
 import bootstrap5Plugin from '@fullcalendar/bootstrap5';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from '@fullcalendar/interaction';
-import listPlugin, { ListView, NoEventsContentArg } from '@fullcalendar/list';
+import listPlugin from '@fullcalendar/list';
 import "./style.css";
 import { Modal, Form, Button } from "react-bootstrap";
 import { ClientModel } from "../../clients/model/clientModel";
@@ -18,6 +17,7 @@ import { getClientList } from "../../clients/service/client.service";
 import { ProjectModel } from "../../projects/model/ProjectModel";
 import { getProjectList } from "../../projects/service/project-service";
 import { EventInput } from "@fullcalendar/core";
+
 
 const TimeSheet = React.memo(() => {
 
@@ -114,7 +114,10 @@ const TimeSheet = React.memo(() => {
     //   setTotalTime(sum)
     // }
   return <div className="container bgcolor">
-      <TimeSheetHeader />
+       <div>
+      <h2>TimeSheet</h2>
+      <hr></hr>
+    </div>
       <>
       <FullCalendar
         plugins={[dayGridPlugin,timeGridPlugin,interactionPlugin,listPlugin,bootstrap5Plugin]}
@@ -130,13 +133,16 @@ const TimeSheet = React.memo(() => {
           left:'dayGridMonth',
           right:'listWeek'
         }}
-        events='https://localhost:44381/api/TimeSheet/'
+        events={'https://localhost:44381/api/TimeSheet'}
         eventContent={renderEventContent}
         select={handleDateSelect}
         height={600}
         displayEventTime={false}
         selectable={true}
         firstDay={1}
+        hiddenDays={[6]}
+        defaultAllDay={true}
+        eventDisplay='list-item'
       />
       <div className="container totalhours">
         <p>
