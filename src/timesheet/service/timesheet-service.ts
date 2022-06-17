@@ -1,18 +1,26 @@
 import { TsModel } from "../model/TsModel"
 
-export const getTimeSheets = async (startDate:string,endDate:string) : Promise<TsModel[]> =>
+export const getPageCount = async (startDate:string,endDate:string,categoryId:string,projectId:string,clientId:string,pageNumber:number,pageSize:number) :Promise<any> =>
+{
+ var response : number = await fetch(`https://localhost:44381/api/TimeSheet/filters-count?FilterStart=${startDate}&FilterEnd=${endDate}&ClientId=${clientId}&ProjectId=${projectId}&CategoryId=${categoryId}&PageNumber=${pageNumber}&PageSize=${pageSize}`,{
+    method: 'GET',
+    headers: {'Content-Type': 'application/json'},
+}).then(response => response.json())
+return response;
+}
+export const getTimeSheets = async () : Promise<TsModel[]> =>
 {
     const response: TsModel[] = []
-    await fetch(`https://localhost:44381/api/TimeSheet?Start=${startDate}&End=${endDate}`, {
+    await fetch(`https://localhost:44381/api/TimeSheet/`, {
             method: 'GET',
             headers: {'Content-Type': 'application/json'},
         }).then(cl => cl.json()).then(cl => cl.map((c: TsModel) => response.push(c)))
         return response;
 }
-export const getFilteredTimeSheets = async (startDate:string,endDate:string,categoryId:string,projectId:string,clientId:string) : Promise<TsModel[]> =>
+export const getFilteredTimeSheets = async (startDate:string,endDate:string,categoryId:string,projectId:string,clientId:string,pageNumber:number,pageSize:number) : Promise<TsModel[]> =>
 {
     const response: TsModel[] = []
-    await fetch(`https://localhost:44381/api/TimeSheet/filters?FilterStart=${startDate}&FilterEnd=${endDate}&ClientId=${clientId}&ProjectId=${projectId}&CategoryId=${categoryId}`, {
+    await fetch(`https://localhost:44381/api/TimeSheet/filters?FilterStart=${startDate}&FilterEnd=${endDate}&ClientId=${clientId}&ProjectId=${projectId}&CategoryId=${categoryId}&PageNumber=${pageNumber}&PageSize=${pageSize}`, {
         method: 'GET',
         headers: {'Content-Type': 'application/json'},
     }).then(cl => cl.json()).then(cl => cl.map((c: TsModel) => response.push(c)))

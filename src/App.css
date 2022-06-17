@@ -6,7 +6,7 @@
 .link-decor
 {
     text-decoration: none;
-    color: orange;
+    color: orange !important;
 }
 .navlink
 {
@@ -15,5 +15,10 @@
 }
 .margin
 {
-    margin-top: 8vh;
+    margin-top: 5vh;
+}
+.loginform
+{
+    width: 50vh;
+    margin-top: 30vh;
 }

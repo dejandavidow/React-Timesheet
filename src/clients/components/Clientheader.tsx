@@ -45,7 +45,6 @@ const Clientheader = (props: ClientHeaderProps) => {
       event.preventDefault();
       event.stopPropagation();
     }
-
     setValidated(true);
     PostClient(request);
     props.setNewClientCreated(true);
@@ -65,6 +64,7 @@ const Clientheader = (props: ClientHeaderProps) => {
             <Form.Label>Name:</Form.Label>
             <Form.Control 
             required 
+            minLength={3}
             type="text" 
             value={clientName} 
             onChange={(e : ChangeEvent<HTMLInputElement>) => setclientName(e.target.value)}/>
@@ -73,12 +73,10 @@ const Clientheader = (props: ClientHeaderProps) => {
 
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
             <Form.Label>Adress:</Form.Label>
-            <Form.Control
-            required 
+            <Form.Control 
             type="text" 
             value={adress} 
             onChange={(e : ChangeEvent<HTMLInputElement>) => setAdress(e.target.value)} />
-            <Form.Control.Feedback type='invalid'>Adress is required</Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">

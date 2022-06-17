@@ -1,21 +1,32 @@
 import React from 'react';
-import { Container, Nav} from 'react-bootstrap'
-import { Link} from 'react-router-dom';
+import { Nav} from 'react-bootstrap'
+import {LinkContainer} from 'react-router-bootstrap'
+import { Link } from 'react-router-dom';
 import './App.css';
 const Header = () => {
   return (
-  <div className='App'>
-    <Container className='margin'>
+    <div className='container margin'>
     <Nav variant="tabs" className="me-auto justify-content-end">
-      <Nav.Link className="navlink"><Link className='link-decor' to="timesheets">TimeSheet</Link></Nav.Link>
-      <Nav.Link className="navlink"><Link className='link-decor' to="categories">Category</Link></Nav.Link>
-      <Nav.Link className="navlink"><Link className='link-decor' to="clients">Clients</Link></Nav.Link>
-      <Nav.Link className="navlink"><Link className='link-decor' to="members">Members</Link></Nav.Link>
-      <Nav.Link className="navlink"><Link className='link-decor' to="projects">Projects</Link></Nav.Link>
-      <Nav.Link className="navlink"><Link className='link-decor' to="reports">Reports</Link></Nav.Link>
+      <LinkContainer to='timesheets'>
+      <Nav.Link className='link-decor navlink' >TimeSheet</Nav.Link>
+      </LinkContainer>
+      <LinkContainer to='categories'>
+      <Nav.Link className='link-decor navlink' >Category</Nav.Link>
+      </LinkContainer>
+      <LinkContainer to='clients'>
+      <Nav.Link className='link-decor navlink' >Client</Nav.Link>
+      </LinkContainer>
+      <LinkContainer to='projects'>
+      <Nav.Link className='link-decor navlink' >Project</Nav.Link>
+      </LinkContainer>
+      <LinkContainer to='members'>
+      <Nav.Link className='link-decor navlink' >Team Member</Nav.Link>
+      </LinkContainer>
+      <LinkContainer to='reports'>
+      <Nav.Link className='link-decor navlink' >Reports</Nav.Link>
+      </LinkContainer>
     </Nav>
-    </Container>
-  </div>
+    </div>
   )
 }
 

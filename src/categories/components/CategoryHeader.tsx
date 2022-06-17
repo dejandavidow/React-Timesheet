@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { Button, Form, Modal } from 'react-bootstrap'
 import { PostCategory } from '../category-service/category.service';
 import { CategoryModel } from '../model/CategoryModel';
@@ -19,7 +19,7 @@ const CategoryHeader = ({setNewCategoryCreated,searchTerm,setSearchTerm,setLette
   }
   const handleShow = () => setShow(true);
   const [name,setName] = useState("");
-  const CreateCategoryHandler = (event : React.FormEvent<HTMLFormElement> & React.MouseEvent<HTMLButtonElement> ) =>
+  const CreateCategoryHandler = (event : React.FormEvent<HTMLFormElement> & React.MouseEvent<HTMLButtonElement> & React.BaseSyntheticEvent<any>) =>
   {
     const request :CategoryModel=
     {
@@ -29,8 +29,8 @@ const CategoryHeader = ({setNewCategoryCreated,searchTerm,setSearchTerm,setLette
     const form = event.currentTarget;
     if (form.checkValidity() === false) 
     {
-      event.preventDefault();
       event.stopPropagation();
+      event.preventDefault();
     }
     setValidated(true);
     PostCategory(request);
@@ -49,7 +49,7 @@ const CategoryHeader = ({setNewCategoryCreated,searchTerm,setSearchTerm,setLette
     <Form noValidate validated={validated}>
           <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
           <Form.Label>Name:</Form.Label>
-          <Form.Control type="text" value={name} onChange={(e : ChangeEvent<HTMLInputElement>) => setName(e.target.value)}/>
+          <Form.Control required type="text" value={name} onChange={(e : ChangeEvent<HTMLInputElement>) => setName(e.target.value)}/>
           <Form.Control.Feedback type="invalid">
             Please enter category name
           </Form.Control.Feedback>

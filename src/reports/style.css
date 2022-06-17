@@ -1,12 +1,8 @@
-.inputgroup
+.inputfield
 {
-    margin-bottom: 5vh;
-    background-color: lightgrey;
-    padding: 6vh;
-}
-.margins
-{
-  margin-left:30px !important;
+  margin-top: 2vh;
+  background-color: lightgray;
+  padding: 3vh;
 }
 .button-group
 {
@@ -16,4 +12,8 @@
 .leftm
 {
   margin-left:3vh;
+} 
+.margins
+{
+  padding: 0vh 3vh !important;
 }

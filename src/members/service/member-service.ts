@@ -1,3 +1,4 @@
+import { LoginModel } from "../../LoginModel"
 import { MemberModel } from "../model/MemberModel"
 
 
@@ -120,8 +121,17 @@ export const getMembers = async(): Promise<MemberModel[]> =>
             headers: {'Content-Type': 'application/json'}
         }).then(cl => cl.json()).then(cl => cl.map((c: MemberModel) => response.push(c)))
         return response;
-}  
-
-
-
+} 
+export const LoginMember = async (credentials:LoginModel): Promise<string>=>
+{
+    const request =
+    {
+        method:'POST',
+        headers: {'Content-Type': 'application/json'},
+        body:JSON.stringify(credentials)
+    };
+   const response : string = await fetch('https://localhost:44381/api/Member/login',request)
+    .then(response => response.json())
+    return response;
+}
 

@@ -1,9 +1,9 @@
-
+import type { PaginationProps } from 'antd';
 import Column from 'antd/lib/table/Column'
 import React, { useEffect, useState } from 'react'
-import { Table } from 'react-bootstrap'
+import { Table } from 'antd'
 import { TsModel } from '../../timesheet/model/TsModel'
-import { getFilteredTimeSheets} from '../../timesheet/service/timesheet-service'
+import { getFilteredTimeSheets, getPageCount} from '../../timesheet/service/timesheet-service'
 import SearchHeader from './SearchHeader'
 
 
@@ -14,9 +14,17 @@ const Reports = () => {
   const [projectId,setprojectId] = useState("");
   const [startDate,setStartDate] =useState("");
   const [endDate,setEndDate] =useState("");
+  const [pageNumber,setPageNumber] = useState(1);
+  const [pageSize,setPageSize] = useState(5);
+  const [pageCount,setpageCount] = useState<number>(0)
+  const [reFetch,setreFetch] = useState(false);
   useEffect(() => {
-   getFilteredTimeSheets(startDate,endDate,categoryId,projectId,clientId).then(data => setTimeSheets(data))
-  }, [timesheets.length])
+   getFilteredTimeSheets(startDate,endDate,categoryId,projectId,clientId,pageNumber,pageSize).then(data => setTimeSheets(data));
+   getPageCount(startDate,endDate,categoryId,projectId,clientId,pageNumber,pageSize).then(data => setpageCount(data));
+  }, [pageNumber,pageCount,reFetch])
+  const onChange: PaginationProps['onChange'] = pageNumber => {
+    setPageNumber(pageNumber);
+  };
   return (
     <>
     <div className="container bgcolor">
@@ -32,39 +40,24 @@ const Reports = () => {
     clientId={clientId}
     projectId={projectId}
     setTimeSheets={setTimeSheets}
+    pageNumber={pageNumber}
+    pageSize={pageSize}
+    setpageCount={setpageCount}
+    setreFetch={setreFetch}
     />
-    <Table striped bordered hover size="sm">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Team Member</th>
-          <th>Project</th>
-          <th>Category</th>
-          <th>Description</th>
-          <th>Time</th>
-        </tr>
-      </thead>
-      <tbody>
-        {timesheets.map((ts) =>
-        <tr key={ts.id}>
-        <td>{ts.date.slice(0,10)}</td>
-        <td>id</td>
-        <td>{ts.projectId}</td>
-        <td>@{ts.categoryId}</td>
-        <td>{ts.description}</td>
-        <td>{ts.time}</td>
-      </tr>
-        )}
-      </tbody>
+    <Table dataSource={timesheets} pagination={{position:['bottomCenter'],onChange:onChange,total:pageCount,pageSize:pageSize}}>
+      <Column title='Date' dataIndex='date' key='date'/>
+      <Column title='Member' dataIndex='memberId' key='memberId'/>
+      <Column title='Project' dataIndex='projectId' key='projectId'/>
+      <Column title='Category' dataIndex='clientId' key='clientId'/>
+      <Column title='Description' dataIndex='description' key='description'/>
+      <Column title='Time' dataIndex='time' key='time'/>
     </Table>
-    {/* <Table dataSource={timesheets} pagination={false}>
-      <Column title='Date' dataIndex='date'/>
-      <Column title='Member' dataIndex='memberId'/>
-      <Column title='Project' dataIndex='projectId'/>
-      <Column title='Category' dataIndex='clientId'/>
-      <Column title='Description' dataIndex='description'/>
-      <Column title='Time' dataIndex='time'/>
-    </Table> */}
+    <div className="container totalhours">
+        <p>
+          Total Hours:<span style={{ color: "darkorange" }}>{0}</span>
+        </p>
+      </div>
     </div>
 
     </>

@@ -1,4 +1,4 @@
-import { Button, DatePicker, DatePickerProps, Select, Space } from 'antd'
+import { Button, DatePicker, DatePickerProps, Form, Input, Select, Space} from 'antd'
 import '../style.css'
 import React, { useState } from 'react'
 import { CategoryModel } from '../../categories/model/CategoryModel';
@@ -8,9 +8,8 @@ import { getCategoriesList } from '../../categories/category-service/category.se
 import { getClientList } from '../../clients/service/client.service';
 import { getProjectList } from '../../projects/service/project-service';
 import { SearchOutlined } from '@ant-design/icons';
-import { getFilteredTimeSheets } from '../../timesheet/service/timesheet-service';
+import { getFilteredTimeSheets, getPageCount } from '../../timesheet/service/timesheet-service';
 import { TsModel } from '../../timesheet/model/TsModel';
-import { FilterValue } from 'antd/lib/table/interface';
 const { Option } = Select;
 type TsProps ={
   setcategoryId: (c:string) => void,
@@ -22,14 +21,18 @@ type TsProps ={
   endDate:string,
   categoryId:string,
   projectId:string,
-  clientId:string
+  clientId:string,
   setTimeSheets:(c:TsModel[]) => void
+  pageSize:number,
+  pageNumber:number,
+  setpageCount:(c:number) => void,
+  setreFetch :(c:boolean) => void
 }
-const SearchHeader = ({setcategoryId,setprojectId,setclientId,setStartDate,setEndDate,startDate,endDate,clientId,projectId,categoryId,setTimeSheets}:TsProps) => {
+const SearchHeader = ({setcategoryId,setprojectId,setclientId,setStartDate,setEndDate,startDate,endDate,clientId,projectId,categoryId,setTimeSheets,pageNumber,pageSize,setpageCount,setreFetch}:TsProps) => {
+  const [form] = Form.useForm();
   const [categories,setCategories] = useState<CategoryModel[]>([]);
   const [clients,setClients] = useState<ClientModel[]>([]);
-  const [projects,setProjects] = useState<ProjectModel[]>([]);
-  const [filteredInfo, setFilteredInfo] = useState<Record<string, FilterValue | null>>({});
+  const [projects,setProjects] = useState<ProjectModel[]>([]);;
   const getCategoriesHandler = () =>
   {
     getCategoriesList().then(data => setCategories(data))
@@ -50,55 +53,95 @@ const SearchHeader = ({setcategoryId,setprojectId,setclientId,setStartDate,setEn
   };
   const handleSearchCall = () =>
   {
-    getFilteredTimeSheets(startDate,endDate,categoryId,projectId,clientId).then(data => setTimeSheets(data))
+    getFilteredTimeSheets(startDate,endDate,categoryId,projectId,clientId,pageNumber,pageSize).then(data => setTimeSheets(data))
+    getPageCount(startDate,endDate,categoryId,projectId,clientId,pageNumber,pageSize).then(data => setpageCount(data));
   }
-  const handleReset = () =>
+  const ResetHandler = () =>
   {
-    setcategoryId("");
+    setreFetch(true)
+    form.resetFields();
+    setcategoryId("")
+    setclientId("")
+    setprojectId("")
+    setStartDate("")
+    setEndDate("")
   }
   return (
-    <div>
+    <>
         <h2>Reports</h2>
         <hr></hr>
-        <div className='inputgroup'>
-          <div className='margins'>
-            <Select className='select margins' placeholder='Select Member' style={{ width: 300 }}>
-            <Option value="jack">Jack</Option>
-            </Select>
-            <Select onClick={getProjectsHandler} className='select margins' placeholder='Select Project' style={{ width: 300 }} onChange={(e : string) => setprojectId(e)}>
-            {projects.map((project) =>
-            <Option key={project.id} value={project.id}>{project.projectName}</Option>
-            )}
-            </Select>
-            <Select onClick={getCategoriesHandler} className='select margins' placeholder='Select Category' style={{ width: 300 }} onChange={(e: string) => setcategoryId(e)}>
-            {categories.map((category) =>
-            <Option key={category.id} value={category.id}>{category.name}</Option>
-            )}
-            </Select >
-          </div>
-          <div className='margins' style={{marginTop:'30px'}}>
-            <Select onClick={getClientsHandler} className='select margins' placeholder='Select Client' style={{ width: 300 }} onChange={(e: string) => setclientId(e)}>
-            {clients.map((client) =>
-            <Option key={client.id} value={client.id}>{client.clientName}</Option>
-            )}
-            </Select>
-            <Space direction="vertical">
-            <DatePicker className='margins'  style={{ width: 300 }} placeholder='Start Date' onChange={handleStartPick}/>
-            </Space>
-            <Space direction="vertical">
-            <DatePicker  className='margins' style={{ width: 300 }} placeholder='End Date' onChange={handleEndPick}/>
-            </Space>
-          </div>
-          <div className='button-group'>
-              <Button type="primary" icon={<SearchOutlined />} onClick={handleSearchCall}>
-                Search
-              </Button>
-              <Button type="primary" danger className='leftm' onClick={handleReset}>
-                Reset
-              </Button>
-          </div>
-        </div>
-    </div>
+        <div className='inputfield'>
+                  <Form form={form}>
+                    <Input.Group compact>
+                  <Form.Item name="member" label="Member"  style={{width:350}} className='margins'>
+                  <Select
+                    placeholder="Select team member"
+                    allowClear
+                    
+                  > 
+                    <Option key='2'>asd</Option>
+                  </Select>
+                </Form.Item>
+                <Form.Item name="client" label="Client"  style={{width:350}} className='margins'>
+                  <Select
+                    placeholder="Select client"
+                    allowClear
+                    onClick={getClientsHandler}
+                    onChange={(value) => setclientId(value)}
+                  >
+                    {clients.map((client) =>
+                    <Option key={client.id} value={client.id}>{client.clientName}</Option>
+                    )}
+                  </Select>
+                </Form.Item>
+                <Form.Item name="category" label="Category" style={{width:350}} className='margins'>
+                  <Select
+                    placeholder="Select category"
+                    allowClear
+                    onClick={getCategoriesHandler}
+                    onChange={(value) => setcategoryId(value)}
+                  >
+                    {categories.map((category) =>
+                    <Option key={category.id} value={category.id}>{category.name}</Option>
+                    )}
+                  </Select>
+                </Form.Item>
+                </Input.Group>
+                <Input.Group compact>
+                <Form.Item name="project" label="Project" style={{width:350}} className='margins'>
+                  <Select
+                    placeholder="Select project"
+                    allowClear
+                    onClick={getProjectsHandler}
+                    onChange={(value) => setprojectId(value)}
+                  >
+                    {projects.map((project) =>
+                    <Option key={project.id} value={project.id}>{project.projectName}</Option>
+                    )}
+                  </Select>
+                </Form.Item>
+                <Form.Item label='Start Date' className='margins'>
+                    <Space direction="vertical">
+                      <DatePicker  style={{ width:350}} placeholder='Start Date' onChange={handleStartPick}/>
+                  </Space>
+                  </Form.Item>
+                  <Form.Item label='End Date' className='margins'> 
+                    <Space direction="vertical">
+                        <DatePicker style={{ width:350 }} placeholder='End Date' onChange={handleEndPick}/>
+                    </Space>
+                    </Form.Item>
+                    </Input.Group>
+                  <div className='button-group'>
+                        <Button type="primary" icon={<SearchOutlined />} onClick={handleSearchCall}>
+                                Search
+                        </Button>
+                        <Button htmlType="button" className='leftm' onClick={ResetHandler}>
+                                Reset
+                        </Button>
+                  </div>
+                  </Form>
+                  </div>
+      </>
   )
 }
 

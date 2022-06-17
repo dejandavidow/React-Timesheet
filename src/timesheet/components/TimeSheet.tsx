@@ -2,7 +2,7 @@ import React, {ChangeEvent, useEffect, useState } from "react";
 import "antd/dist/antd.css";
 import { getTimeSheets, PostTimeSheet } from "../service/timesheet-service";
 import { TsModel } from "../model/TsModel";
-import FullCalendar, {DateSelectArg,EventContentArg, ViewMountArg} from "@fullcalendar/react";
+import FullCalendar, {DateSelectArg,EventContentArg, EventMountArg, EventSourceInput,ViewMountArg} from "@fullcalendar/react";
 import bootstrap5Plugin from '@fullcalendar/bootstrap5';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -16,12 +16,11 @@ import { getCategoriesList } from "../../categories/category-service/category.se
 import { getClientList } from "../../clients/service/client.service";
 import { ProjectModel } from "../../projects/model/ProjectModel";
 import { getProjectList } from "../../projects/service/project-service";
-import { EventInput } from "@fullcalendar/core";
 
 
 const TimeSheet = React.memo(() => {
 
-  const [timesheets, setTimeSheets] = useState<EventInput[]>([]);
+  const [timesheets, setTimeSheets] = useState<TsModel[]>([]);
   const [totalTime, setTotalTime] = useState(0);
   const [show, setShow] = useState(false);
   const [categoryId,setcategoryId] = useState("");
@@ -35,15 +34,7 @@ const TimeSheet = React.memo(() => {
   const [overTime,setoverTime] = useState("");
   const [date,setDate] = useState("");
   const [validated, setValidated] = useState(false);
-
-  const handleMount = (e: ViewMountArg) =>
-  {
-    // let view = e.view.calendar.view.type
-    // let start = e.view.activeStart
-    // let end = e.view.activeEnd
-    // getTimeSheets(start.toISOString(),end.toISOString()).then((data) => setTimeSheets(data));
-    // //setCurrentView(view);
-  }
+  const [tsCreated,settsCreated] = useState<boolean>(false)
   const handleClose = () => {
     setValidated(false);
     setShow(false);
@@ -52,8 +43,9 @@ const TimeSheet = React.memo(() => {
      setShow(true);
   }
     useEffect(() => {
-    },[]);
-  
+      //getTimeSheets().then(data => setTimeSheets(data))
+    },[tsCreated]);
+
     const renderEventContent = (e: EventContentArg) => {
       return (
         <>
@@ -88,6 +80,7 @@ const TimeSheet = React.memo(() => {
         categoryId
       }
       PostTimeSheet(request);
+      settsCreated(true);
     }
     const getCategoriesHandler = () =>
     {
@@ -122,7 +115,6 @@ const TimeSheet = React.memo(() => {
       <FullCalendar
         plugins={[dayGridPlugin,timeGridPlugin,interactionPlugin,listPlugin,bootstrap5Plugin]}
         themeSystem='bootstrap5'
-        viewDidMount={handleMount}
         initialView='dayGridMonth'
         headerToolbar={{
           left:'prev',
@@ -133,7 +125,7 @@ const TimeSheet = React.memo(() => {
           left:'dayGridMonth',
           right:'listWeek'
         }}
-        events={'https://localhost:44381/api/TimeSheet'}
+        events={'https://localhost:44381/api/TimeSheet/'}
         eventContent={renderEventContent}
         select={handleDateSelect}
         height={600}
