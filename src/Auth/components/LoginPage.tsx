@@ -1,20 +1,18 @@
 import { Button, Form, Input } from 'antd'
 import React, { useState } from 'react'
-import { LoginMember } from './members/service/member-service'
-type LoginProps = {
-    setToken:(c:string) => void
-}
-const LoginPage = ({setToken}:LoginProps) => {
+
+const LoginPage = () => {
     const [username,setUserName] = useState("")
     const [password,setPassword] = useState("")
     const handleLogin = () =>
     {
-    LoginMember({username,password}).then(data => setToken(data))
+
     }
   return (
     <div className='container'>
     <div className='mx-auto loginform'>
         <Form
+        onSubmitCapture={handleLogin}
         name="basic"
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
@@ -35,7 +33,7 @@ const LoginPage = ({setToken}:LoginProps) => {
         <Input.Password onChange={(e) => setPassword(e.target.value)} value={password}/>
       </Form.Item>
       <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-        <Button type="primary" htmlType="submit" onSubmit={handleLogin}>
+        <Button type="primary" htmlType="submit">
           Login
         </Button>
       </Form.Item>

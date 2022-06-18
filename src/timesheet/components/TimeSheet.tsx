@@ -1,8 +1,8 @@
 import React, {ChangeEvent, useEffect, useState } from "react";
 import "antd/dist/antd.css";
-import { getTimeSheets, PostTimeSheet } from "../service/timesheet-service";
+import { PostTimeSheet } from "../service/timesheet-service";
 import { TsModel } from "../model/TsModel";
-import FullCalendar, {DateSelectArg,EventContentArg, EventMountArg, EventSourceInput,ViewMountArg} from "@fullcalendar/react";
+import FullCalendar, {DateSelectArg,EventContentArg} from "@fullcalendar/react";
 import bootstrap5Plugin from '@fullcalendar/bootstrap5';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -20,8 +20,8 @@ import { getProjectList } from "../../projects/service/project-service";
 
 const TimeSheet = React.memo(() => {
 
-  const [timesheets, setTimeSheets] = useState<TsModel[]>([]);
-  const [totalTime, setTotalTime] = useState(0);
+  // const [timesheets, setTimeSheets] = useState<TsModel[]>([]);
+  // const [totalTime, setTotalTime] = useState(0);
   const [show, setShow] = useState(false);
   const [categoryId,setcategoryId] = useState("");
   const [clientId,setclientId] = useState("");
@@ -138,7 +138,7 @@ const TimeSheet = React.memo(() => {
       />
       <div className="container totalhours">
         <p>
-          Total Hours:<span style={{ color: "darkorange" }}>{totalTime}</span>
+          Total Hours:<span style={{ color: "darkorange" }}>0</span>
         </p>
       </div>
       </>

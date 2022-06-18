@@ -1,6 +1,5 @@
-import { LoginModel } from "../../LoginModel"
-import { MemberModel } from "../model/MemberModel"
 
+import { MemberModel } from "../model/MemberModel"
 
 export const getCategories = async(searchterm: string, filterLetter: string, pagenumber:number,pagesize:number): Promise<MemberModel[]> => {
     const response: MemberModel[] = []
@@ -52,7 +51,7 @@ export const deleteCategory = async (id:string | undefined) : Promise<any>=>
         method: 'DELETE',
         headers: {'Content-Type': 'application/json'}
     }
-      const response = await fetch(`https://localhost:44381/api/Member/${id}`,request)
+      await fetch(`https://localhost:44381/api/Member/${id}`,request)
       .then(response =>{
         const isJson = response.headers.get('content-type')?.includes('application/json');
         const data = isJson &&  response.json();
@@ -122,16 +121,5 @@ export const getMembers = async(): Promise<MemberModel[]> =>
         }).then(cl => cl.json()).then(cl => cl.map((c: MemberModel) => response.push(c)))
         return response;
 } 
-export const LoginMember = async (credentials:LoginModel): Promise<string>=>
-{
-    const request =
-    {
-        method:'POST',
-        headers: {'Content-Type': 'application/json'},
-        body:JSON.stringify(credentials)
-    };
-   const response : string = await fetch('https://localhost:44381/api/Member/login',request)
-    .then(response => response.json())
-    return response;
-}
+
 

@@ -4,23 +4,16 @@ import './App.css'
 import Category from './categories/components/Category';
 import Client from './clients/components/Client';
 import Header from './Header';
-import LoginPage from './LoginPage';
 import Member from './members/components/Member';
 import Project from './projects/componets/Project';
 import Reports from './reports/components/Reports';
 import TimeSheet from './timesheet/components/TimeSheet';
 function App() {
-  const [token, setToken] = useState("");
-  if(!token)
-  {
-    return <LoginPage setToken={setToken}></LoginPage>
-  }
+
   return (
     <>
     <Header/>
       <Routes>
-        {/* <Route index element={<LoginPage />} />
-        <Route path="/" element={<LoginPage/>}/> */}
         <Route path="timesheets" element={<TimeSheet/>}/>
         <Route path="clients" element={ <Client/> } />
         <Route path="categories" element={ <Category/> } />
