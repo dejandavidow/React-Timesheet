@@ -16,10 +16,8 @@ import { getCategoriesList } from "../../categories/category-service/category.se
 import { getClientList } from "../../clients/service/client.service";
 import { ProjectModel } from "../../projects/model/ProjectModel";
 import { getProjectList } from "../../projects/service/project-service";
-
-
+import Header from "../../Header";
 const TimeSheet = React.memo(() => {
-
   // const [timesheets, setTimeSheets] = useState<TsModel[]>([]);
   // const [totalTime, setTotalTime] = useState(0);
   const [show, setShow] = useState(false);
@@ -42,10 +40,6 @@ const TimeSheet = React.memo(() => {
   const handleShow = () =>{
      setShow(true);
   }
-    useEffect(() => {
-      //getTimeSheets().then(data => setTimeSheets(data))
-    },[tsCreated]);
-
     const renderEventContent = (e: EventContentArg) => {
       return (
         <>
@@ -106,7 +100,9 @@ const TimeSheet = React.memo(() => {
     //   }, 0);
     //   setTotalTime(sum)
     // }
-  return <div className="container bgcolor">
+  return <>
+  <Header/>
+  <div className="container bgcolor">
        <div>
       <h2>TimeSheet</h2>
       <hr></hr>
@@ -211,5 +207,6 @@ const TimeSheet = React.memo(() => {
         </Modal.Footer>
       </Modal>
     </div>
+    </>
 });
 export default TimeSheet

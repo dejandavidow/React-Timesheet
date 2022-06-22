@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import Header from '../../Header';
 import Projectheader from './Projectheader'
 import ProjectList from './ProjectList';
 
@@ -8,7 +9,8 @@ const Project = () => {
     const [clientDeleted,setclientDeleted] = useState<boolean>(false);
     const [clientUpdated,setClientUpdated] = useState<boolean>(false);
     const [letter,setLetter] = useState("");
-  return (
+  return (<>
+  <Header/>
     <div className='container bgcolor'>
        <Projectheader
        setNewClientCreated={setNewClientCreated}
@@ -29,6 +31,7 @@ const Project = () => {
        setLetter={setLetter}
        />
     </div>
+    </>
   )
 }
 

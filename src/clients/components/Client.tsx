@@ -1,4 +1,5 @@
 import {useState } from 'react';
+import Header from '../../Header';
 import Clientheader from './Clientheader'
 import { ClientList } from './ClientList'
 const Client = () => {
@@ -7,7 +8,8 @@ const Client = () => {
   const [clientDeleted,setclientDeleted] = useState<boolean>(false);
   const [clientUpdated,setClientUpdated] = useState<boolean>(false);
   const [letter,setLetter] = useState("");
-  return(
+  return(<>
+  <Header/>
   <div className='container bgcolor'>
     <Clientheader
      setNewClientCreated={setNewClientCreated}
@@ -28,6 +30,7 @@ const Client = () => {
     setLetter={setLetter}
     />
   </div>
+  </>
   )
 }
 

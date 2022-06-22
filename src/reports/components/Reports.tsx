@@ -5,6 +5,7 @@ import { Table } from 'antd'
 import { TsModel } from '../../timesheet/model/TsModel'
 import { getFilteredTimeSheets, getPageCount} from '../../timesheet/service/timesheet-service'
 import SearchHeader from './SearchHeader'
+import Header from '../../Header';
 
 
 const Reports = () => {
@@ -27,6 +28,7 @@ const Reports = () => {
   };
   return (
     <>
+    <Header/>
     <div className="container bgcolor">
     <SearchHeader
     setclientId={setclientId}

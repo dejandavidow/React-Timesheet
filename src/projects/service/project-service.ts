@@ -1,25 +1,23 @@
+import { authHeader } from "../../Auth/auth-service/AuthService"
 import { ProjectModel } from "../model/ProjectModel"
-
-
-
 export const getCategories = async(searchterm: string, filterLetter: string, pagenumber:number,pagesize:number): Promise<ProjectModel[]> => {
     const response: ProjectModel[] = []
     if(searchterm === '' && filterLetter === ''){
         await fetch(`https://localhost:44381/api/Project/?PageNumber=${pagenumber}&PageSize=${pagesize}`, {
             method: 'GET',
-            headers: {'Content-Type': 'application/json'}
+            headers: {'Content-Type': 'application/json',}
         }).then(cl => cl.json()).then(cl => cl.map((c: ProjectModel) => response.push(c)))
     }
     else if(searchterm !== '' && filterLetter === ''){
         await fetch(`https://localhost:44381/api/Project/search?${searchterm}?PageNumber=${pagenumber}&PageSize=${pagesize}&search=${searchterm}`, {
         method: 'GET',
-        headers: {'Content-Type': 'application/json'}
+        headers: {'Content-Type': 'application/json',}
     }).then(cl => cl.json()).then(cl => cl.map((c: ProjectModel) => response.push(c)))
     }
     else if(searchterm === '' && filterLetter !== ''){
         await fetch(`https://localhost:44381/api/Project/filter?letter=${filterLetter}&PageNumber=${pagenumber}&PageSize=${pagesize}`, {
         method: 'GET',
-        headers: {'Content-Type': 'application/json'}
+        headers: {'Content-Type': 'application/json',}
         }).then(cl => cl.json()).then(cl => cl.map((c: ProjectModel) => response.push(c)))
     }
     return response;
@@ -30,7 +28,7 @@ export const PostCategory = async(body:ProjectModel) : Promise<any> =>
     const request =
     {
         method:'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',},
         body:JSON.stringify(body)
     };
     await fetch('https://localhost:44381/api/Project',request)
@@ -50,7 +48,7 @@ export const deleteCategory = async (id:string | undefined) : Promise<any>=>
     const request = 
     {
         method: 'DELETE',
-        headers: {'Content-Type': 'application/json'}
+        headers: {'Content-Type': 'application/json',}
     }
       await fetch(`https://localhost:44381/api/Project/${id}`,request)
       .then(response =>{
@@ -69,7 +67,7 @@ export const UpdateCategory = async(body:ProjectModel,id:string | undefined): Pr
     const request =
     {
         method:'PUT',
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',},
         body:JSON.stringify(body)
     };
     await fetch(`https://localhost:44381/api/Project/${id}`,request)
@@ -89,7 +87,7 @@ export const countCategory = async(searchterm:string, letter:string) =>
     const request =
     {
         method:'GET',
-        headers: {'Content-Type': 'application/json'}
+        headers: {'Content-Type': 'application/json',}
     };
 
 
@@ -118,7 +116,7 @@ export const getProjectList = async(): Promise<ProjectModel[]> =>
     const response: ProjectModel[] = []
         await fetch(`https://localhost:44381/api/Project/`, {
             method: 'GET',
-            headers: {'Content-Type': 'application/json'},
+            headers: {'Content-Type': 'application/json',},
         }).then(cl => cl.json()).then(cl => cl.map((c: ProjectModel) => response.push(c)))
         return response;
 } 

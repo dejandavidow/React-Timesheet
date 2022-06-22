@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import Header from '../../Header';
 import CategoryHeader from './CategoryHeader'
 import CategoryList from './CategoryList'
 
@@ -8,7 +9,8 @@ const Category = () => {
   const [categoryDeleted,setcategoryDeleted] = useState<boolean>(false);
   const [categoryUpdated,setcategoryUpdated] = useState<boolean>(false);
   const [letter,setLetter] = useState("");
-  return (
+  return (<>
+  <Header/>
     <div className='container bgcolor'>
     <CategoryHeader
          setNewCategoryCreated={setNewCategoryCreated}
@@ -29,6 +31,7 @@ const Category = () => {
     setLetter={setLetter}
     />
     </div>
+    </>
   )
 }
 

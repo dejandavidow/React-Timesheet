@@ -1,23 +1,29 @@
 import { Button, Form, Input } from 'antd'
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Auth } from '../auth-service/AuthService'
 
 const LoginPage = () => {
+  const navigate = useNavigate()
     const [username,setUserName] = useState("")
     const [password,setPassword] = useState("")
     const handleLogin = () =>
     {
-
+       Auth({username,password}).then(() =>
+      {
+        navigate('/timesheets')
+      })
     }
   return (
     <div className='container'>
     <div className='mx-auto loginform'>
         <Form
-        onSubmitCapture={handleLogin}
         name="basic"
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
-        initialValues={{ remember: true }}
-        autoComplete="off">
+        autoComplete="off"
+        onFinish={handleLogin}
+        >
         <Form.Item
         label="Username"
         name="username"
