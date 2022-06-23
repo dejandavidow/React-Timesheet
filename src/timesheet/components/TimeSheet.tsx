@@ -1,13 +1,13 @@
 import React, {ChangeEvent, useEffect, useState } from "react";
 import "antd/dist/antd.css";
-import { PostTimeSheet } from "../service/timesheet-service";
+import { getTimeSheets, PostTimeSheet } from "../service/timesheet-service";
 import { TsModel } from "../model/TsModel";
-import FullCalendar, {DateSelectArg,EventContentArg} from "@fullcalendar/react";
+import FullCalendar, {DateSelectArg,DatesSetArg,EventAddArg,EventChangeArg,EventContentArg, EventMountArg, EventSourceApi, ViewMountArg} from "@fullcalendar/react";
 import bootstrap5Plugin from '@fullcalendar/bootstrap5';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from '@fullcalendar/interaction';
-import listPlugin from '@fullcalendar/list';
+import listPlugin, { NoEventsContentArg } from '@fullcalendar/list';
 import "./style.css";
 import { Modal, Form, Button } from "react-bootstrap";
 import { ClientModel } from "../../clients/model/clientModel";
@@ -18,7 +18,7 @@ import { ProjectModel } from "../../projects/model/ProjectModel";
 import { getProjectList } from "../../projects/service/project-service";
 import Header from "../../Header";
 const TimeSheet = React.memo(() => {
-  // const [timesheets, setTimeSheets] = useState<TsModel[]>([]);
+  const [timesheets, setTimeSheets] = useState<TsModel[]>([]);
   // const [totalTime, setTotalTime] = useState(0);
   const [show, setShow] = useState(false);
   const [categoryId,setcategoryId] = useState("");
@@ -32,7 +32,12 @@ const TimeSheet = React.memo(() => {
   const [overTime,setoverTime] = useState("");
   const [date,setDate] = useState("");
   const [validated, setValidated] = useState(false);
-  const [tsCreated,settsCreated] = useState<boolean>(false)
+  const [tsCreated,settsCreated] = useState(false)
+  const [start,setStart] = useState("2022-06-10");
+  const [end,setEnd] = useState("2022-06-30");
+  useEffect(() => {
+    getTimeSheets(start,end).then(data => setTimeSheets(data))
+  }, [tsCreated])
   const handleClose = () => {
     setValidated(false);
     setShow(false);
@@ -73,8 +78,8 @@ const TimeSheet = React.memo(() => {
         projectId,
         categoryId
       }
+        settsCreated(true);
       PostTimeSheet(request);
-      settsCreated(true);
     }
     const getCategoriesHandler = () =>
     {
@@ -121,7 +126,7 @@ const TimeSheet = React.memo(() => {
           left:'dayGridMonth',
           right:'listWeek'
         }}
-        events={'https://localhost:44381/api/TimeSheet/'}
+        events={{events:timesheets,}}
         eventContent={renderEventContent}
         select={handleDateSelect}
         height={600}

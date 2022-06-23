@@ -1,23 +1,25 @@
+
 import { authHeader } from "../../Auth/auth-service/AuthService";
 import { ClientModel } from "../model/clientModel";
+
 export const getClients = async(searchterm: string, filterLetter: string, pagenumber:number,pagesize:number): Promise<ClientModel[]> => {
     const response: ClientModel[] = []
     if(searchterm === '' && filterLetter === ''){
         await fetch(`https://localhost:44381/api/Client/?PageNumber=${pagenumber}&PageSize=${pagesize}`, {
             method: 'GET',
-            headers: {'Content-Type': 'application/json',},
+            headers: authHeader()
         }).then(cl => cl.json()).then(cl => cl.map((c: ClientModel) => response.push(c)))
     }
     else if(searchterm !== '' && filterLetter === ''){
         await fetch(`https://localhost:44381/api/Client/search/${searchterm}?PageNumber=${pagenumber}&PageSize=${pagesize}`, {
         method: 'GET',
-        headers: {'Content-Type': 'application/json',}
+        headers: authHeader()
     }).then(cl => cl.json()).then(cl => cl.map((c: ClientModel) => response.push(c)))
     }
     else if(searchterm === '' && filterLetter !== ''){
         await fetch(`https://localhost:44381/api/Client/filter?letter=${filterLetter}&PageNumber=${pagenumber}&PageSize=${pagesize}`, {
         method: 'GET',
-        headers: {'Content-Type': 'application/json',}
+        headers: authHeader()
         }).then(cl => cl.json()).then(cl => cl.map((c: ClientModel) => response.push(c)))
     }
     return response;
@@ -28,7 +30,7 @@ export const PostClient = async(body:ClientModel) : Promise<any> =>
     const request =
     {
         method:'POST',
-        headers: {'Content-Type': 'application/json',},
+        headers: authHeader(),
         body:JSON.stringify(body)
     };
     await fetch('https://localhost:44381/api/Client',request)
@@ -48,7 +50,7 @@ export const deleteClient = async (id:string | undefined) : Promise<any>=>
     const request = 
     {
         method: 'DELETE',
-        headers: {'Content-Type': 'application/json',}
+        headers: authHeader()
     }
       await fetch(`https://localhost:44381/api/Client/${id}`,request)
       .then(response =>{
@@ -67,7 +69,7 @@ export const UpdateClient = async(body:ClientModel,id:string | undefined) : Prom
     const request =
     {
         method:'PUT',
-        headers: {'Content-Type': 'application/json',},
+        headers: authHeader(),
         body:JSON.stringify(body)
     };
     await fetch(`https://localhost:44381/api/Client/${id}`,request)
@@ -87,7 +89,7 @@ export const countClients = async(searchterm:string, letter:string) =>
     const request =
     {
         method:'GET',
-        headers: {'Content-Type': 'application/json',}
+        headers: authHeader()
     };
 
 
@@ -116,7 +118,7 @@ export const getClientList = async(): Promise<ClientModel[]> =>
     const response: ClientModel[] = []
         await fetch(`https://localhost:44381/api/Client/`, {
             method: 'GET',
-            headers: {'Content-Type': 'application/json',},
+            headers: authHeader(),
         }).then(cl => cl.json()).then(cl => cl.map((c: ClientModel) => response.push(c)))
         return response;
 } 

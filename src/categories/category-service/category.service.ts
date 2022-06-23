@@ -1,23 +1,25 @@
+
 import { authHeader } from "../../Auth/auth-service/AuthService";
 import { CategoryModel} from "../model/CategoryModel";
 export const getCategories = async(searchterm: string, filterLetter: string, pagenumber:number,pagesize:number): Promise<CategoryModel[]> => {
     const response: CategoryModel[] = []
+
     if(searchterm === '' && filterLetter === ''){
         await fetch(`https://localhost:44381/api/Category/?PageNumber=${pagenumber}&PageSize=${pagesize}`, {
             method: 'GET',
-            headers: {'Content-Type': 'application/json',}
+            headers: authHeader()
         }).then(cl => cl.json()).then(cl => cl.map((c: CategoryModel) => response.push(c)))
     }
     else if(searchterm !== '' && filterLetter === ''){
         await fetch(`https://localhost:44381/api/Category/search?${searchterm}?PageNumber=${pagenumber}&PageSize=${pagesize}&search=${searchterm}`, {
         method: 'GET',
-        headers: {'Content-Type': 'application/json',}
+        headers: authHeader()
     }).then(cl => cl.json()).then(cl => cl.map((c: CategoryModel) => response.push(c)))
     }
     else if(searchterm === '' && filterLetter !== ''){
         await fetch(`https://localhost:44381/api/Category/filter?letter=${filterLetter}&PageNumber=${pagenumber}&PageSize=${pagesize}`, {
         method: 'GET',
-        headers: {'Content-Type': 'application/json',}
+        headers: authHeader()
         }).then(cl => cl.json()).then(cl => cl.map((c: CategoryModel) => response.push(c)))
     }
     return response;
@@ -28,7 +30,7 @@ export const PostCategory = async(body:CategoryModel) : Promise<any> =>
     const request =
     {
         method:'POST',
-        headers: {'Content-Type': 'application/json',},
+        headers: authHeader(),
         body:JSON.stringify(body)      
     };
     await fetch('https://localhost:44381/api/Category',request)
@@ -48,7 +50,7 @@ export const deleteCategory = async (id:string | undefined) : Promise<any>=>
     const request = 
     {
         method: 'DELETE',
-        headers: {'Content-Type': 'application/json',}
+        headers: authHeader()
     }
        await fetch(`https://localhost:44381/api/Category/${id}`,request)
       .then(response =>{
@@ -67,7 +69,7 @@ export const UpdateCategory = async(body:CategoryModel,id:string | undefined): P
     const request =
     {
         method:'PUT',
-        headers: {'Content-Type': 'application/json',},
+        headers: authHeader(),
         body:JSON.stringify(body)
     };
     await fetch(`https://localhost:44381/api/Category/${id}`,request)
@@ -87,7 +89,7 @@ export const countCategory = async(searchterm:string, letter:string) =>
     const request =
     {
         method:'GET',
-        headers: {'Content-Type': 'application/json',}
+        headers: authHeader()
     };
 
 
@@ -116,10 +118,8 @@ export const getCategoriesList = async(): Promise<CategoryModel[]> =>
     const response: CategoryModel[] = []
         await fetch(`https://localhost:44381/api/Category/`, {
             method: 'GET',
-            headers: {'Content-Type': 'application/json',},
+            headers: authHeader()
         }).then(cl => cl.json()).then(cl => cl.map((c: CategoryModel) => response.push(c)))
         return response;
 } 
-
-
 

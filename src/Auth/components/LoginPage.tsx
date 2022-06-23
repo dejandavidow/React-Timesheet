@@ -12,7 +12,7 @@ const LoginPage = () => {
        Auth({username,password}).then(() =>
       {
         navigate('/timesheets')
-      })
+      })   
     }
   return (
     <div className='container'>

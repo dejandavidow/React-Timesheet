@@ -10,6 +10,7 @@ import { getProjectList } from '../../projects/service/project-service';
 import { SearchOutlined } from '@ant-design/icons';
 import { getFilteredTimeSheets, getPageCount } from '../../timesheet/service/timesheet-service';
 import { TsModel } from '../../timesheet/model/TsModel';
+import { ReportModel } from '../../timesheet/model/ReportModel';
 const { Option } = Select;
 type TsProps ={
   setcategoryId: (c:string) => void,
@@ -22,7 +23,7 @@ type TsProps ={
   categoryId:string,
   projectId:string,
   clientId:string,
-  setTimeSheets:(c:TsModel[]) => void
+  setTimeSheets:(c:ReportModel[]) => void
   pageSize:number,
   pageNumber:number,
   setpageCount:(c:number) => void,

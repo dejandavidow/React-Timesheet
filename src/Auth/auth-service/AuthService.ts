@@ -22,16 +22,17 @@ export const Auth = async (body:LoginModel) =>
     }
   })
 }
-export const authHeader = () => {
-  // const user = JSON.parse(localStorage.getItem('user') || "");
-  // if (user && user.accessToken) {
-  //   return `Authorization:Bearer ${user.accessToken}`;
-  // } else {
-  //   return {};
-  // }
+export const authHeader = () : HeadersInit | undefined=> {
+  const userStr = localStorage.getItem("user");
+  let user = null;
+  if (userStr)
+    user = JSON.parse(userStr);
+  if (user && user.accessToken) {
+    return  {Authorization:'Bearer'+' '+user.accessToken,'Content-Type':'application/json'};
+  } else {
+    return {'Content-Type':'application/json'};
   }
-
-
+}
   export const logout =() =>
   {
     localStorage.removeItem('user')

@@ -19,7 +19,7 @@ const CategoryHeader = ({setNewCategoryCreated,searchTerm,setSearchTerm,setLette
   }
   const handleShow = () => setShow(true);
   const [name,setName] = useState("");
-  const CreateCategoryHandler = (event : React.FormEvent<HTMLFormElement> & React.MouseEvent<HTMLButtonElement> & React.BaseSyntheticEvent<any>) =>
+  const CreateCategoryHandler = (event : React.MouseEvent<HTMLButtonElement>) =>
   {
     const request :CategoryModel=
     {
@@ -32,9 +32,11 @@ const CategoryHeader = ({setNewCategoryCreated,searchTerm,setSearchTerm,setLette
       event.stopPropagation();
       event.preventDefault();
     }
+    else{
     setValidated(true);
     PostCategory(request);
     setNewCategoryCreated(true);
+    }
   }
   return (
     <div>
@@ -46,7 +48,7 @@ const CategoryHeader = ({setNewCategoryCreated,searchTerm,setSearchTerm,setLette
     <Modal.Title>Create new Category</Modal.Title>
     </Modal.Header>
     <Modal.Body>
-    <Form noValidate validated={validated}>
+    <Form validated={validated}>
           <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
           <Form.Label>Name:</Form.Label>
           <Form.Control required type="text" value={name} onChange={(e : ChangeEvent<HTMLInputElement>) => setName(e.target.value)}/>
