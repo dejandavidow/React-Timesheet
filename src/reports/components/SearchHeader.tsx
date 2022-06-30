@@ -9,8 +9,9 @@ import { getClientList } from '../../clients/service/client.service';
 import { getProjectList } from '../../projects/service/project-service';
 import { SearchOutlined } from '@ant-design/icons';
 import { getFilteredTimeSheets, getPageCount } from '../../timesheet/service/timesheet-service';
-import { TsModel } from '../../timesheet/model/TsModel';
 import { ReportModel } from '../../timesheet/model/ReportModel';
+import { MemberModel } from '../../members/model/MemberModel';
+import { getMembers } from '../../members/service/member-service';
 const { Option } = Select;
 type TsProps ={
   setcategoryId: (c:string) => void,
@@ -28,12 +29,14 @@ type TsProps ={
   pageNumber:number,
   setpageCount:(c:number) => void,
   setreFetch :(c:boolean) => void
+  setmemberId :(c:string) => void,
 }
-const SearchHeader = ({setcategoryId,setprojectId,setclientId,setStartDate,setEndDate,startDate,endDate,clientId,projectId,categoryId,setTimeSheets,pageNumber,pageSize,setpageCount,setreFetch}:TsProps) => {
+const SearchHeader = ({setcategoryId,setprojectId,setclientId,setStartDate,setEndDate,startDate,endDate,clientId,projectId,categoryId,setTimeSheets,pageNumber,pageSize,setpageCount,setreFetch,setmemberId}:TsProps) => {
   const [form] = Form.useForm();
   const [categories,setCategories] = useState<CategoryModel[]>([]);
   const [clients,setClients] = useState<ClientModel[]>([]);
   const [projects,setProjects] = useState<ProjectModel[]>([]);;
+  const [members,setMembers] = useState<MemberModel[]>([]);
   const getCategoriesHandler = () =>
   {
     getCategoriesList().then(data => setCategories(data))
@@ -45,6 +48,10 @@ const SearchHeader = ({setcategoryId,setprojectId,setclientId,setStartDate,setEn
   const getProjectsHandler = () =>
   {
     getProjectList().then(data => setProjects(data))
+  }
+  const getMembersHandler = () =>
+  {
+   getMembers().then(data => setMembers(data))
   }
   const handleStartPick: DatePickerProps['onChange'] = (date, dateString) => {
     setStartDate(dateString)
@@ -59,13 +66,13 @@ const SearchHeader = ({setcategoryId,setprojectId,setclientId,setStartDate,setEn
   }
   const ResetHandler = () =>
   {
-    setreFetch(true)
     form.resetFields();
     setcategoryId("")
     setclientId("")
     setprojectId("")
     setStartDate("")
     setEndDate("")
+    setreFetch(true)
   }
   return (
     <>
@@ -76,11 +83,14 @@ const SearchHeader = ({setcategoryId,setprojectId,setclientId,setStartDate,setEn
                     <Input.Group compact>
                   <Form.Item name="member" label="Member"  style={{width:350}} className='margins'>
                   <Select
+                  onClick={getMembersHandler}
                     placeholder="Select team member"
                     allowClear
-                    
+                    onChange={(value) => setmemberId(value)}
                   > 
-                    <Option key='2'>asd</Option>
+                    {members.map((member) =>
+                    <Option key={member.id} value={member.id}>{member.name}</Option>
+                    )}
                   </Select>
                 </Form.Item>
                 <Form.Item name="client" label="Client"  style={{width:350}} className='margins'>

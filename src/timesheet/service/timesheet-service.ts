@@ -2,7 +2,6 @@
 import { authHeader } from "../../Auth/auth-service/AuthService";
 import { ReportModel } from "../model/ReportModel";
 import { TsModel } from "../model/TsModel"
-
 export const getPageCount = async (startDate:string,endDate:string,categoryId:string,projectId:string,clientId:string,pageNumber:number,pageSize:number) :Promise<any> =>
 {
  var response : number = await fetch(`https://localhost:44381/api/TimeSheet/filters-count?FilterStart=${startDate}&FilterEnd=${endDate}&ClientId=${clientId}&ProjectId=${projectId}&CategoryId=${categoryId}&PageNumber=${pageNumber}&PageSize=${pageSize}`,{
@@ -21,6 +20,15 @@ export const getTimeSheets = async (start:string,end:string) : Promise<TsModel[]
         return response;
 }
 export const getFilteredTimeSheets = async (startDate:string,endDate:string,categoryId:string,projectId:string,clientId:string,pageNumber:number,pageSize:number) : Promise<ReportModel[]> =>
+{
+    const response: ReportModel[] = []
+    await fetch(`https://localhost:44381/api/TimeSheet/filters?FilterStart=${startDate}&FilterEnd=${endDate}&ClientId=${clientId}&ProjectId=${projectId}&CategoryId=${categoryId}&PageNumber=${pageNumber}&PageSize=${pageSize}`, {
+        method: 'GET',
+        headers: authHeader(),
+    }).then(cl => cl.json()).then(cl => cl.map((c: ReportModel) => response.push(c)))
+    return response;
+}
+export const onLoadFilteredTimeSheets = async (startDate:string,endDate:string,categoryId:string,projectId:string,clientId:string,pageNumber:number,pageSize:number) : Promise<ReportModel[]> =>
 {
     const response: ReportModel[] = []
     await fetch(`https://localhost:44381/api/TimeSheet/filters?FilterStart=${startDate}&FilterEnd=${endDate}&ClientId=${clientId}&ProjectId=${projectId}&CategoryId=${categoryId}&PageNumber=${pageNumber}&PageSize=${pageSize}`, {

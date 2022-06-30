@@ -32,7 +32,7 @@ const CategoryList = (props:CategoryListProps) => {
     props.setNewCategoryCreated(false);
     props.setcategoryDeleted(false);
     props.setcategoryUpdated(false);
-}, [props.newcategoryCreated, props.searchTerm,props.categoryDeleted,props.categoryUpdated,pageNumber,pageCount, props.letter])
+}, [props.newcategoryCreated, props.searchTerm,props.categoryDeleted,props.categoryUpdated,pageNumber,pageCount, props.letter,categories.length])
 const handlePageClick = (e:{selected: number}) =>
 {
 setPageNumber(e.selected+1);

@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react'
-import { getFilteredTimeSheets, getPageCount} from '../../timesheet/service/timesheet-service'
+import { getFilteredTimeSheets, getPageCount, onLoadFilteredTimeSheets} from '../../timesheet/service/timesheet-service'
 import SearchHeader from './SearchHeader'
 import Header from '../../Header';
 import { ReportModel } from '../../timesheet/model/ReportModel';
@@ -11,17 +11,19 @@ const Reports = () => {
   const [categoryId,setcategoryId] = useState("");
   const [clientId,setclientId] = useState("");
   const [projectId,setprojectId] = useState("");
+  const [memberId,setmemberId] = useState("");
   const [startDate,setStartDate] =useState("");
   const [endDate,setEndDate] =useState("");
   const [pageNumber,setPageNumber] = useState(1);
   const [pageSize,setPageSize] = useState(5);
   const [pageCount,setpageCount] = useState<number>(0)
   const [reFetch,setreFetch] = useState(false);
-
+  const [totalHours,setTotalHours] = useState(0)
   useEffect(() => {
-   getFilteredTimeSheets(startDate,endDate,categoryId,projectId,clientId,pageNumber,pageSize).then(data => setTimeSheets(data));
-   getPageCount(startDate,endDate,categoryId,projectId,clientId,pageNumber,pageSize).then(data => setpageCount(data));  
-  }, [pageNumber,pageCount,reFetch])
+   onLoadFilteredTimeSheets(startDate,endDate,categoryId,projectId,clientId,pageNumber,pageSize).then(data => setTimeSheets(data));
+   getPageCount(startDate,endDate,categoryId,projectId,clientId,pageNumber,pageSize).then(data => setpageCount(data));
+   totalTimeHandler()  
+  }, [pageNumber,pageCount,reFetch,timesheets.length])
   const onChange: PaginationProps['onChange'] = pageNumber => {
     setPageNumber(pageNumber);
   };
@@ -57,6 +59,18 @@ const Reports = () => {
       key: 'time',
     }
   ];
+  const totalTimeHandler = () =>{
+      const timearray : number[]= []
+      {timesheets.map((ts) =>
+        {
+          timearray.push(Number(ts.time))
+        }
+        )}
+      var sum = timearray.reduce(function(a, b){
+          return a + b;
+      }, 0);
+      setTotalHours(sum)
+    }
   return (
     <>
     <Header/>
@@ -77,36 +91,12 @@ const Reports = () => {
     pageSize={pageSize}
     setpageCount={setpageCount}
     setreFetch={setreFetch}
+    setmemberId={setmemberId}
     />
     <Table dataSource={timesheets} columns={columns} pagination={{position:['bottomCenter'],onChange:onChange,total:pageCount,pageSize:pageSize}}/>
-    {/* <Table striped bordered hover>
-      <thead>s
-        <tr>
-          <th>Date</th>
-          <th>Member</th>
-          <th>Project</th>
-          <th>Category</th>
-          <th>Description</th>
-          <th>Time</th>
-        </tr>
-      </thead>
-      <tbody>
-       {timesheets.map((ts) =>
-       
-        <tr>
-          <td>{ts.date}</td>
-          <td>{ts.projectDTO.memberDTO.name}</td>
-          <td>{ts.projectDTO.projectName}</td>
-          <td>{ts.categoryDTO.name}</td>
-          <td>{ts.description}</td>
-          <td>{ts.time}</td>
-        </tr>
-       )}
-      </tbody>
-    </Table> */}
     <div className="container totalhours">
         <p>
-          Reports Total:<span style={{ color: "darkorange" }}>{0}</span>
+          Reports Total:<span style={{ color: "darkorange" }}>{totalHours}</span>
           {}
         </p>
       </div>

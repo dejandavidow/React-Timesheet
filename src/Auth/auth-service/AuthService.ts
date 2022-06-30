@@ -1,14 +1,14 @@
 
 import { LoginModel } from "../model/LoginModel";
-export const Auth = async (body:LoginModel) =>
+export const Auth = async (body:LoginModel)=>
 {
-    const request =
+    await fetch('https://localhost:44381/api/Member/login',
     {
-        method:'POST',
-        headers: {'Content-Type': 'application/json'},
-        body:JSON.stringify(body)
-    };
-    await fetch('https://localhost:44381/api/Member/login',request)
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      credentials:'include',
+      body:JSON.stringify(body)
+    })
   .then(response => response.json())
   .then((response) =>
   {
@@ -33,7 +33,12 @@ export const authHeader = () : HeadersInit | undefined=> {
     return {'Content-Type':'application/json'};
   }
 }
-  export const logout =() =>
+  export const logout = async () =>
   {
-    localStorage.removeItem('user')
+    await fetch('https://localhost:44381/api/Member/logout',
+    {
+      method:'post',
+      headers:{'Content-Type':'application/json'}
+    }
+    ).then(res => res.json()).then(x => localStorage.removeItem('user'))
   }

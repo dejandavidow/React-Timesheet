@@ -1,5 +1,5 @@
-import React, { ChangeEvent, useState } from 'react';
-import { Button, Form, Modal } from 'react-bootstrap'
+import { Button, Form, Input, Modal } from 'antd';
+import React, { useState } from 'react';
 import { PostCategory } from '../category-service/category.service';
 import { CategoryModel } from '../model/CategoryModel';
 type CategoryHeaderProps = {
@@ -10,65 +10,53 @@ type CategoryHeaderProps = {
 }
 
 const CategoryHeader = ({setNewCategoryCreated,searchTerm,setSearchTerm,setLetter}:CategoryHeaderProps) => {
-  const [validated, setValidated] = useState(false);
-  const [show, setShow] = useState(false);
-  const handleClose = () => {
-    setValidated(false);
-    setName('');
-    setShow(false);
-  }
-  const handleShow = () => setShow(true);
+  const [form] = Form.useForm();
+  const [visible, setVisible] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
   const [name,setName] = useState("");
-  const CreateCategoryHandler = (event : React.MouseEvent<HTMLButtonElement>) =>
+  const showModal = () => {
+    setVisible(true);
+  }
+
+  const handleCancel = () => {
+    form.resetFields();
+    setVisible(false);
+  };
+  const CreateCategoryHandler = () =>
   {
-    const request :CategoryModel=
+    PostCategory({id:undefined,name})
+    setConfirmLoading(true)
+    setTimeout(() =>
     {
-      id:undefined,
-      name
-    }
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) 
-    {
-      event.stopPropagation();
-      event.preventDefault();
-    }
-    else{
-    setValidated(true);
-    PostCategory(request);
-    setNewCategoryCreated(true);
-    }
+      setNewCategoryCreated(true)
+      setVisible(false)
+      setConfirmLoading(false)
+    },1000)
+    form.resetFields()
   }
   return (
     <div>
          <>
       <h2>Categories</h2>
       <hr></hr>
-      <Modal show={show} onHide={handleClose}>
-    <Modal.Header closeButton>
-    <Modal.Title>Create new Category</Modal.Title>
-    </Modal.Header>
-    <Modal.Body>
-    <Form validated={validated}>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-          <Form.Label>Name:</Form.Label>
-          <Form.Control required type="text" value={name} onChange={(e : ChangeEvent<HTMLInputElement>) => setName(e.target.value)}/>
-          <Form.Control.Feedback type="invalid">
-            Please enter category name
-          </Form.Control.Feedback>
-          </Form.Group>
-    </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          Close
-        </Button>
-        <Button variant="primary" onClick={CreateCategoryHandler}>
-          Create Category
-        </Button>
-      </Modal.Footer>
-    </Modal>
+      <Modal
+        title="Create New Category"
+        visible={visible}
+        confirmLoading={confirmLoading}
+        footer={false}
+        keyboard={true}
+        closable={false}
+      >
+       <Form onFinish={CreateCategoryHandler} form={form} autoComplete='off'>
+       <Form.Item name={"Name"} label="Category Name" rules={[{ required: true,min:3 }]}>
+        <Input onChange={(value) => setName(value.target.value)} value={name}/>
+      </Form.Item>
+      <Button htmlType='submit' type='primary'>Create</Button>
+      <Button onClick={handleCancel} style={{marginLeft:"1vh"}}>Cancel</Button>
+       </Form>
+      </Modal>
     <div className='pozadina'>
-    <button className='dugme' onClick={handleShow}>Create new Category</button>
+    <button className='dugme' onClick={showModal}>Create new Category</button>
     <input type='search' className='searchinput' placeholder='Search' value={searchTerm} onChange={(e) => {setSearchTerm(e.target.value);setLetter('')}}></input>
     </div>
     </>

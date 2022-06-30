@@ -1,15 +1,14 @@
 import React, {ChangeEvent, useEffect, useState } from "react";
 import "antd/dist/antd.css";
-import { getTimeSheets, PostTimeSheet } from "../service/timesheet-service";
+import {getTimeSheets, PostTimeSheet } from "../service/timesheet-service";
 import { TsModel } from "../model/TsModel";
-import FullCalendar, {DateSelectArg,DatesSetArg,EventAddArg,EventChangeArg,EventContentArg, EventMountArg, EventSourceApi, ViewMountArg} from "@fullcalendar/react";
+import FullCalendar, {DateSelectArg,DatesSetArg, EventContentArg, ViewMountArg} from "@fullcalendar/react";
 import bootstrap5Plugin from '@fullcalendar/bootstrap5';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from '@fullcalendar/interaction';
-import listPlugin, { NoEventsContentArg } from '@fullcalendar/list';
+import listPlugin from '@fullcalendar/list';
 import "./style.css";
-import { Modal, Form, Button } from "react-bootstrap";
 import { ClientModel } from "../../clients/model/clientModel";
 import { CategoryModel } from "../../categories/model/CategoryModel";
 import { getCategoriesList } from "../../categories/category-service/category.service";
@@ -17,10 +16,11 @@ import { getClientList } from "../../clients/service/client.service";
 import { ProjectModel } from "../../projects/model/ProjectModel";
 import { getProjectList } from "../../projects/service/project-service";
 import Header from "../../Header";
+import { Button, Form, Input, Modal, Select } from "antd";
+const { Option } = Select;
 const TimeSheet = React.memo(() => {
-  const [timesheets, setTimeSheets] = useState<TsModel[]>([]);
-  // const [totalTime, setTotalTime] = useState(0);
-  const [show, setShow] = useState(false);
+  const [form] = Form.useForm();
+  const [visible, setVisible] = useState(false);
   const [categoryId,setcategoryId] = useState("");
   const [clientId,setclientId] = useState("");
   const [projectId,setprojectId] = useState("");
@@ -29,21 +29,45 @@ const TimeSheet = React.memo(() => {
   const [projects,setProjects] = useState<ProjectModel[]>([]);
   const [description,setDescription] = useState("");
   const [time,setTime] = useState("");
-  const [overTime,setoverTime] = useState("");
+  const [overTime,setoverTime] = useState(0);
   const [date,setDate] = useState("");
-  const [validated, setValidated] = useState(false);
   const [tsCreated,settsCreated] = useState(false)
-  const [start,setStart] = useState("2022-06-10");
-  const [end,setEnd] = useState("2022-06-30");
+  const [start,setStart] = useState("");
+  const [end,setEnd] = useState("");
+  const [timesheets,setTimeSheets] = useState<TsModel[]>([]);
+  const [load,setLoad] = useState(false);
+  const [total,setTotal] = useState(0);
   useEffect(() => {
-    getTimeSheets(start,end).then(data => setTimeSheets(data))
-  }, [tsCreated])
-  const handleClose = () => {
-    setValidated(false);
-    setShow(false);
+    setTotal(totalTimeHandler());
+      if(load)
+      {
+        getTimeSheets(start,end).then(data => setTimeSheets(data))
+      }
+      return       
+  }, [start,end,tsCreated,timesheets.length])
+  const totalTimeHandler = () =>{
+    const timearray : number[]= []
+    {timesheets.map((ts) =>
+      {
+        timearray.push(Number(ts.time))
+      }
+      )}
+    var sum = timearray.reduce(function(a, b){
+        return a + b;
+    }, 0);
+    return sum;
+  }
+  const handleRangeChange = (arg:DatesSetArg) =>
+  {
+    setStart(arg.view.activeStart.toDateString())
+    setEnd(arg.view.activeEnd.toDateString())
+  }
+  const handleMountView = (e:ViewMountArg) =>
+  {
+    setLoad(true);
   }
   const handleShow = () =>{
-     setShow(true);
+    setVisible(true);
   }
     const renderEventContent = (e: EventContentArg) => {
       return (
@@ -57,18 +81,9 @@ const TimeSheet = React.memo(() => {
         setDate(date)
         handleShow()
     }
-    const handlePost = (event : React.FormEvent<HTMLFormElement> & React.MouseEvent<HTMLButtonElement> & React.BaseSyntheticEvent) =>
+    const handlePost = () =>
     {
-      const form = event.currentTarget;
-    if (form.checkValidity() === false) 
-    {
-      setValidated(true);
-      event.preventDefault();
-      event.stopPropagation();
-    }
-      setValidated(true);
-      const request :TsModel=
-      {
+      const post : TsModel = {
         id:undefined,
         description,
         time,
@@ -78,8 +93,13 @@ const TimeSheet = React.memo(() => {
         projectId,
         categoryId
       }
-        settsCreated(true);
-      PostTimeSheet(request);
+      PostTimeSheet(post)
+      setTimeout(() =>
+      {
+        settsCreated(true)
+        setVisible(false)
+      },1000)
+      form.resetFields()
     }
     const getCategoriesHandler = () =>
     {
@@ -93,18 +113,10 @@ const TimeSheet = React.memo(() => {
     {
       getProjectList().then(data => setProjects(data))
     }
-    // const totalTimeHandler = () =>{
-    //   const timearray : number[]= []
-    //   {timesheets.map((ts) =>
-    //     {
-    //       timearray.push(Number(ts.time))
-    //     }
-    //     )}
-    //   var sum = timearray.reduce(function(a, b){
-    //       return a + b;
-    //   }, 0);
-    //   setTotalTime(sum)
-    // }
+    const handleCancel = () => {
+      form.resetFields();
+      setVisible(false);
+    }
   return <>
   <Header/>
   <div className="container bgcolor">
@@ -126,7 +138,7 @@ const TimeSheet = React.memo(() => {
           left:'dayGridMonth',
           right:'listWeek'
         }}
-        events={{events:timesheets,}}
+        events={timesheets}
         eventContent={renderEventContent}
         select={handleDateSelect}
         height={600}
@@ -136,82 +148,74 @@ const TimeSheet = React.memo(() => {
         hiddenDays={[6]}
         defaultAllDay={true}
         eventDisplay='list-item'
+        showNonCurrentDates={false}
+        datesSet={handleRangeChange}
+        viewDidMount={handleMountView}
       />
       <div className="container totalhours">
         <p>
-          Total Hours:<span style={{ color: "darkorange" }}>0</span>
+          Total Hours:<span style={{ color: "darkorange" }}>{total}</span>
         </p>
       </div>
       </>
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Create new TimeSheet</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form noValidate validated={validated}>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>Description:</Form.Label>
-              <Form.Control 
-              type="text"
-              value={description}
-              onChange={(e:React.ChangeEvent<HTMLInputElement>) => setDescription(e.target.value)}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>Time:</Form.Label>
-              <Form.Control
-              required 
-              type="text"
-              value={time}
-              onChange={(e:React.ChangeEvent<HTMLInputElement>) => setTime(e.target.value)}
-              />
-              <Form.Control.Feedback type='invalid'>This field is required</Form.Control.Feedback>
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>Over Time:</Form.Label>
-              <Form.Control 
-              type="text"
-              value={overTime}
-              onChange={(e:React.ChangeEvent<HTMLInputElement>) => setoverTime(e.target.value)}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label>Select category</Form.Label>
-            <Form.Select required onClick={getCategoriesHandler} aria-label="Default select example" value={categoryId} onChange={(e : ChangeEvent<HTMLSelectElement>) => setcategoryId(e.target.value)}>
-            <option>Open to select category</option>
-            {categories.map((category) =>
-            <option value={category.id}>{category.name}</option>
-            )}
-            </Form.Select>
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label>Select client</Form.Label>
-            <Form.Select required onClick={getClientsHandler} aria-label="Default select example" value={clientId} onChange={(e : ChangeEvent<HTMLSelectElement>) => setclientId(e.target.value)}>
-            <option>Open to select client</option>
-            {clients.map((client) =>
-            <option value={client.id}>{client.clientName}</option>
-            )}
-            </Form.Select>
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label>Select Project</Form.Label>
-            <Form.Select required onClick={getProjectsHandler} aria-label="Default select example" value={projectId} onChange={(e : ChangeEvent<HTMLSelectElement>) => setprojectId(e.target.value)}>
-            <option>Open to select project</option>
-            {projects.map((project) =>
-            <option value={project.id}>{project.projectName}</option>
-            )}
-            </Form.Select>
-            </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handlePost}>Create TimeSheet</Button>
-        </Modal.Footer>
-      </Modal>
     </div>
+    <Modal
+        title="Create New Category"
+        visible={visible}
+        footer={false}
+        keyboard={true}
+        closable={false}
+      >
+       <Form onFinish={handlePost} form={form} autoComplete='off'>
+          <Input.Group compact>
+                <Form.Item name="Client" label="Client"  style={{width:350}} className='margins' rules={[{required:true}]}>
+                  <Select
+                    placeholder="Select client"
+                    onClick={getClientsHandler}
+                    onChange={(value) => setclientId(value)}
+                  >
+                    {clients.map((client) =>
+                    <Option key={client.id} value={client.id}>{client.clientName}</Option>
+                    )}
+                  </Select>
+                </Form.Item>
+                <Form.Item name="Category" label="Category" style={{width:350}} className='margins' rules={[{required:true}]}>
+                  <Select
+                    placeholder="Select category"
+                    onClick={getCategoriesHandler}
+                    onChange={(value) => setcategoryId(value)}
+                  >
+                    {categories.map((category) =>
+                    <Option key={category.id} value={category.id}>{category.name}</Option>
+                    )}
+                  </Select>
+                </Form.Item>
+                <Form.Item name="Project" label="Project" style={{width:350}} className='margins' rules={[{required:true}]}>
+                  <Select
+                    placeholder="Select project"
+                    onClick={getProjectsHandler}
+                    onChange={(value) => setprojectId(value)}
+                  >
+                    {projects.map((project) =>
+                    <Option key={project.id} value={project.id}>{project.projectName}</Option>
+                    )}
+                  </Select>
+                </Form.Item>
+                </Input.Group>
+                    <Form.Item name={"Hours"} label="Hours" rules={[{ required: true }]}>
+                             <Input onChange={(value) => setTime(value.target.value)} value={time} style={{width:"250px"}}/>
+                    </Form.Item>
+                    <Form.Item name={"Overhours"} label="Over Hours">
+                             <Input onChange={(value) => setoverTime(Number(value.target.value))} value={overTime} style={{width:"250px"}}/>
+                    </Form.Item>
+                    <Form.Item name={"Description"} label="Description">
+                             <Input onChange={(value) => setDescription(value.target.value)} value={description} style={{width:"250px"}}/>
+                    </Form.Item>
+      <Button htmlType='submit' type='primary'>Create</Button>
+      <Button onClick={handleCancel} style={{marginLeft:"1vh"}}>Cancel</Button>
+       </Form>
+      </Modal>
     </>
+    
 });
 export default TimeSheet

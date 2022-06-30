@@ -7,7 +7,7 @@ export const getCategories = async(searchterm: string, filterLetter: string, pag
     if(searchterm === '' && filterLetter === ''){
         await fetch(`https://localhost:44381/api/Category/?PageNumber=${pagenumber}&PageSize=${pagesize}`, {
             method: 'GET',
-            headers: authHeader()
+            headers:authHeader()
         }).then(cl => cl.json()).then(cl => cl.map((c: CategoryModel) => response.push(c)))
     }
     else if(searchterm !== '' && filterLetter === ''){

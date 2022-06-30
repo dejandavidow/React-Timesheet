@@ -1,6 +1,7 @@
 import React, { FormEventHandler, useEffect, useState } from 'react'
 import { Button, Form, FormGroup, ListGroup, Modal, Overlay, OverlayTrigger, Popover } from 'react-bootstrap'
 import ReactPaginate from 'react-paginate'
+import { useNavigate } from 'react-router-dom'
 import { MemberModel } from '../model/MemberModel'
 import { countCategory, getCategories, UpdateCategory } from '../service/member-service'
 import OneMember from './OneMember'
@@ -17,6 +18,7 @@ type ClientListProps = {
     setLetter: (l:string) => void
   }
 const MemberList = (props: ClientListProps) => {
+  const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const handleShow = () => setShow(true);
   const handleClose = () =>{
@@ -24,19 +26,12 @@ const MemberList = (props: ClientListProps) => {
     setShow(false);
   }
 
-
-  const [show2,setShow2] = useState(false);
-  const handleClose2 = () => setShow2(false);
-  const handleShow2 = () => setShow2(true);
-
-
   const [members, setMembers] = useState<MemberModel[]>([]);
   const [childClient,setChildClient] = useState<MemberModel>(new MemberModel('', '', '', '', '', '','',''));
   const [validated, setValidated] = useState(false);
   const [pageCount,setpageCount] = useState<number>(0);
   const [pageNumber,setPageNumber] = useState(1);
   const [pageSize,setPageSize] = useState(5);
-  const [password,setPassword] = useState("");
   useEffect(() => {
     getCategories(props.searchTerm, props.letter, pageNumber,pageSize).then(data => setMembers(data));
     countCategory(props.searchTerm, props.letter).then(data => setpageCount(Math.ceil(data/pageSize)));
@@ -79,6 +74,10 @@ const handleFilter = (event: React.MouseEvent<HTMLButtonElement>) =>
   props.setSearchTerm('')
   const button: HTMLButtonElement = event.currentTarget;
   props.setLetter(button.value);
+}
+const HandleClick = () =>
+{
+  navigate("/reset-password")
 }
  return (
     <>
@@ -187,26 +186,13 @@ const handleFilter = (event: React.MouseEvent<HTMLButtonElement>) =>
             
             />
             </Form.Group>
-            <Modal show={show2}>
-          <Modal.Body>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label>New Password:</Form.Label>
-            <Form.Control type="password" value={childClient?.password} name="password" onChange={handleChange} minLength={3}/>
-          </Form.Group>
-          </Modal.Body>
-          <Modal.Footer>
-          <Button variant="primary" onClick={handleClose2}>
-            Confirm
-          </Button>
-          </Modal.Footer>
-        </Modal>
       </Form>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant='danger' onClick={handleShow2}>New Password</Button>
+          <Button variant='danger' onClick={HandleClick}>Reset Password</Button>
           <Button onClick={updateClientHandler} variant="warning">
             Save Changes
           </Button>

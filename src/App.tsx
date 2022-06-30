@@ -1,23 +1,21 @@
-
-import { useEffect, useState } from 'react';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import './App.css'
 import LoginPage from './Auth/components/LoginPage';
 import ProtectedRoute from './Auth/components/ProtectedRoute';
 import Category from './categories/components/Category';
 import Client from './clients/components/Client';
-import Header from './Header';
 import Member from './members/components/Member';
+import PasswordReset from './members/Reset-Password/PasswordReset';
 import Project from './projects/componets/Project';
 import Reports from './reports/components/Reports';
 import TimeSheet from './timesheet/components/TimeSheet';
 function App() {
   return (
-    <>
+    <BrowserRouter>
     <Routes>
-      <Route index element={<LoginPage/>}/>
+        <Route index element={<LoginPage/>}/>
         <Route path='/login' element={<LoginPage/>}/>
-        <Route path="/timesheets" element={
+        <Route path="/timesheets" element={ 
           <ProtectedRoute>
               <TimeSheet/>
           </ProtectedRoute>
@@ -38,7 +36,7 @@ function App() {
                 </ProtectedRoute>
         }/>
         <Route path="/members" element={
-                <ProtectedRoute >
+                <ProtectedRoute>
                 <Member/>
               </ProtectedRoute>
         }/>
@@ -47,8 +45,13 @@ function App() {
               <Reports/>
             </ProtectedRoute>
         }/>
+         <Route path="/reset-password" element={
+              <ProtectedRoute>
+             <PasswordReset/>
+            </ProtectedRoute>
+        }/>
       </Routes>
-      </>
+      </BrowserRouter>
   )
 }
 
