@@ -12,7 +12,7 @@ import Reports from './reports/components/Reports';
 import TimeSheet from './timesheet/components/TimeSheet';
 function App() {
   return (
-    <BrowserRouter>
+    <>
     <Routes>
         <Route index element={<LoginPage/>}/>
         <Route path='/login' element={<LoginPage/>}/>
@@ -52,7 +52,7 @@ function App() {
             </ProtectedRoute>
         }/>
       </Routes>
-      </BrowserRouter>
+      </>
   )
 }
 

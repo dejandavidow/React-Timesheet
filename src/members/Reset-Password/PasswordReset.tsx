@@ -1,81 +1,127 @@
 import { Alert, Button, Form, Input } from 'antd'
 import React, { useState } from 'react'
-import {Outlet, useNavigate} from 'react-router-dom'
+import { useNavigate} from 'react-router-dom'
+import { MemberModel } from '../model/MemberModel'
+import { changePasswordAsync, getMemberbyEmail } from '../service/member-service'
 const ResetPassword = () => {
     const [password,setPassword] = useState("")
     const [conpassword,setconPassword] = useState("")
     const [email,setEmail] = useState("")
     const [form] = Form.useForm();
+    const [form2] = Form.useForm();
     const [valid,setValid] = useState(false)
+    const [userEmail,setUserEmail] = useState<MemberModel | undefined>(undefined)
+    const [checked,setChecked] = useState(false)
+    const [changed,setChanged] = useState(false)
+    const [success,setSuccess] = useState(true)
     const navigate = useNavigate();
-    const handlePassword = () =>
+    const changePassword = () =>
     {
+      setValid(false)
       if(password !== conpassword)
       {
-        setValid(true)
         form.resetFields()
+        return setValid(true)
       }
-  
+      setValid(false)
+      changePasswordAsync(userEmail?.email,password)
+      form.resetFields()
+      setChanged(true)
     }
     const handleCheckEmail = () =>
     {
-
+    getMemberbyEmail(email).then(data => {
+      setUserEmail(data)
+      if(data.email)
+      {
+        setChecked(true)
+        setSuccess(false)
+      }
     }
-    const layout = {
-      labelCol: { span: 8 },
-      wrapperCol: { span: 16 },
-    };
+      )
+    }
     
-    /* eslint-disable no-template-curly-in-string */
-    const validateMessages = {
-      required: '${label} is required!',
-      types: {
-        email: '${label} is not a valid email!',
-        number: '${label} is not a valid number!',
-      },
-      number: {
-        range: '${label} must be between ${min} and ${max}',
-      },
-    };
-    /* eslint-enable no-template-curly-in-string */
-
   return ( 
     <div className='container'>
       <br/>
       <br/>
      {
-     valid ? <Alert
+      valid && 
+      <Alert
         message="Error"
         description="Passwords dont match!"
         type="error"
         closable
       />
-      : 
-      null
       }
-
+      {
+      changed && 
+      <Alert
+        message="Success"
+        description="Password successfuly has been changed."
+        type="success"
+        closable
+      />
+      }
         <div className='mx-auto loginform'>
-                    <Form {...layout} name="nest-messages" validateMessages={validateMessages}>
-                  <Form.Item name='email' label="Email" rules={[{ required: true }]}>
-                    <Input />
-                  </Form.Item>
-                  <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
+       {
+        success &&
+          <Form
+            name="basic"
+            labelCol={{ span: 8 }}
+            wrapperCol={{ span: 16 }}
+            form={form2}
+            onFinish={handleCheckEmail}
+            autoComplete='off'
+          >
+            <Form.Item
+            label="Email"
+            name='email'
+            rules={[{required:true}]}
+            >
+              <Input type='email' value={email} onChange={(e) => setEmail(e.target.value)}/>
+            </Form.Item>
+            <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                     <Button type="primary" htmlType="submit">
-                      Check Email
+                      Check email
                     </Button>
                   </Form.Item>
-                  <Form.Item name='password' label="New Password">
-                    <Input.Password/>
+          </Form>
+}
+                { checked &&
+                    <Form
+                  name="basic2"
+                  labelCol={{ span: 8 }}
+                  wrapperCol={{ span: 16 }}
+                  initialValues={{ remember: true }}
+                  onFinish={changePassword}
+                  autoComplete="off"
+                  form={form}
+                >
+                  <Form.Item
+                    label="Password"
+                    name="password"
+                    rules={[{ required: true, message: 'Password is required', }]}
+                  >
+                    <Input.Password value={password} onChange={(e) => setPassword(e.target.value)} />
                   </Form.Item>
-                  <Form.Item name='confirmpassword' label="Confirm Password">
-                    <Input />
+
+                  <Form.Item
+                    label="Confirm password"
+                    name="confirmpassword"
+                    rules={[{ required: true, message: 'Confirm password is required' }]}
+                  >
+                    <Input.Password value={conpassword} onChange={(e) => setconPassword(e.target.value)} />
                   </Form.Item>
-                  <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
+
+
+                  <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                     <Button type="primary" htmlType="submit">
                       Submit
                     </Button>
                   </Form.Item>
                 </Form>
+}
         </div>
         <Button type='link' onClick={() => navigate("/timesheets")}>Back to home</Button>
     </div>

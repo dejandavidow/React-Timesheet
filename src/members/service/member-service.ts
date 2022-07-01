@@ -1,4 +1,5 @@
 
+import { type } from "os"
 import { authHeader } from "../../Auth/auth-service/AuthService"
 import { MemberModel } from "../model/MemberModel"
 import { PasswordResetModel } from "../model/PasswordResetModel"
@@ -124,14 +125,23 @@ export const getMembers = async(): Promise<MemberModel[]> =>
         return response;
 } 
 
-export const changePassword =  async(body:PasswordResetModel) =>
+export const changePasswordAsync =  async(email:string | undefined,password:string) =>
 {
     await fetch('https://localhost:44381/api/Member/change-password',
     {
         method:'PUT',
         headers:authHeader(),
-        body:JSON.stringify(body)
+        body:JSON.stringify({email,password})
     }
     )
 }
-
+export const getMemberbyEmail =  async (email:string) : Promise<MemberModel>=>
+{
+     const response : MemberModel= await fetch(`https://localhost:44381/api/Member/email/${email}`,
+    {
+        method:'GET',
+        headers:authHeader(),
+    }
+    ).then(res => res.json())
+        return response;
+}

@@ -3,13 +3,16 @@ import './index.css';
 import App from './App';
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { BrowserRouter } from 'react-router-dom';
 import Header from './Header';
+import AdminComponent from './AdminComponent';
+import { BrowserRouter } from 'react-router-dom';
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <>
+  <BrowserRouter>
     <App/>
+   </BrowserRouter>
   </>
 );
