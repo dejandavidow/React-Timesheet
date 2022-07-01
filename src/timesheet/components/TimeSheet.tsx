@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "antd/dist/antd.css";
 import {getTimeSheets, PostTimeSheet } from "../service/timesheet-service";
 import { TsModel } from "../model/TsModel";
@@ -69,6 +69,7 @@ const TimeSheet = React.memo(() => {
   const handleShow = () =>{
     setVisible(true);
   }
+
     const renderEventContent = (e: EventContentArg) => {
       return (
         <>
@@ -151,6 +152,7 @@ const TimeSheet = React.memo(() => {
         showNonCurrentDates={false}
         datesSet={handleRangeChange}
         viewDidMount={handleMountView}
+        dayMaxEvents={1}
       />
       <div className="container totalhours">
         <p>

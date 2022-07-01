@@ -1,6 +1,7 @@
 
 import { authHeader } from "../../Auth/auth-service/AuthService"
 import { MemberModel } from "../model/MemberModel"
+import { PasswordResetModel } from "../model/PasswordResetModel"
 
 export const getCategories = async(searchterm: string, filterLetter: string, pagenumber:number,pagesize:number): Promise<MemberModel[]> => {
     const response: MemberModel[] = []
@@ -123,4 +124,14 @@ export const getMembers = async(): Promise<MemberModel[]> =>
         return response;
 } 
 
+export const changePassword =  async(body:PasswordResetModel) =>
+{
+    await fetch('https://localhost:44381/api/Member/change-password',
+    {
+        method:'PUT',
+        headers:authHeader(),
+        body:JSON.stringify(body)
+    }
+    )
+}
 

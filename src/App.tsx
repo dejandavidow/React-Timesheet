@@ -1,4 +1,5 @@
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
+import AdminComponent from './AdminComponent';
 import './App.css'
 import LoginPage from './Auth/components/LoginPage';
 import ProtectedRoute from './Auth/components/ProtectedRoute';
@@ -45,9 +46,9 @@ function App() {
               <Reports/>
             </ProtectedRoute>
         }/>
-         <Route path="/reset-password" element={
+        <Route path="/admin" element={
               <ProtectedRoute>
-             <PasswordReset/>
+             <AdminComponent/>
             </ProtectedRoute>
         }/>
       </Routes>

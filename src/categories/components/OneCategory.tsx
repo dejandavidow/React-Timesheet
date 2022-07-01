@@ -16,7 +16,9 @@ const OneCategory = ({category,childToParent,setcategoryDeleted}:CategoryProps) 
   const deleteHandler = (Id:string | undefined) =>
     {
         deleteCategory(Id);
-        setcategoryDeleted(true);
+        setTimeout(() => {
+          setcategoryDeleted(true);
+        }, 1500);
         
     }
   return (

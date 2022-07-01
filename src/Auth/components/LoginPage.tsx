@@ -7,16 +7,19 @@ const LoginPage = () => {
   const navigate = useNavigate()
     const [username,setUserName] = useState("")
     const [password,setPassword] = useState("")
+    const [error,setError] = useState()
     const handleLogin = () =>
     {
        Auth({username,password}).then(() =>
       {
         navigate('/timesheets')
-      })   
-    }
+      } 
+      );
+  }
   return (
     <div className='container'>
     <div className='mx-auto loginform'>
+      {error}
         <Form
         name="basic"
         labelCol={{ span: 8 }}

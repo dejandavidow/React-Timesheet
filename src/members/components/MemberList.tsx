@@ -1,7 +1,9 @@
+import { Alert } from 'antd'
 import React, { FormEventHandler, useEffect, useState } from 'react'
 import { Button, Form, FormGroup, ListGroup, Modal, Overlay, OverlayTrigger, Popover } from 'react-bootstrap'
 import ReactPaginate from 'react-paginate'
 import { useNavigate } from 'react-router-dom'
+import { getCurrentUser } from '../../Auth/auth-service/AuthService'
 import { MemberModel } from '../model/MemberModel'
 import { countCategory, getCategories, UpdateCategory } from '../service/member-service'
 import OneMember from './OneMember'
@@ -32,6 +34,7 @@ const MemberList = (props: ClientListProps) => {
   const [pageCount,setpageCount] = useState<number>(0);
   const [pageNumber,setPageNumber] = useState(1);
   const [pageSize,setPageSize] = useState(5);
+  const [isAdmin,setIsAdmin] = useState(false)
   useEffect(() => {
     getCategories(props.searchTerm, props.letter, pageNumber,pageSize).then(data => setMembers(data));
     countCategory(props.searchTerm, props.letter).then(data => setpageCount(Math.ceil(data/pageSize)));
@@ -77,10 +80,30 @@ const handleFilter = (event: React.MouseEvent<HTMLButtonElement>) =>
 }
 const HandleClick = () =>
 {
-  navigate("/reset-password")
+  const user = getCurrentUser()
+  if(user.role === 'admin')
+  navigate("/admin")
+  else
+  {
+    handleClose();
+    setTimeout(() => {
+      setIsAdmin(true)
+    }, 500);
+  }
 }
  return (
+  
     <>
+    {
+      isAdmin ?
+    <Alert
+    message="Forbidden"
+    description="Only admins can reset passwords!"
+    type="error"
+    closable
+    />
+    :null
+    }
     <div className='container'>
     <div className="filteri">
         <button type="button" onClick={handleFilter} value="a" className="filter-buttons">A</button>
