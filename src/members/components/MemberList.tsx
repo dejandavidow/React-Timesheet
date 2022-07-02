@@ -29,7 +29,7 @@ const MemberList = (props: ClientListProps) => {
   }
 
   const [members, setMembers] = useState<MemberModel[]>([]);
-  const [childClient,setChildClient] = useState<MemberModel>(new MemberModel('', '', '', '', '', '','',''));
+  const [childClient,setChildClient] = useState<MemberModel>(new MemberModel('', '', '', '', 0, '','',''));
   const [validated, setValidated] = useState(false);
   const [pageCount,setpageCount] = useState<number>(0);
   const [pageNumber,setPageNumber] = useState(1);

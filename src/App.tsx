@@ -6,7 +6,6 @@ import ProtectedRoute from './Auth/components/ProtectedRoute';
 import Category from './categories/components/Category';
 import Client from './clients/components/Client';
 import Member from './members/components/Member';
-import PasswordReset from './members/Reset-Password/PasswordReset';
 import Project from './projects/componets/Project';
 import Reports from './reports/components/Reports';
 import TimeSheet from './timesheet/components/TimeSheet';

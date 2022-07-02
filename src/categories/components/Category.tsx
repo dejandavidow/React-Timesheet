@@ -9,6 +9,7 @@ const Category = () => {
   const [categoryDeleted,setcategoryDeleted] = useState<boolean>(false);
   const [categoryUpdated,setcategoryUpdated] = useState<boolean>(false);
   const [letter,setLetter] = useState("");
+  const [isLoaded, setIsLoaded] = useState(false);
   return (<>
   <Header/>
     <div className='container bgcolor'>
@@ -17,6 +18,7 @@ const Category = () => {
          searchTerm={searchTerm}
          setSearchTerm={setSearchTerm}
          setLetter={setLetter}
+         setIsLoaded={setIsLoaded}
     />
     <CategoryList
     setNewCategoryCreated={setNewCategoryCreated} 
@@ -29,6 +31,8 @@ const Category = () => {
     categoryUpdated={categoryUpdated}
     letter={letter}
     setLetter={setLetter}
+    setIsLoaded={setIsLoaded}
+    isLoaded={isLoaded}
     />
     </div>
     </>

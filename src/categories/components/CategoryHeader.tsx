@@ -1,4 +1,4 @@
-import { Button, Form, Input, Modal } from 'antd';
+import { Button, Form, Input, message, Modal } from 'antd';
 import React, { useState } from 'react';
 import { PostCategory } from '../category-service/category.service';
 import { CategoryModel } from '../model/CategoryModel';
@@ -7,9 +7,11 @@ type CategoryHeaderProps = {
   searchTerm:string,
   setSearchTerm:(src:string) => void,
   setLetter:(l:string) => void
+  setIsLoaded:(c:boolean) => void
+
 }
 
-const CategoryHeader = ({setNewCategoryCreated,searchTerm,setSearchTerm,setLetter}:CategoryHeaderProps) => {
+const CategoryHeader = ({setNewCategoryCreated,searchTerm,setSearchTerm,setLetter,setIsLoaded}:CategoryHeaderProps) => {
   const [form] = Form.useForm();
   const [visible, setVisible] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -24,14 +26,25 @@ const CategoryHeader = ({setNewCategoryCreated,searchTerm,setSearchTerm,setLette
   };
   const CreateCategoryHandler = () =>
   {
-    PostCategory({id:undefined,name})
-    setConfirmLoading(true)
-    setTimeout(() =>
-    {
-      setNewCategoryCreated(true)
-      setVisible(false)
-      setConfirmLoading(false)
-    },1000)
+    PostCategory({id:undefined,name}).then(
+      e =>
+      {
+        if(!e)
+        {
+          setIsLoaded(false)
+        }
+        setNewCategoryCreated(true)
+        setVisible(false)
+        message.success("Category successfully created")
+      }
+    )
+    // setTimeout(() =>
+    // {
+    //   setNewCategoryCreated(true)
+    //   setVisible(false)
+    //   setConfirmLoading(false)
+    //   message.success("Category created!",1)
+    // },500)
     form.resetFields()
   }
   return (

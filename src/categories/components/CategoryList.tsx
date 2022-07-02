@@ -1,3 +1,4 @@
+import { Spin } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { Button, Form, ListGroup, Modal } from 'react-bootstrap'
 import ReactPaginate from 'react-paginate'
@@ -15,19 +16,31 @@ type CategoryListProps = {
   setSearchTerm:(c:string) => void,
   letter: string,
   setLetter: (l:string) => void
+  setIsLoaded:(c:boolean) => void
+  isLoaded:boolean
 }
 const CategoryList = (props:CategoryListProps) => {
+  const [error, setError] = useState(null);
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [categories, setCategories] = useState<CategoryModel[]>([]);
   const [childClient,setChildClient] = useState<CategoryModel>(new CategoryModel('', ''));
-
   const [pageCount,setpageCount] = useState<number>(0);
   const [pageNumber,setPageNumber] = useState(1);
   const [pageSize,setPageSize] = useState(5);
   useEffect(() => {
-    getCategories(props.searchTerm, props.letter, pageNumber,pageSize).then(data => setCategories(data));
+    getCategories(props.searchTerm, props.letter, pageNumber,pageSize).then(
+      data => {
+        props.setIsLoaded(true)
+        setCategories(data)
+    },
+    (error) =>
+    {
+      props.setIsLoaded(true)
+      setError(error)
+    }
+      );
     countCategory(props.searchTerm, props.letter).then(data => setpageCount(Math.ceil(data/pageSize)));
     props.setNewCategoryCreated(false);
     props.setcategoryDeleted(false);
@@ -64,6 +77,11 @@ const handleFilter = (event: React.MouseEvent<HTMLButtonElement>) =>
   const button: HTMLButtonElement = event.currentTarget;
   props.setLetter(button.value);
 }
+if(!props.isLoaded)
+{
+  return <Spin tip="Loading..." style={{margin:"5vh 60vh"}}/>
+}
+else{
   return (
     <>
     <div className="container">
@@ -104,6 +122,7 @@ const handleFilter = (event: React.MouseEvent<HTMLButtonElement>) =>
     handleShow={handleShow}
     childToParent={childToParent}
     setcategoryDeleted={props.setcategoryDeleted}
+    setIsLoaded={props.setIsLoaded}
     />
     )}
     </ListGroup> 
@@ -142,6 +161,7 @@ const handleFilter = (event: React.MouseEvent<HTMLButtonElement>) =>
     </div>
     </>
   )
+}
 }
 
 export default CategoryList

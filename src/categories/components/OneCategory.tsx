@@ -2,6 +2,7 @@ import React from 'react'
 import { CloseButton, ListGroup } from 'react-bootstrap'
 import { deleteCategory } from '../category-service/category.service'
 import { CategoryModel } from '../model/CategoryModel'
+import {message } from 'antd';
 type CategoryProps =
 {
     category:{
@@ -11,15 +12,27 @@ type CategoryProps =
     handleShow : () => void,
     childToParent : (category:CategoryModel) => void,
     setcategoryDeleted:(isDeleted:boolean) => void
+    setIsLoaded:(c:boolean) => void
 }
-const OneCategory = ({category,childToParent,setcategoryDeleted}:CategoryProps) => {
+const OneCategory = ({category,childToParent,setcategoryDeleted,setIsLoaded}:CategoryProps) => {
   const deleteHandler = (Id:string | undefined) =>
     {
-        deleteCategory(Id);
-        setTimeout(() => {
-          setcategoryDeleted(true);
-        }, 1500);
-        
+        deleteCategory(Id).then(e =>
+          {
+            if(!e)
+            {
+              setIsLoaded(false)
+            }
+            setTimeout(() => {
+              setcategoryDeleted(true)
+              message.success("Category deleted successfully")
+            }, 2000);
+          }
+          )
+        // setTimeout(() => {
+        //   setcategoryDeleted(true);
+        //   message.success("Category deleted!")
+        // }, 1000); 
     }
   return (
     <div>

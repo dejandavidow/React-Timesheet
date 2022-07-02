@@ -1,3 +1,4 @@
+import { message } from 'antd'
 import React from 'react'
 import { CloseButton, ListGroup } from 'react-bootstrap'
 
@@ -11,7 +12,7 @@ type MemberProps =
     username:string,
     password:string,
     email:string,
-    hours:string,
+    hours:number,
     status:string,
     role:string,
     },
@@ -23,7 +24,10 @@ const OneMember = ({member,childToParent,setClientDeleted} : MemberProps) => {
     const deleteHandler = (id:string | undefined) =>
     {
         deleteCategory(id);
-        setClientDeleted(true); 
+        setTimeout(() => {
+          setClientDeleted(true);
+          message.success("Member deleted successfully")
+        }, 2000); 
     }
   return (
     <>

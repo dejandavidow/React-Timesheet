@@ -1,8 +1,8 @@
 
 import { LoginModel } from "../model/LoginModel";
-export const Auth = async (body:LoginModel)=>
+export const Auth = async (body:LoginModel) : Promise<any>=>
 {
-    await fetch('https://localhost:44381/api/Member/login',
+   var res = await fetch('https://localhost:44381/api/Member/login',
     {
       method:'POST',
       headers:{'Content-Type':'application/json'},
@@ -15,12 +15,14 @@ export const Auth = async (body:LoginModel)=>
     if(response.accessToken)
     {
         localStorage.setItem('user',JSON.stringify(response))  
+        return response
     }
     else
     {
-        return response.ErrorMessage
+        return Promise.reject(response.ErrorMessage);
     }
   })
+  return res;
 }
 export const authHeader = () : HeadersInit | undefined=> {
   const userStr = localStorage.getItem("user");

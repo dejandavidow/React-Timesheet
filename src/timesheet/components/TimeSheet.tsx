@@ -16,7 +16,7 @@ import { getClientList } from "../../clients/service/client.service";
 import { ProjectModel } from "../../projects/model/ProjectModel";
 import { getProjectList } from "../../projects/service/project-service";
 import Header from "../../Header";
-import { Button, Form, Input, Modal, Select } from "antd";
+import { Button, Form, Input, message, Modal, Select } from "antd";
 const { Option } = Select;
 const TimeSheet = React.memo(() => {
   const [form] = Form.useForm();
@@ -99,6 +99,7 @@ const TimeSheet = React.memo(() => {
       {
         settsCreated(true)
         setVisible(false)
+        message.success("Timesheet created successfully",1000)
       },1000)
       form.resetFields()
     }
