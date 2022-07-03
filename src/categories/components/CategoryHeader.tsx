@@ -60,7 +60,8 @@ const CategoryHeader = ({setNewCategoryCreated,searchTerm,setSearchTerm,setLette
         keyboard={true}
         closable={false}
       >
-       <Form onFinish={CreateCategoryHandler} form={form} autoComplete='off'>
+       <Form onFinish={CreateCategoryHandler} form={form} autoComplete='off'  labelCol={{ span: 8 }}
+       wrapperCol={{ span: 12 }}>
        <Form.Item name={"Name"} label="Category Name" rules={[{ required: true,min:3 }]}>
         <Input onChange={(value) => setName(value.target.value)} value={name}/>
       </Form.Item>

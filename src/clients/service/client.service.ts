@@ -1,4 +1,5 @@
 
+
 import { authHeader } from "../../Auth/auth-service/AuthService";
 import { ClientModel } from "../model/clientModel";
 
@@ -52,16 +53,18 @@ export const deleteClient = async (id:string | undefined) : Promise<any>=>
         method: 'DELETE',
         headers: authHeader()
     }
-      await fetch(`https://localhost:44381/api/Client/${id}`,request)
-      .then(response =>{
-        const isJson = response.headers.get('content-type')?.includes('application/json');
-        const data = isJson &&  response.json();
-        if (!response.ok) {
-            // get error message from body or default to response status
-            const error = (data && response.body) || response.status;
-            return Promise.reject(error);
+     await fetch(`https://localhost:44381/api/Client/${id}`,request)
+     .then(response =>
+        {
+            const isJson = response.headers.get('content-type')?.includes('application/json');
+            const data = isJson &&  response.json();
+            if (!response.ok) {
+                // get error message from body or default to response status
+                const error = (data && response.body) || response.status;
+                return Promise.reject(error);
+            }
         }
-    })
+      )
 }
 
 export const UpdateClient = async(body:ClientModel,id:string | undefined) : Promise<any> =>

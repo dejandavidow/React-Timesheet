@@ -8,7 +8,10 @@ export const getCategories = async(searchterm: string, filterLetter: string, pag
         await fetch(`https://localhost:44381/api/Category/?PageNumber=${pagenumber}&PageSize=${pagesize}`, {
             method: 'GET',
             headers:authHeader()
-        }).then(cl => cl.json()).then(cl => cl.map((c: CategoryModel) => response.push(c)))
+        }).then(cl => cl.json()).then(res =>
+            {
+                    res.map((c:CategoryModel) => response.push(c))
+            })
     }
     else if(searchterm !== '' && filterLetter === ''){
         await fetch(`https://localhost:44381/api/Category/search?${searchterm}?PageNumber=${pagenumber}&PageSize=${pagesize}&search=${searchterm}`, {
@@ -84,7 +87,7 @@ export const UpdateCategory = async(body:CategoryModel,id:string | undefined): P
     })
 }
 
-export const countCategory = async(searchterm:string, letter:string) =>
+export const countCategory = async(searchterm:string, letter:string) : Promise<number>=>
 {
     const request =
     {
@@ -95,23 +98,21 @@ export const countCategory = async(searchterm:string, letter:string) =>
 
     if(searchterm !== '' && letter === '')
     {
-    var response :number = await fetch(`https://localhost:44381/api/Category/search-count?search=${searchterm}`,request)
-    .then(response => response.json())     
-    return response;
+        var res = await fetch(`https://localhost:44381/api/Category/search-count?search=${searchterm}`,request)
+    .then(response => response.json(),err => console.log(err))     
     }
 
     else if(searchterm === '' && letter !== '')
     {
-        var response :number = await fetch(`https://localhost:44381/api/Category/count?letter=${letter}`,request)
+        var res = await fetch(`https://localhost:44381/api/Category/count?letter=${letter}`,request)
         .then(response => response.json())     
-        return response;
     }
     else
     {
-    var response :number = await fetch(`https://localhost:44381/api/Category/search-count/?search=${searchterm}`,request)
+        var res = await fetch(`https://localhost:44381/api/Category/search-count/?search=${searchterm}`,request)
     .then(response => response.json())     
-    return response;
     }
+    return res;
 }
 export const getCategoriesList = async(): Promise<CategoryModel[]> =>
 {

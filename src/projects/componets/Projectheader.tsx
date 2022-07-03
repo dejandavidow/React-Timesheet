@@ -1,5 +1,6 @@
-import React, { ChangeEvent, useState } from 'react'
-import { Modal, Form, Button } from 'react-bootstrap'
+import { Button, Form, Input, message, Modal, Radio, Select } from 'antd'
+import { useForm } from 'antd/lib/form/Form'
+import React, { useState } from 'react'
 import { ClientModel } from '../../clients/model/clientModel'
 import { getClientList } from '../../clients/service/client.service'
 import { MemberModel } from '../../members/model/MemberModel'
@@ -13,38 +14,25 @@ type ClientHeaderProps = {
     setLetter:(l:string) => void
   }
 const Projectheader = (props:ClientHeaderProps) => {
-    const [validated, setValidated] = useState(false);
+    const [form] = useForm()
     const [show, setShow] = useState(false);
     const handleShow = () => setShow(true);
     const [projectName,setprojectName] = useState("");
     const [description,setDescription] = useState("");
-    const [status,setStatus] = useState("inactive");
-    const [archive,setArchive] = useState("no-archive");
+    const [status,setStatus] = useState("");
+    const [archive,setArchive] = useState("");
     const [memberId,setmemberId] = useState("");
     const [clientId,setclientId] = useState("");
     const [members,setMembers] = useState<MemberModel[]>([]);
     const [clients,setClients] = useState<ClientModel[]>([]);
-
+    const { Option } = Select;
     const handleClose = () => {
-      
-        setValidated(false);
-        setprojectName("");
-        setDescription("");
-        setStatus("");
-        setArchive("");
-        setmemberId("");
-        setclientId("");
-        setShow(false);
+      setShow(false)
+      form.resetFields()
       }
-      const CreateClientHandler = (event : React.FormEvent<HTMLFormElement> & React.MouseEvent<HTMLButtonElement> & React.BaseSyntheticEvent ) =>
+      const CreateClientHandler = () =>
   {
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) 
-    {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-    setValidated(true);
+
     const request :ProjectModel=
     {
       id:undefined,
@@ -55,12 +43,12 @@ const Projectheader = (props:ClientHeaderProps) => {
       memberId,
       clientId,
     }
-    PostCategory(request)
-    props.setNewClientCreated(true);
-  }
-  const statusHandler = (e : React.ChangeEvent<HTMLInputElement>) =>
-  {
-      setStatus(e.target.value);
+    PostCategory(request).then(res =>
+      {
+        props.setNewClientCreated(true);
+        handleClose()
+        message.success("Project created successfully")
+      })
   }
   const getMembersHandler = () =>
   {
@@ -74,65 +62,63 @@ const Projectheader = (props:ClientHeaderProps) => {
     <>
     <h2>Projects</h2>
     <hr></hr>
-    <Modal show={show} onHide={handleClose}>
-      <Modal.Header closeButton>
-        <Modal.Title>Create new Project</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-      <Form noValidate validated={validated}>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-          <Form.Label>Project Name:</Form.Label>
-          <Form.Control 
-          required 
-          type="text" 
-          value={projectName} 
-          onChange={(e : ChangeEvent<HTMLInputElement>) => setprojectName(e.target.value)}/>
-          <Form.Control.Feedback type='invalid'>Project Name is required</Form.Control.Feedback>
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-          <Form.Label>Description:</Form.Label>
-          <Form.Control
-          type="text" 
-          value={description} 
-          onChange={(e : ChangeEvent<HTMLInputElement>) => setDescription(e.target.value)}/>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label>Status:</Form.Label>
-            <br></br>
-            <Form.Check  inline label="Active" type="radio" name="status" value='active' onChange={statusHandler}/>
-            <Form.Check defaultChecked inline label="Inactive" type="radio" name="status" value='inactive' onChange={statusHandler}/>
-            </Form.Group>
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <br></br>
-            <Form.Check inline label="Archive" type="radio" name="archive" value='archived' onChange={(e: ChangeEvent<HTMLInputElement>) => setArchive(e.target.value)}/>
-            </Form.Group>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label>Select member</Form.Label>
-            <Form.Select required isInvalid onClick={getMembersHandler} aria-label="Default select example" value={memberId} onChange={(e : ChangeEvent<HTMLSelectElement>) => setmemberId(e.target.value)}>
-            <option>Open to select member</option>
-            {members.map((member) =>
-            <option value={member.id}>{member.name}</option>
-            )}
-            </Form.Select>
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label>Select client</Form.Label>
-            <Form.Select required isInvalid onClick={getClientsHandler} aria-label="Default select example" value={clientId} onChange={(e : ChangeEvent<HTMLSelectElement>) => setclientId(e.target.value)}>
-            <option>Open to select client</option>
-            {clients.map((client) =>
-            <option value={client.id}>{client.clientName}</option>
-            )}
-            </Form.Select>
-            </Form.Group>
-      </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          Close
-        </Button>
-        <Button variant="primary" onClick={CreateClientHandler}>Create Project</Button>
-      </Modal.Footer>
-    </Modal>
+    <Modal
+        title="Create New Project"
+        visible={show}
+        footer={false}
+        keyboard={true}
+        closable={false}
+      >
+       <Form 
+       form={form} 
+       autoComplete='off'
+       onFinish={CreateClientHandler}
+       labelCol={{ span: 8 }}
+       wrapperCol={{ span: 16 }}
+       >
+          <Form.Item name="projectName" label="Project name" rules={[{ required: true,message:'Please input project name name'},{type:'string',min:3,message:'Name must be atleast 3 characters.'}]}>
+              <Input onChange={(value) => setprojectName(value.target.value)} value={projectName}/>
+          </Form.Item>
+          <Form.Item name="description" label="Description">
+              <Input onChange={(value) => setDescription(value.target.value)} value={description}/>
+          </Form.Item>
+          <Form.Item label='Status' name='status' rules={[{required:true,message:'Please choose status'}]}>
+                <Radio.Group onChange={(e) => setStatus(e.target.value)} value={status}>
+                <Radio value='active'>Active</Radio>
+                <Radio value='inactive'>Inactive</Radio>
+              </Radio.Group>
+          </Form.Item>
+          <Form.Item label="Archive">
+                <Radio value='archived' onChange={(e) => setArchive(e.target.value)}>Archived</Radio>
+          </Form.Item>
+          <Form.Item name="member" label="Member" rules={[{required:true}]}>
+                  <Select
+                  onClick={getMembersHandler}
+                    placeholder="Select team member"
+                    allowClear
+                    onChange={(value) => setmemberId(value)}
+                  > 
+                    {members.map((member) =>
+                    <Option key={member.id} value={member.id}>{member.name}</Option>
+                    )}
+                  </Select>
+                </Form.Item>
+                <Form.Item name="client" label="Client" rules={[{required:true}]}>
+                  <Select
+                    placeholder="Select client"
+                    allowClear
+                    onClick={getClientsHandler}
+                    onChange={(value) => setclientId(value)}
+                  >
+                    {clients.map((client) =>
+                    <Option key={client.id} value={client.id}>{client.clientName}</Option>
+                    )}
+                  </Select>
+                </Form.Item>
+        <Button htmlType='submit' type='primary'>Create</Button>
+        <Button onClick={handleClose} style={{marginLeft:"1vh"}}>Close</Button>
+       </Form>
+      </Modal>
   <div className='pozadina'>
   <button className='dugme' onClick={handleShow}>Create new Project</button>
   <input type='search' className='searchinput' placeholder='Search' value={props.searchTerm} onChange={(e) => {props.setSearchTerm(e.target.value); props.setLetter('')}}></input>

@@ -1,9 +1,10 @@
+import { message } from 'antd'
 import React from 'react'
 import { CloseButton, ListGroup } from 'react-bootstrap'
 import { ClientModel } from '../../clients/model/clientModel'
+import { MemberModel } from '../../members/model/MemberModel'
 import { ProjectModel } from '../model/ProjectModel'
 import { deleteCategory } from '../service/project-service'
-import Project from './Project'
 type ClientProps =
 {
     project:{
@@ -14,7 +15,7 @@ type ClientProps =
     archive:string,
     memberId:string,
     clientId:string
-    },
+    }
     handleShow : () => void,
     childToParent : (client:ProjectModel) => void,
     setClientDeleted:(isDeleted:boolean) => void
@@ -22,9 +23,13 @@ type ClientProps =
 const OneProject = ({project,childToParent,setClientDeleted}:ClientProps) => {
     const deleteHandler = (id:string | undefined) =>
     {
-        deleteCategory(id);
-        setClientDeleted(true);
-        
+        deleteCategory(id).then(
+          res =>
+          {
+            setClientDeleted(true);
+            message.success("Project deleted successfully")
+          }
+        )
     }
   return (
     <>

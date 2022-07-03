@@ -10,24 +10,11 @@ const LoginPage = () => {
     const [username,setUserName] = useState("")
     const [password,setPassword] = useState("")
     const [error,setError] = useState(null)
-    const [loaded,setLoaded] = useState(false);
-    useEffect(() => {
-      setLoaded(true)
-    }, [])
-    
     const handleLogin = () =>
     {
-      Auth({username,password}).then( (e) =>
-      {
-        if(!e)
-        {
-          setLoaded(false)
-        }
-        else
-        {
+      Auth({username,password}).then((e) =>{
           navigate('/timesheets')
         }
-      }
       ,(e) =>
       {
         setError(e)
@@ -35,16 +22,10 @@ const LoginPage = () => {
       }
       );
   }
-  if(!loaded)
-  {
-    return <Spin style={{margin:"50vh 100vh"}}/>
-  }
-  else
-  {
   return (
     <div className='container'>
-    <div className='mx-auto loginform'>
-    <span style={{color:'red'}} className='mx-auto'>{error}</span>
+      <div className='loginform mx-auto'>
+      <span style={{color:'red'}}>{error}</span>
         <Form
         name="basic"
         labelCol={{ span: 8 }}
@@ -73,9 +54,9 @@ const LoginPage = () => {
         </Button>
       </Form.Item>
         </Form>
-    </div>
+        </div>
     </div>
   )
 }
-}
+
 export default LoginPage

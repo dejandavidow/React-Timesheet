@@ -1,4 +1,4 @@
-import { Spin } from 'antd'
+import { message, Spin } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { Button, Form, ListGroup, Modal } from 'react-bootstrap'
 import ReactPaginate from 'react-paginate'
@@ -59,9 +59,13 @@ const childToParent = (category:CategoryModel) =>
 const updatecategoryHandler = () =>
 {
      setChildClient(childClient);
-      UpdateCategory(childClient,childClient.id);
-      props.setcategoryUpdated(true);
-      handleClose();
+      UpdateCategory(childClient,childClient.id).then(e =>
+        {
+          props.setcategoryUpdated(true);
+          handleClose();
+          message.success("Category updated successfully")
+        }
+        )
 }
 const handleChange = (evt : React.ChangeEvent<HTMLInputElement> & React.ChangeEvent<HTMLSelectElement>) =>
 {
@@ -80,6 +84,10 @@ const handleFilter = (event: React.MouseEvent<HTMLButtonElement>) =>
 if(!props.isLoaded)
 {
   return <Spin tip="Loading..." style={{margin:"5vh 60vh"}}/>
+}
+else if(error)
+{
+return <div>error {}</div>
 }
 else{
   return (
@@ -145,7 +153,7 @@ else{
     <Form>
           <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
           <Form.Label>Name:</Form.Label>
-          <Form.Control type="text" value={childClient?.name} name="Name" onChange={handleChange}/>
+          <Form.Control type="text" value={childClient?.name} name="name" onChange={handleChange}/>
           </Form.Group>
     </Form>
       </Modal.Body>

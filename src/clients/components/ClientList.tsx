@@ -1,3 +1,4 @@
+import { message } from "antd";
 import React, { useEffect, useState } from "react";
 import { Button, ListGroup,Modal,Form } from "react-bootstrap";
 import ReactPaginate from "react-paginate";
@@ -49,9 +50,12 @@ const childToParent = (client:ClientModel) =>
 const updateClientHandler = () =>
 {
      setChildClient(childClient);
-      UpdateClient(childClient,childClient.id);
-      props.setClientUpdated(true);
-      handleClose();
+      UpdateClient(childClient,childClient.id).then(e =>
+        {
+          props.setClientUpdated(true);
+          handleClose();
+          message.success("Client updated successfully")
+        })
 }
 const handleChange = (evt : React.ChangeEvent<HTMLInputElement> & React.ChangeEvent<HTMLSelectElement>) =>
 {
@@ -153,8 +157,10 @@ const handleFilter = (event: React.MouseEvent<HTMLButtonElement>) =>
             <Form.Select aria-label="Default select example" value={childClient?.country} onChange={handleChange} name="country">
             <option>Open this select menu</option>
             <option value="Serbia">Serbia</option>
-            <option value="Kongo">Kongo</option>
-            <option value="China">China</option>
+            <option value="Macedonia">Macedonia</option>
+            <option value="Greece">Greece</option>
+            <option value="Montenegro">Montenegro</option>
+            <option value="Bulgaria">Bulgaria</option>
             </Form.Select>
             </Form.Group>
       </Form>

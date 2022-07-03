@@ -1,7 +1,10 @@
-import { Button, Form, FormControlProps, InputGroup, Modal} from 'react-bootstrap';
+
 import React, {ChangeEvent, useState} from 'react'
 import { PostClient } from '../service/client.service';
 import { ClientModel } from '../model/clientModel';
+import { Button, Form, Input, message, Modal, Select } from 'antd';
+import { useForm } from 'antd/lib/form/Form';
+const { Option } = Select;
 
 type ClientHeaderProps = {
   setNewClientCreated: (isCreated: boolean) => void,
@@ -11,16 +14,11 @@ type ClientHeaderProps = {
 }
 
 const Clientheader = (props: ClientHeaderProps) => {
-  const [validated, setValidated] = useState(false);
+  const [form] = useForm()
   const [show, setShow] = useState(false);
   const handleClose = () => {
+    form.resetFields()
     setShow(false);
-    setclientName('');
-    setAdress('');
-    setCity('');
-    setpostalCode('');
-    setCountry('');
-    setValidated(false);
   }
   const handleShow = () => setShow(true);
   const [clientName,setclientName] = useState("");
@@ -39,71 +37,60 @@ const Clientheader = (props: ClientHeaderProps) => {
       postalCode,
       country
     }
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) 
-    {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-    setValidated(true);
-    PostClient(request);
-    props.setNewClientCreated(true);
+    PostClient(request).then(e =>
+      {
+        props.setNewClientCreated(true);
+        handleClose();
+        message.success("Client created successfully",2)
+      }
+      ) 
   }
   return (
       <>
       <h2>Clients</h2>
       <hr></hr>
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Create new client</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-        <Form noValidate validated={validated}>
-
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label>Name:</Form.Label>
-            <Form.Control 
-            required 
-            minLength={3}
-            type="text" 
-            value={clientName} 
-            onChange={(e : ChangeEvent<HTMLInputElement>) => setclientName(e.target.value)}/>
-            <Form.Control.Feedback type='invalid'>Name is required</Form.Control.Feedback>
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label>Adress:</Form.Label>
-            <Form.Control 
-            type="text" 
-            value={adress} 
-            onChange={(e : ChangeEvent<HTMLInputElement>) => setAdress(e.target.value)} />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label>City</Form.Label>
-            <Form.Control type="text" value={city} onChange={(e : ChangeEvent<HTMLInputElement>) => setCity(e.target.value)}/>
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label>Zip/Postal Code:</Form.Label>
-            <Form.Control type="text" value={postalCode}  onChange={(e : ChangeEvent<HTMLInputElement>) => setpostalCode(e.target.value)}/>
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label>Country</Form.Label>
-            <Form.Select aria-label="Default select example" value={country} onChange={(e : ChangeEvent<HTMLSelectElement>) => setCountry(e.target.value)}>
-            <option>Open this select menu</option>
-            <option value="Serbia">Serbia</option>
-            <option value="Kongo">Kongo</option>
-            <option value="China">China</option>
-            </Form.Select>
-            </Form.Group>
-        </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={CreateClientHandler}>Create Client</Button>
-        </Modal.Footer>
+      <Modal
+        title="Create new Client"
+        visible={show}
+        footer={false}
+        keyboard={true}
+        closable={false}
+      >
+       <Form 
+       form={form} 
+       autoComplete='off'
+       onFinish={CreateClientHandler}
+       labelCol={{ span: 8 }}
+       wrapperCol={{ span: 16 }}
+       >
+          <Form.Item name="clientName" label="Name" rules={[{ required: true,message:'Please input client name'},{type:'string',min:3,message:'Name must be atleast 3 characters.'}]}>
+              <Input onChange={(value) => setclientName(value.target.value)} value={clientName}/>
+          </Form.Item>
+          <Form.Item name="adress" label="Adress">
+              <Input onChange={(value) => setAdress(value.target.value)} value={adress}/>
+          </Form.Item>
+          <Form.Item name="city" label="City">
+              <Input onChange={(value) => setCity(value.target.value)} value={city}/>
+          </Form.Item>
+          <Form.Item name="postalCode" label="Postal Code">
+              <Input onChange={(value) => setpostalCode(value.target.value)} value={postalCode}/>
+          </Form.Item>
+          <Form.Item name="country" label="Country" >
+                  <Select
+                    placeholder="Select country"
+                    allowClear
+                    onChange={(value) => setCountry(value)}
+                  >
+                    <Option key='1' value='Serbia'>Serbia</Option>
+                    <Option key='2' value='Macedonia'>Macedonia</Option>
+                    <Option key='3' value='Bulgaria'>Bulgaria</Option>
+                    <Option key='4' value='Greece'>Greece</Option>
+                    <Option key='5' value='Montenegro'>Montenegro</Option>
+                  </Select>
+                </Form.Item>
+        <Button htmlType='submit' type='primary'>Create</Button>
+        <Button onClick={handleClose} style={{marginLeft:"1vh"}}>Close</Button>
+       </Form>
       </Modal>
     <div className='pozadina'>
     <button className='dugme' onClick={handleShow}>Create new Client</button>

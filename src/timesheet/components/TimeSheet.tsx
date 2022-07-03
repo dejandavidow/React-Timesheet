@@ -138,7 +138,7 @@ const TimeSheet = React.memo(() => {
         }}
         footerToolbar={{
           left:'dayGridMonth',
-          right:'listWeek'
+          right:'dayGridWeek'
         }}
         events={timesheets}
         eventContent={renderEventContent}

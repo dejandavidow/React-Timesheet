@@ -1,3 +1,5 @@
+import { message } from "antd"
+import { useState } from "react"
 import { CloseButton, ListGroup } from "react-bootstrap"
 import { ClientModel } from "../model/clientModel"
 import {deleteClient} from '../service/client.service'
@@ -16,11 +18,14 @@ type ClientProps =
     setClientDeleted:(isDeleted:boolean) => void
 }
 const OneClient = ({client,childToParent,setClientDeleted}:ClientProps) => {
+  const [error,setError] = useState(null)
     const deleteHandler = (id:string | undefined) =>
     {
-        deleteClient(id);
-        setClientDeleted(true);
-        
+        deleteClient(id).then(e =>
+          {
+            setClientDeleted(true);
+            message.success("Client deleted successfully")
+          })
     }
   return (
     <>
@@ -28,5 +33,6 @@ const OneClient = ({client,childToParent,setClientDeleted}:ClientProps) => {
     </>
   )
 }
+
 
 export default OneClient

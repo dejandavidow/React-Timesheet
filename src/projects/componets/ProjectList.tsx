@@ -1,5 +1,7 @@
+import { Button, Form, Input, message, Modal, Radio, Select } from 'antd'
+import { useForm } from 'antd/lib/form/Form'
 import React, { ChangeEvent, useEffect, useState } from 'react'
-import { Button, Form, ListGroup, Modal } from 'react-bootstrap'
+import {ListGroup } from 'react-bootstrap'
 import ReactPaginate from 'react-paginate'
 import { ClientModel } from '../../clients/model/clientModel'
 import { getClientList } from '../../clients/service/client.service'
@@ -21,59 +23,72 @@ type ClientListProps = {
     setLetter: (l:string) => void
   }
 const ProjectList = (props:ClientListProps) => {
+  const [form] = useForm()
     const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
+  const handleClose = () => 
+  {
+    setShow(false);
+    form.resetFields();
+  }
   const handleShow = () =>{
       setShow(true);
-      getMembers().then(data => setMembers(data));
-      getClientList().then(data => setClients(data))
   }
   const [projects, setProjects] = useState<ProjectModel[]>([]);
-  const [childClient,setChildClient] = useState<ProjectModel>(new ProjectModel('', '', '', '', '', '',''));
-  const [validated, setValidated] = useState(false);
   const [pageCount,setpageCount] = useState<number>(0);
   const [pageNumber,setPageNumber] = useState(1);
   const [pageSize,setPageSize] = useState(5);
   const [members,setMembers] = useState<MemberModel[]>([]);
   const [clients,setClients] = useState<ClientModel[]>([]);
+  const [projectName,setprojectName] = useState("");
+  const [description,setDescription] = useState("");
+  const [status,setStatus] = useState("");
+  const [archive,setArchive] = useState("");
+  const [memberId,setmemberId] = useState<string>("");
+  const [clientId,setclientId] = useState<string>("");
+  const [id,setId] = useState<string | undefined>(undefined)
+  const { Option } = Select;
   useEffect(() => {
     getCategories(props.searchTerm, props.letter, pageNumber,pageSize).then(data => setProjects(data));
     countCategory(props.searchTerm, props.letter).then(data => setpageCount(Math.ceil(data/pageSize)));
     props.setNewClientCreated(false);
     props.setClientDeleted(false);
     props.setClientUpdated(false);
+    getMembers().then(data => setMembers(data));
+    getClientList().then(data => setClients(data))
 }, [props.newClientCreated, props.searchTerm,props.clientDeleted,props.clientUpdated,pageNumber,pageCount, props.letter])
 const handlePageClick = (e:{selected: number}) =>
 {
 setPageNumber(e.selected+1);
 }
 
-const childToParent = (client:ProjectModel) => 
+const childToParent = (client:any) => 
 {
-   setChildClient(client);
-   handleShow();
+    handleShow();
+    setId(client.id)
+    setprojectName(client.projectName)
+    setDescription(client.description)
+    setStatus(client.status)
+    setArchive(client.archive)
+    setmemberId(client.memberDTO.id)
+    setclientId(client.clientDTO.id)
 }
-const updateClientHandler = (event : React.FormEvent<HTMLFormElement> & React.MouseEvent<HTMLButtonElement>) =>
-{
-  const form = event.currentTarget;
-    if (form.checkValidity() === false) 
-    {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-    setValidated(true);
-      setChildClient(childClient);
-      UpdateCategory(childClient,childClient.id);
-      props.setClientUpdated(true);
+const updateClientHandler = () =>
+{  
+      UpdateCategory({id,projectName,description,status,archive,memberId,clientId},id).then(res =>
+        {
+          props.setClientUpdated(true);
+          handleClose();
+          message.success("Project updated successfully")
+        })
 }
-const handleChange = (evt : React.ChangeEvent<HTMLInputElement> & React.ChangeEvent<HTMLSelectElement>) =>
-{
-  const value = evt.target?.value;
-  setChildClient({
-    ...childClient,
-    [evt.target.name]: value
-  });
-}
+// const handleChange = (evt:any) =>
+// {
+//   const value = evt.target?.value;
+//   setChildClient({
+//     ...childClient,
+//     [evt.target.name]: value
+//   });
+// }
 const handleFilter = (event: React.MouseEvent<HTMLButtonElement>) =>
 {
   props.setSearchTerm('')
@@ -140,13 +155,69 @@ const getMembersHandler = () =>
          className="pagination"
          //renderOnZeroPageCount={null}
       />
-      <Modal show={show} onHide={handleClose}>
+      <Modal
+        title="Update project"
+        visible={show}
+        footer={false}
+        keyboard={true}
+        closable={false}
+      >
+       <Form 
+       form={form} 
+       onFinish={updateClientHandler}
+       labelCol={{ span: 8 }}
+       wrapperCol={{ span: 16 }}
+       >
+          <Form.Item label="Project Name" >
+              <Input value={projectName} onChange={e => setprojectName(e.target.value)}/>
+          </Form.Item>
+          <Form.Item label="Description">
+              <Input onChange={(e) => setDescription(e.target.value)} value={description}/>
+          </Form.Item>
+          <Form.Item label='Status'>
+                <Radio.Group onChange={e => setStatus(e.target.value)} value={status}>
+                <Radio value='active'>Active</Radio>
+                <Radio value='inactive'>Inactive</Radio>
+              </Radio.Group>
+          </Form.Item>
+          <Form.Item label="Archive" >
+                <Radio value={archive} onChange={e => setArchive(e.target.value)}>Archived</Radio>
+          </Form.Item>
+          <Form.Item label="Member" rules={[{required:true}]}>
+                  <Select
+                    value={memberId}
+                    placeholder="Select team member"
+                    allowClear
+                    onChange={(e:any) => setmemberId(e.target.value)}
+                  > 
+                    {members.map((member) =>
+                    <Option key={member.id} value={member.id}>{member.name}</Option>
+                    )}
+                  </Select>
+                </Form.Item>
+                <Form.Item  label="Client" rules={[{required:true}]}>
+                  <Select
+                    placeholder="Select client"
+                    allowClear
+                    value={clientId}
+                    onSelect={(e:any) => setclientId(e.target.value)}
+                  >
+                    {clients.map((client) =>
+                    <Option key={client.id} value={client.id}>{client.clientName}</Option>
+                    )}
+                  </Select>
+                </Form.Item>
+        <Button htmlType='submit' type='primary'>Update</Button>
+        <Button onClick={handleClose} style={{marginLeft:"1vh"}}>Close</Button>
+       </Form>
+      </Modal>
+      {/* <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
         <Modal.Title>Update Project</Modal.Title>
       </Modal.Header>
       <Modal.Body>
       <Form noValidate validated={validated}>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+          <Form.Group className="mb-3" >
           <Form.Label>Project Name:</Form.Label>
           <Form.Control
           name='projectName' 
@@ -157,35 +228,37 @@ const getMembersHandler = () =>
           onChange={handleChange}/>
           <Form.Control.Feedback type='invalid'>Project Name is required, Min lenght:3</Form.Control.Feedback>
           </Form.Group>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+          <Form.Group className="mb-3">
           <Form.Label>Description:</Form.Label>
           <Form.Control
           type="text"
           name='description' 
           value={childClient?.description} 
           onChange={handleChange}/>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+          <Form.Group className="mb-3" >
             <Form.Label>Status:</Form.Label>
             <br></br>
             <Form.Check  inline label="Active" type="radio" name="status" value='active' onChange={handleChange}/>
             <Form.Check  inline label="Inactive" type="radio" name="status" value='inactive' onChange={handleChange}/>
             </Form.Group>
           </Form.Group>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+          <Form.Group className="mb-3" >
             <br></br>
             <Form.Check inline label="Archive" type="radio" name="archive" value='archived' onChange={handleChange}/>
             </Form.Group>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+          <Form.Group className="mb-3" >
             <Form.Label>Select member</Form.Label>
             <Form.Select value={childClient.memberId} onChange={handleChange} name='memberId'>
+            <option>Open this select menu</option>
             {members.map((member) =>
             <option value={member.id}>{member.name}</option>
             )}
             </Form.Select>
             </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+            <Form.Group className="mb-3">
             <Form.Label>Select client</Form.Label>
             <Form.Select  value={childClient.clientId} onChange={handleChange} name='clientId'>
+            <option>Open this select menu</option>
             {clients.map((client) =>
             <option value={client.id}>{client.clientName}</option>
             )}
@@ -199,7 +272,7 @@ const getMembersHandler = () =>
         </Button>
         <Button variant="primary" type='submit' onClick={updateClientHandler}>Update Project</Button>
       </Modal.Footer>
-    </Modal>
+    </Modal> */}
             </div>
         </>
 
