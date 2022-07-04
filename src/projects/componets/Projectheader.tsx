@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { ClientModel } from '../../clients/model/clientModel'
 import { getClientList } from '../../clients/service/client.service'
 import { MemberModel } from '../../members/model/MemberModel'
-import { getCategories, getMembers } from '../../members/service/member-service'
+import { getMembers } from '../../members/service/member-service'
 import { ProjectModel } from '../model/ProjectModel'
 import { PostCategory } from '../service/project-service'
 type ClientHeaderProps = {

@@ -1,5 +1,5 @@
 
-import React, {ChangeEvent, useState} from 'react'
+import React, {useState} from 'react'
 import { PostClient } from '../service/client.service';
 import { ClientModel } from '../model/clientModel';
 import { Button, Form, Input, message, Modal, Select } from 'antd';

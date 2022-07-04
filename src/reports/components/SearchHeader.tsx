@@ -32,8 +32,9 @@ type TsProps ={
   setmemberId :(c:string) => void,
   setIsLoaded:(c:boolean) => void
   setError:(c:any) => void
+  memberId:string
 }
-const SearchHeader = ({setError,setIsLoaded,setcategoryId,setprojectId,setclientId,setStartDate,setEndDate,startDate,endDate,clientId,projectId,categoryId,setTimeSheets,pageNumber,pageSize,setpageCount,setreFetch,setmemberId}:TsProps) => {
+const SearchHeader = ({memberId,setError,setIsLoaded,setcategoryId,setprojectId,setclientId,setStartDate,setEndDate,startDate,endDate,clientId,projectId,categoryId,setTimeSheets,pageNumber,pageSize,setpageCount,setreFetch,setmemberId}:TsProps) => {
   const [form] = Form.useForm();
   const [categories,setCategories] = useState<CategoryModel[]>([]);
   const [clients,setClients] = useState<ClientModel[]>([]);
@@ -63,7 +64,7 @@ const SearchHeader = ({setError,setIsLoaded,setcategoryId,setprojectId,setclient
   };
   const handleSearchCall = () =>
   {
-    getFilteredTimeSheets(startDate,endDate,categoryId,projectId,clientId,pageNumber,pageSize).then(data =>
+    getFilteredTimeSheets(startDate,endDate,categoryId,projectId,clientId,pageNumber,pageSize,memberId).then(data =>
       {
       setIsLoaded(true)
       setTimeSheets(data)
@@ -73,7 +74,7 @@ const SearchHeader = ({setError,setIsLoaded,setcategoryId,setprojectId,setclient
         setIsLoaded(true)
         setError(err)
       })
-    getPageCount(startDate,endDate,categoryId,projectId,clientId,pageNumber,pageSize).then(data => setpageCount(data));
+    getPageCount(startDate,endDate,categoryId,projectId,clientId,pageNumber,pageSize,memberId).then(data => setpageCount(data));
   }
   const ResetHandler = () =>
   {

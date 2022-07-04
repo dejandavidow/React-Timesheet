@@ -1,7 +1,7 @@
 
 import { Button, Form, Input, message, Modal, Radio } from 'antd';
 import { useForm } from 'antd/lib/form/Form';
-import React, {ChangeEvent, useState} from 'react'
+import React, {useState} from 'react'
 import { MemberModel } from '../model/MemberModel';
 import { PostCategory } from '../service/member-service';
 type ClientHeaderProps = {
@@ -27,7 +27,7 @@ const Memberheader = (props: ClientHeaderProps) => {
   const [hours,setHours] = useState(0);
   const [status,setStatus] = useState("");
   const [role,setRole] = useState("");
-  const CreateClientHandler = (event : React.FormEvent<HTMLFormElement> & React.MouseEvent<HTMLButtonElement> & React.BaseSyntheticEvent ) =>
+  const CreateClientHandler = () =>
   {
     const request :MemberModel=
     {

@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react'
-import { getFilteredTimeSheets, getPageCount, onLoadFilteredTimeSheets} from '../../timesheet/service/timesheet-service'
+import { getPageCount, onLoadFilteredTimeSheets} from '../../timesheet/service/timesheet-service'
 import SearchHeader from './SearchHeader'
 import Header from '../../Header';
 import { ReportModel } from '../../timesheet/model/ReportModel';
@@ -22,7 +22,7 @@ const Reports = () => {
   const [isLoaded,setIsLoaded] = useState(false)
   const [error,setError] = useState<any>(null)
   useEffect(() => {
-   onLoadFilteredTimeSheets(startDate,endDate,categoryId,projectId,clientId,pageNumber,pageSize).then(
+   onLoadFilteredTimeSheets(startDate,endDate,categoryId,projectId,clientId,pageNumber,pageSize,memberId).then(
     data => 
     {
       setIsLoaded(true)
@@ -33,7 +33,7 @@ const Reports = () => {
       setIsLoaded(true)
       setError(err)
     });
-   getPageCount(startDate,endDate,categoryId,projectId,clientId,pageNumber,pageSize).then(data => setpageCount(data));
+   getPageCount(startDate,endDate,categoryId,projectId,clientId,pageNumber,pageSize,memberId).then(data => setpageCount(data));
    totalTimeHandler()  
   }, [pageNumber,pageCount,reFetch,timesheets.length])
   const onChange: PaginationProps['onChange'] = pageNumber => {
@@ -85,7 +85,7 @@ const Reports = () => {
     }
     if(error)
     {
-      return <div>{error}</div>
+      return <div>{error.message}</div>
     }
   return (
     <>
@@ -110,6 +110,7 @@ const Reports = () => {
     setmemberId={setmemberId}
     setIsLoaded={setIsLoaded}
     setError={setError}
+    memberId={memberId}
     />
     { isLoaded ? <Table dataSource={timesheets} columns={columns} pagination={{position:['bottomCenter'],onChange:onChange,total:pageCount,pageSize:pageSize}}/> : <Spin/>}
     <div className="container totalhours">

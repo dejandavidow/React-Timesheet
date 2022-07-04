@@ -1,7 +1,6 @@
 import { Button, Form, Input, message, Modal } from 'antd';
 import React, { useState } from 'react';
 import { PostCategory } from '../category-service/category.service';
-import { CategoryModel } from '../model/CategoryModel';
 type CategoryHeaderProps = {
   setNewCategoryCreated: (isCreated: boolean) => void,
   searchTerm:string,

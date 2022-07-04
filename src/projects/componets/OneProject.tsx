@@ -1,8 +1,6 @@
 import { message } from 'antd'
 import React from 'react'
 import { CloseButton, ListGroup } from 'react-bootstrap'
-import { ClientModel } from '../../clients/model/clientModel'
-import { MemberModel } from '../../members/model/MemberModel'
 import { ProjectModel } from '../model/ProjectModel'
 import { deleteCategory } from '../service/project-service'
 type ClientProps =
