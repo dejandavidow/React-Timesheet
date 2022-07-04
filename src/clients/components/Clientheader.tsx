@@ -11,6 +11,7 @@ type ClientHeaderProps = {
   searchTerm:string,
   setSearchTerm:(src:string) => void,
   setLetter:(l:string) => void
+  setIsLoaded:(c:boolean) => void
 }
 
 const Clientheader = (props: ClientHeaderProps) => {
@@ -26,7 +27,7 @@ const Clientheader = (props: ClientHeaderProps) => {
   const [city,setCity] = useState("");
   const [postalCode,setpostalCode] = useState("");
   const [country,setCountry] = useState("");
-  const CreateClientHandler = (event : React.FormEvent<HTMLFormElement> & React.MouseEvent<HTMLButtonElement> ) =>
+  const CreateClientHandler = () =>
   {
     const request :ClientModel=
     {
@@ -39,6 +40,10 @@ const Clientheader = (props: ClientHeaderProps) => {
     }
     PostClient(request).then(e =>
       {
+        if(!e)
+        {
+          props.setIsLoaded(false)
+        }
         props.setNewClientCreated(true);
         handleClose();
         message.success("Client created successfully",2)

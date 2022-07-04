@@ -88,7 +88,7 @@ const Projectheader = (props:ClientHeaderProps) => {
                 <Radio value='inactive'>Inactive</Radio>
               </Radio.Group>
           </Form.Item>
-          <Form.Item label="Archive">
+          <Form.Item name='archive' label="Archive">
                 <Radio value='archived' onChange={(e) => setArchive(e.target.value)}>Archived</Radio>
           </Form.Item>
           <Form.Item name="member" label="Member" rules={[{required:true}]}>

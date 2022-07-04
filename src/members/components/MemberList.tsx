@@ -1,6 +1,7 @@
-import { Alert } from 'antd'
-import React, { FormEventHandler, useEffect, useState } from 'react'
-import { Button, Form, FormGroup, ListGroup, Modal, Overlay, OverlayTrigger, Popover } from 'react-bootstrap'
+import { Alert, Button, Form, Input, message, Modal, Radio } from 'antd'
+import { useForm } from 'antd/lib/form/Form'
+import React, {useEffect, useState } from 'react'
+import { ListGroup } from 'react-bootstrap'
 import ReactPaginate from 'react-paginate'
 import { useNavigate } from 'react-router-dom'
 import { getCurrentUser } from '../../Auth/auth-service/AuthService'
@@ -22,19 +23,26 @@ type ClientListProps = {
 const MemberList = (props: ClientListProps) => {
   const navigate = useNavigate();
   const [show, setShow] = useState(false);
+  const [form] = useForm()
   const handleShow = () => setShow(true);
   const handleClose = () =>{
-    setValidated(false);
     setShow(false);
+    form.resetFields();
   }
 
   const [members, setMembers] = useState<MemberModel[]>([]);
-  const [childClient,setChildClient] = useState<MemberModel>(new MemberModel('', '', '', '', 0, '','',''));
-  const [validated, setValidated] = useState(false);
   const [pageCount,setpageCount] = useState<number>(0);
   const [pageNumber,setPageNumber] = useState(1);
   const [pageSize,setPageSize] = useState(5);
   const [isAdmin,setIsAdmin] = useState(false)
+  const [id,setId] = useState<string | undefined>(undefined)
+  const [name,setName] = useState("");
+  const [username,setUserName] = useState("");
+  const [password,setPassword] = useState("");
+  const [email,setEmail] = useState("");
+  const [hours,setHours] = useState(0);
+  const [status,setStatus] = useState("");
+  const [role,setRole] = useState("");
   useEffect(() => {
     getCategories(props.searchTerm, props.letter, pageNumber,pageSize).then(data => setMembers(data));
     countCategory(props.searchTerm, props.letter).then(data => setpageCount(Math.ceil(data/pageSize)));
@@ -48,30 +56,28 @@ setPageNumber(e.selected+1);
 }
 const childToParent = (client:MemberModel) => 
 {
-   setChildClient(client);
+  setId(client.id)
+  setName(client.name)
+  setUserName(client.username)
+  setPassword(client.password)
+  setEmail(client.email)
+  setRole(client.role)
+  setStatus(client.status)
    handleShow();
 }
-const updateClientHandler = (event : React.FormEvent<HTMLFormElement> & React.MouseEvent<HTMLButtonElement>) =>
+const updateClientHandler = () =>
 {
-  const form = event.currentTarget;
-    if (form.checkValidity() === false) 
-    {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-      setValidated(true);
-      setChildClient(childClient);
-      UpdateCategory(childClient,childClient.id);
-      props.setClientUpdated(true);
+      UpdateCategory({id,name,username,email,password,hours,status,role},id).then
+      (
+        x =>
+        {
+          props.setClientUpdated(true);
+          handleClose()
+          message.success("Member updated successfully")
+        }
+      )
 }
-const handleChange = (evt : React.ChangeEvent<HTMLInputElement> & React.ChangeEvent<HTMLSelectElement>) =>
-{
-  const value = evt.target?.value;
-  setChildClient({
-    ...childClient,
-    [evt.target.name]: value
-  });
-}
+
 const handleFilter = (event: React.MouseEvent<HTMLButtonElement>) =>
 {
   props.setSearchTerm('')
@@ -154,73 +160,48 @@ const HandleClick = () =>
          className="pagination"
          //renderOnZeroPageCount={null}
       />
-      <Modal show={show} onHide={handleClose}>
-      <Modal.Header closeButton>
-      <Modal.Title>Update member</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-      <Form noValidate validated={validated}>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label>Name:</Form.Label>
-            <Form.Control type="text" value={childClient?.name} name="name" onChange={handleChange} required minLength={3}/>
-            <Form.Control.Feedback type='invalid'>Min name lenght: 3</Form.Control.Feedback>
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label>Username:</Form.Label>
-            <Form.Control type="text" value={childClient?.username} name="username" onChange={handleChange} required minLength={3}/>
-            <Form.Control.Feedback type='invalid'>Min username lenght: 3</Form.Control.Feedback>
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label>Email</Form.Label>
-            <Form.Control type="text" value={childClient?.email} name="email" onChange={handleChange} required/>
-            <Form.Control.Feedback type='invalid'>Email is required</Form.Control.Feedback>
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label>Hours:</Form.Label>
-            <Form.Control type="text" value={childClient?.hours} name="hours" onChange={handleChange}/>
-            </Form.Group>       
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label>Status:</Form.Label>
-            <br></br>
-            <Form.Check inline label="Active" type="radio" name="status" value='active' onChange={handleChange} />
-            <Form.Check inline label="Inactive" type="radio" name="status" value='inactive' onChange={handleChange} />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label>Role:</Form.Label>
-            <br></br>
-            <Form.Check
-            inline
-            label="Worker"
-             type="radio"
-             name='role' 
-             aria-label="radio 1"
-             value='worker' 
-             onChange={handleChange}
-            
-             />
-            <Form.Check
-            inline 
-            label="Admin"
-            name='role'
-            type="radio" 
-            aria-label="radio 2" 
-            value='admin'
-            onChange={handleChange}
-            
-            />
-            </Form.Group>
-      </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant='danger' onClick={HandleClick}>Reset Password</Button>
-          <Button onClick={updateClientHandler} variant="warning">
-            Save Changes
-          </Button>
-        </Modal.Footer>
-      </Modal>     
+            <Modal
+                  title="Update Member"
+                  visible={show}
+                  footer={false}
+                  keyboard={true}
+                  closable={false}
+                >
+                <Form 
+                form={form} 
+                onFinish={updateClientHandler}
+                labelCol={{ span: 8 }}
+                wrapperCol={{ span: 16 }}
+                >
+                    <Form.Item label="Name" rules={[{ required: true,message:'Please input your name'},{type:'string',min:3,message:'Name must be atleast 3 characters.'}]}>
+                        <Input onChange={(value) => setName(value.target.value)} value={name}/>
+                    </Form.Item>
+                    <Form.Item label="Email" rules={[{ required: true,message:"Please input your email"}]}>
+                        <Input onChange={(value) => setEmail(value.target.value)} value={email} type='email'/>
+                    </Form.Item>
+                    <Form.Item label="Username" rules={[{ required: true,min:3,message:'Please input username'}]}>
+                        <Input onChange={(value) => setUserName(value.target.value)} value={username}/>
+                    </Form.Item>
+                    <Form.Item  label="Hours">
+                        <Input onChange={(value) => setHours(Number(value.target.value))} value={hours}/>
+                    </Form.Item>
+                    <Form.Item label='Status' rules={[{required:true,message:'Please choose status'}]}>
+                          <Radio.Group onChange={(e) => setStatus(e.target.value)} value={status}>
+                          <Radio value='active'>Active</Radio>
+                          <Radio value='inactive'>Inactive</Radio>
+                        </Radio.Group>
+                    </Form.Item>
+                    <Form.Item label='Role' rules={[{required:true,message:'Please choose role'}]}>
+                          <Radio.Group onChange={(e) => setRole(e.target.value)} value={role} >
+                          <Radio value='worker'>Worker</Radio>
+                          <Radio value='admin'>Admin</Radio>
+                        </Radio.Group>
+                    </Form.Item>
+                  <Button htmlType='submit' type='primary'>Update</Button>
+                  <Button htmlType='button' type='primary' danger style={{marginLeft:"1vh"}}  onClick={HandleClick}>Reset Password</Button>
+                  <Button onClick={handleClose} style={{marginLeft:"1vh"}}>Close</Button>
+                </Form>
+                </Modal>   
   </div>
     </>
   )

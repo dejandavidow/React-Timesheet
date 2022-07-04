@@ -1,6 +1,7 @@
-import { message, Spin } from 'antd'
+import { Button, Form, Input, message, Modal, Spin } from 'antd'
+import { useForm } from 'antd/lib/form/Form'
 import React, { useEffect, useState } from 'react'
-import { Button, Form, ListGroup, Modal } from 'react-bootstrap'
+import { ListGroup } from 'react-bootstrap'
 import ReactPaginate from 'react-paginate'
 import { countCategory, getCategories, UpdateCategory } from '../category-service/category.service'
 import { CategoryModel } from '../model/CategoryModel'
@@ -20,28 +21,33 @@ type CategoryListProps = {
   isLoaded:boolean
 }
 const CategoryList = (props:CategoryListProps) => {
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<any>(null);
   const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
+  const handleClose = () => {
+    setShow(false);
+    form.resetFields();
+  }
+  const [form] = useForm()
   const handleShow = () => setShow(true);
   const [categories, setCategories] = useState<CategoryModel[]>([]);
-  const [childClient,setChildClient] = useState<CategoryModel>(new CategoryModel('', ''));
   const [pageCount,setpageCount] = useState<number>(0);
   const [pageNumber,setPageNumber] = useState(1);
   const [pageSize,setPageSize] = useState(5);
+  const [name,setName] = useState("")
+  const [id,setId] = useState<string | undefined>(undefined)
   useEffect(() => {
     getCategories(props.searchTerm, props.letter, pageNumber,pageSize).then(
       data => {
         props.setIsLoaded(true)
         setCategories(data)
     },
-    (error) =>
-    {
+    (err:PromiseRejectedResult) =>
+    { 
       props.setIsLoaded(true)
-      setError(error)
+      setError(err)    
     }
       );
-    countCategory(props.searchTerm, props.letter).then(data => setpageCount(Math.ceil(data/pageSize)));
+    countCategory(props.searchTerm, props.letter).then(data => setpageCount(Math.ceil(data/pageSize)),(err) => console.log(err));
     props.setNewCategoryCreated(false);
     props.setcategoryDeleted(false);
     props.setcategoryUpdated(false);
@@ -53,27 +59,25 @@ setPageNumber(e.selected+1);
 
 const childToParent = (category:CategoryModel) => 
 {
-   setChildClient(category);
+   setName(category.name);
+   setId(category.id)
    handleShow();
 }
 const updatecategoryHandler = () =>
 {
-     setChildClient(childClient);
-      UpdateCategory(childClient,childClient.id).then(e =>
+      UpdateCategory({id,name},id).then(e =>
         {
+          if(!e)
+          {
+            props.setIsLoaded(false)
+          }
+         setTimeout(() => {
           props.setcategoryUpdated(true);
           handleClose();
           message.success("Category updated successfully")
+         }, 3000);
         }
         )
-}
-const handleChange = (evt : React.ChangeEvent<HTMLInputElement> & React.ChangeEvent<HTMLSelectElement>) =>
-{
-  const value = evt.target?.value;
-  setChildClient({
-    ...childClient,
-    [evt.target.name]: value
-  });
 }
 const handleFilter = (event: React.MouseEvent<HTMLButtonElement>) =>
 {
@@ -81,13 +85,13 @@ const handleFilter = (event: React.MouseEvent<HTMLButtonElement>) =>
   const button: HTMLButtonElement = event.currentTarget;
   props.setLetter(button.value);
 }
-if(!props.isLoaded)
+if(error)
 {
-  return <Spin tip="Loading..." style={{margin:"5vh 60vh"}}/>
+  return <div>{error.message}</div>
 }
-else if(error)
+else if(!props.isLoaded)
 {
-return <div>error {}</div>
+return <Spin tip="Loading..." style={{margin:"5vh 60vh"}}/>
 }
 else{
   return (
@@ -144,28 +148,23 @@ else{
        className="pagination"
        //renderOnZeroPageCount={null}
     />
-
-    <Modal show={show} onHide={handleClose}>
-    <Modal.Header closeButton>
-    <Modal.Title>Update category</Modal.Title>
-    </Modal.Header>
-    <Modal.Body>
-    <Form>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-          <Form.Label>Name:</Form.Label>
-          <Form.Control type="text" value={childClient?.name} name="name" onChange={handleChange}/>
-          </Form.Group>
-    </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          Close
-        </Button>
-        <Button type="submit" variant="warning"  onClick={updatecategoryHandler}>
-          Save Changes
-        </Button>
-      </Modal.Footer>
-    </Modal>
+        <Modal
+        title="Create New Category"
+        visible={show}
+        footer={false}
+        keyboard={true}
+        closable={false}
+      >
+       <Form onFinish={updatecategoryHandler} form={form}  labelCol={{ span: 8 }}
+       wrapperCol={{ span: 12 }}>
+       <Form.Item label="Category Name" rules={[{ required: true,min:3 }]}>
+        <Input onChange={(e) => setName(e.target.value)} value={name}/>
+      </Form.Item>
+      <Button htmlType='submit' type='primary'>Create</Button>
+      <Button onClick={handleClose} style={{marginLeft:"1vh"}}>Cancel</Button>
+       </Form>
+      </Modal>
+        
     </div>
     </>
   )

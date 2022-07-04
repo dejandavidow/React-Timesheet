@@ -29,10 +29,6 @@ const OneCategory = ({category,childToParent,setcategoryDeleted,setIsLoaded}:Cat
             }, 2000);
           }
           )
-        // setTimeout(() => {
-        //   setcategoryDeleted(true);
-        //   message.success("Category deleted!")
-        // }, 1000); 
     }
   return (
     <div>

@@ -8,6 +8,7 @@ import Client from './clients/components/Client';
 import Member from './members/components/Member';
 import Project from './projects/componets/Project';
 import Reports from './reports/components/Reports';
+import TestComponent from './TestComponent';
 import TimeSheet from './timesheet/components/TimeSheet';
 function App() {
   return (
@@ -48,6 +49,11 @@ function App() {
         <Route path="/admin" element={
               <ProtectedRoute>
              <AdminComponent/>
+            </ProtectedRoute>
+        }/>
+         <Route path="/test" element={
+              <ProtectedRoute>
+             <TestComponent/>
             </ProtectedRoute>
         }/>
       </Routes>

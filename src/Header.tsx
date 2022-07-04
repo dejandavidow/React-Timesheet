@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Col, Nav, Row} from 'react-bootstrap'
+import { Button, Col, Nav, Navbar, Row} from 'react-bootstrap'
 import {LinkContainer} from 'react-router-bootstrap'
 import { useNavigate } from 'react-router-dom';
+import { Image } from 'antd';
 import './App.css';
 import { logout } from './Auth/auth-service/AuthService';
 

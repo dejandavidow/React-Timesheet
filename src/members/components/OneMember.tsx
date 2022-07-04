@@ -23,11 +23,11 @@ type MemberProps =
 const OneMember = ({member,childToParent,setClientDeleted} : MemberProps) => {
     const deleteHandler = (id:string | undefined) =>
     {
-        deleteCategory(id);
-        setTimeout(() => {
-          setClientDeleted(true);
-          message.success("Member deleted successfully")
-        }, 2000); 
+        deleteCategory(id).then( res =>
+          {
+            setClientDeleted(true);
+            message.success("Member deleted successfully")
+          })
     }
   return (
     <>

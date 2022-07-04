@@ -1,4 +1,4 @@
-import { message } from "antd"
+import { Alert, message } from "antd"
 import { useState } from "react"
 import { CloseButton, ListGroup } from "react-bootstrap"
 import { ClientModel } from "../model/clientModel"
@@ -16,16 +16,28 @@ type ClientProps =
     handleShow : () => void,
     childToParent : (client:ClientModel) => void,
     setClientDeleted:(isDeleted:boolean) => void
+    setIsLoaded:(c:boolean) => void
+
 }
-const OneClient = ({client,childToParent,setClientDeleted}:ClientProps) => {
-  const [error,setError] = useState(null)
+const OneClient = ({client,childToParent,setClientDeleted,setIsLoaded}:ClientProps) => {
+  const [error,setError] = useState<any>(null)
     const deleteHandler = (id:string | undefined) =>
     {
-        deleteClient(id).then(e =>
-          {
+        deleteClient(id).then((response) =>
+          { 
+            if(!response)
+            {
+              setIsLoaded(false)
+            }
             setClientDeleted(true);
             message.success("Client deleted successfully")
-          })
+          },
+          (err) =>
+        { 
+          setError(err)
+          console.log(err);
+        }       
+          )
     }
   return (
     <>

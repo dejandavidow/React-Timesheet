@@ -31,12 +31,15 @@ const CategoryHeader = ({setNewCategoryCreated,searchTerm,setSearchTerm,setLette
       {
         if(!e)
         {
-          setIsLoaded(false)
+            setIsLoaded(false)
         }
-        setNewCategoryCreated(true)
         setVisible(false)
-        message.success("Category successfully created")
+          message.success("Category successfully created")
+         setTimeout(() => {
+          setNewCategoryCreated(true)
+         }, 3000);
       }
+    ,(err) => console.error(err)
     )
     // setTimeout(() =>
     // {

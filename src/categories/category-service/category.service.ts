@@ -5,12 +5,12 @@ export const getCategories = async(searchterm: string, filterLetter: string, pag
     const response: CategoryModel[] = []
 
     if(searchterm === '' && filterLetter === ''){
-        await fetch(`https://localhost:44381/api/Category/?PageNumber=${pagenumber}&PageSize=${pagesize}`, {
+         await fetch(`https://localhost:44381/api/Category/?PageNumber=${pagenumber}&PageSize=${pagesize}`, {
             method: 'GET',
-            headers:authHeader()
+             headers:authHeader()
         }).then(cl => cl.json()).then(res =>
             {
-                    res.map((c:CategoryModel) => response.push(c))
+                res.map((c:CategoryModel) => response.push(c))          
             })
     }
     else if(searchterm !== '' && filterLetter === ''){

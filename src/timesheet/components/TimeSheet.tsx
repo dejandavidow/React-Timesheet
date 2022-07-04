@@ -94,13 +94,12 @@ const TimeSheet = React.memo(() => {
         projectId,
         categoryId
       }
-      PostTimeSheet(post)
-      setTimeout(() =>
-      {
-        settsCreated(true)
-        setVisible(false)
-        message.success("Timesheet created successfully",1000)
-      },1000)
+      PostTimeSheet(post).then(x =>
+        {
+          settsCreated(true)
+          setVisible(false)
+          message.success("Timesheet created successfully",1000)
+        })
       form.resetFields()
     }
     const getCategoriesHandler = () =>

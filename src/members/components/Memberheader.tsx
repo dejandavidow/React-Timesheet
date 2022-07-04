@@ -39,13 +39,13 @@ const Memberheader = (props: ClientHeaderProps) => {
       status,
       role
     } 
-    PostCategory(request)
-    setTimeout(() => {
-      props.setNewClientCreated(true);
-      handleClose();
-      message.success("Member created succesfully")
-    }, 2000);
-  }
+    PostCategory(request).then(x =>
+      {
+        props.setNewClientCreated(true);
+        handleClose();
+        message.success("Member created succesfully")
+      }
+    )}
   return (
       <>
       <h2>Members</h2>
