@@ -14,7 +14,7 @@ export const Auth = async (body:LoginModel) : Promise<any>=>
   {
     if(response.accessToken)
     {
-        localStorage.setItem('user',JSON.stringify(response))       
+        localStorage.setItem('user',JSON.stringify(response))    
     }
     else
     {

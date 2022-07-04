@@ -72,6 +72,10 @@ const updateClientHandler = () =>
 {
       UpdateClient({id,clientName,adress,city,postalCode,country},id).then(e =>
         {
+          if(!e)
+          {
+            props.setIsLoaded(false)
+          }
           props.setClientUpdated(true);
           handleClose();
           message.success("Client updated successfully")

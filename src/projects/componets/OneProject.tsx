@@ -19,13 +19,18 @@ type ClientProps =
     handleShow : () => void,
     childToParent : (client:ProjectModel) => void,
     setClientDeleted:(isDeleted:boolean) => void
+    setIsLoaded:(c:boolean) => void
 }
-const OneProject = ({project,childToParent,setClientDeleted}:ClientProps) => {
+const OneProject = ({project,childToParent,setClientDeleted,setIsLoaded}:ClientProps) => {
     const deleteHandler = (id:string | undefined) =>
     {
         deleteCategory(id).then(
           res =>
           {
+            if(!res)
+            {
+              setIsLoaded(false)
+            }
             setClientDeleted(true);
             message.success("Project deleted successfully")
           }

@@ -1,4 +1,4 @@
-import { Button, Form, Input, message, Modal, Radio, Select } from 'antd'
+import { Button, Form, Input, message, Modal, Radio, Select, Spin } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
 import React, { ChangeEvent, useEffect, useState } from 'react'
 import {ListGroup } from 'react-bootstrap'
@@ -21,6 +21,8 @@ type ClientListProps = {
     setSearchTerm:(c:string) => void,
     letter: string,
     setLetter: (l:string) => void
+    setIsLoaded:(C:boolean) => void
+    isLoaded:boolean
   }
 const ProjectList = (props:ClientListProps) => {
   const [form] = useForm()
@@ -46,9 +48,16 @@ const ProjectList = (props:ClientListProps) => {
   const [memberId,setmemberId] = useState<string>("");
   const [clientId,setclientId] = useState<string>("");
   const [id,setId] = useState<string | undefined>(undefined)
+  const [error,setError] = useState<any>(null)
   const { Option } = Select;
   useEffect(() => {
-    getCategories(props.searchTerm, props.letter, pageNumber,pageSize).then(data => setProjects(data));
+    getCategories(props.searchTerm, props.letter, pageNumber,pageSize).then(data =>{
+       props.setIsLoaded(true)
+       setProjects(data)
+    },err =>{
+      props.setIsLoaded(true)
+      setError(err)
+    });
     countCategory(props.searchTerm, props.letter).then(data => setpageCount(Math.ceil(data/pageSize)));
     props.setNewClientCreated(false);
     props.setClientDeleted(false);
@@ -76,19 +85,15 @@ const updateClientHandler = () =>
 {  
       UpdateCategory({id,projectName,description,status,archive,memberId,clientId},id).then(res =>
         {
+          if(!res)
+          {
+            props.setIsLoaded(false)
+          }
           props.setClientUpdated(true);
           handleClose();
           message.success("Project updated successfully")
         })
 }
-// const handleChange = (evt:any) =>
-// {
-//   const value = evt.target?.value;
-//   setChildClient({
-//     ...childClient,
-//     [evt.target.name]: value
-//   });
-// }
 const handleFilter = (event: React.MouseEvent<HTMLButtonElement>) =>
 {
   props.setSearchTerm('')
@@ -102,6 +107,14 @@ const getMembersHandler = () =>
   const getClientsHandler = () =>
   {
     getClientList().then(data => setClients(data))
+  }
+  if(error)
+  {
+    return <div>{error}</div>
+  }
+  else if(!props.isLoaded)
+  {
+    return <Spin tip="Loading..." style={{margin:"5vh 60vh"}}/>
   }
   return (
         <>
@@ -142,6 +155,7 @@ const getMembersHandler = () =>
         handleShow={handleShow}
         childToParent={childToParent}
         setClientDeleted={props.setClientDeleted}
+        setIsLoaded={props.setIsLoaded}
         />
       )}
       </ListGroup> 

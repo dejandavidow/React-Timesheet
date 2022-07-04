@@ -12,6 +12,7 @@ type ClientHeaderProps = {
     searchTerm:string,
     setSearchTerm:(src:string) => void,
     setLetter:(l:string) => void
+    setIsLoaded:(c:boolean) => void
   }
 const Projectheader = (props:ClientHeaderProps) => {
     const [form] = useForm()
@@ -45,6 +46,10 @@ const Projectheader = (props:ClientHeaderProps) => {
     }
     PostCategory(request).then(res =>
       {
+        if(!res)
+        {
+          props.setIsLoaded(false)
+        }
         props.setNewClientCreated(true);
         handleClose()
         message.success("Project created successfully")

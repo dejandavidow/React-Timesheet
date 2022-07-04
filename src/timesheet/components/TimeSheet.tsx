@@ -16,7 +16,7 @@ import { getClientList } from "../../clients/service/client.service";
 import { ProjectModel } from "../../projects/model/ProjectModel";
 import { getProjectList } from "../../projects/service/project-service";
 import Header from "../../Header";
-import { Button, Form, Input, message, Modal, Select } from "antd";
+import { Button, Form, Input, message, Modal, Select, Spin } from "antd";
 const { Option } = Select;
 const TimeSheet = React.memo(() => {
   const [form] = Form.useForm();
@@ -37,13 +37,22 @@ const TimeSheet = React.memo(() => {
   const [timesheets,setTimeSheets] = useState<TsModel[]>([]);
   const [load,setLoad] = useState(false);
   const [total,setTotal] = useState(0);
+  const [error,setError] = useState<any>(null)
+  const [isLoaded,setIsLoaded] = useState(false)
+
+  
   useEffect(() => {
     setTotal(totalTimeHandler());
-      if(load)
-      {
-        getTimeSheets(start,end).then(data => setTimeSheets(data))
+    if(load){
+        getTimeSheets(start,end).then(data => {
+          setIsLoaded(true)
+          setTimeSheets(data)
+        },err =>
+        {
+          setIsLoaded(true)
+          setError(err)
+        })
       }
-      return       
   }, [start,end,tsCreated,timesheets.length])
   const totalTimeHandler = () =>{
     const timearray : number[]= []
@@ -71,6 +80,10 @@ const TimeSheet = React.memo(() => {
   }
 
     const renderEventContent = (e: EventContentArg) => {
+      if(!isLoaded)
+      {
+        return <Spin tip="Loading..." style={{margin:"5vh 60vh"}}/>
+      }
       return (
         <>
           <b style={{backgroundColor:e.event.extendedProps.time > 4 ? 'lightgreen' : 'red',width:'100%',height:'100%'}}>Hours: {e.event.extendedProps.time}</b>
@@ -96,9 +109,13 @@ const TimeSheet = React.memo(() => {
       }
       PostTimeSheet(post).then(x =>
         {
+          if(!x)
+          {
+            setIsLoaded(false)
+          }
           settsCreated(true)
           setVisible(false)
-          message.success("Timesheet created successfully",1000)
+          message.success("Timesheet created successfully",1)
         })
       form.resetFields()
     }
@@ -118,6 +135,11 @@ const TimeSheet = React.memo(() => {
       form.resetFields();
       setVisible(false);
     }
+    // if(error)
+    // {
+    //   return <div>{error}</div>
+    // }
+    // else{
   return <>
   <Header/>
   <div className="container bgcolor">
@@ -220,4 +242,5 @@ const TimeSheet = React.memo(() => {
     </>
     
 });
+
 export default TimeSheet

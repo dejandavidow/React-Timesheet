@@ -4,7 +4,7 @@ import { getFilteredTimeSheets, getPageCount, onLoadFilteredTimeSheets} from '..
 import SearchHeader from './SearchHeader'
 import Header from '../../Header';
 import { ReportModel } from '../../timesheet/model/ReportModel';
-import { PaginationProps, Table } from 'antd';
+import { PaginationProps, Spin, Table } from 'antd';
 import type { ColumnsType} from 'antd/lib/table';
 const Reports = () => {
   const [timesheets,setTimeSheets] = useState<ReportModel[]>([])
@@ -19,8 +19,20 @@ const Reports = () => {
   const [pageCount,setpageCount] = useState<number>(0)
   const [reFetch,setreFetch] = useState(false);
   const [totalHours,setTotalHours] = useState(0)
+  const [isLoaded,setIsLoaded] = useState(false)
+  const [error,setError] = useState<any>(null)
   useEffect(() => {
-   onLoadFilteredTimeSheets(startDate,endDate,categoryId,projectId,clientId,pageNumber,pageSize).then(data => setTimeSheets(data));
+   onLoadFilteredTimeSheets(startDate,endDate,categoryId,projectId,clientId,pageNumber,pageSize).then(
+    data => 
+    {
+      setIsLoaded(true)
+      setTimeSheets(data)
+    }
+    ,(err) =>
+    {
+      setIsLoaded(true)
+      setError(err)
+    });
    getPageCount(startDate,endDate,categoryId,projectId,clientId,pageNumber,pageSize).then(data => setpageCount(data));
    totalTimeHandler()  
   }, [pageNumber,pageCount,reFetch,timesheets.length])
@@ -71,6 +83,10 @@ const Reports = () => {
       }, 0);
       setTotalHours(sum)
     }
+    if(error)
+    {
+      return <div>{error}</div>
+    }
   return (
     <>
     <Header/>
@@ -92,8 +108,10 @@ const Reports = () => {
     setpageCount={setpageCount}
     setreFetch={setreFetch}
     setmemberId={setmemberId}
+    setIsLoaded={setIsLoaded}
+    setError={setError}
     />
-    <Table dataSource={timesheets} columns={columns} pagination={{position:['bottomCenter'],onChange:onChange,total:pageCount,pageSize:pageSize}}/>
+    { isLoaded ? <Table dataSource={timesheets} columns={columns} pagination={{position:['bottomCenter'],onChange:onChange,total:pageCount,pageSize:pageSize}}/> : <Spin/>}
     <div className="container totalhours">
         <p>
           Reports Total:<span style={{ color: "darkorange" }}>{totalHours}</span>

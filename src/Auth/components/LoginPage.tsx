@@ -5,15 +5,16 @@ import { useNavigate } from 'react-router-dom'
 import { Auth } from '../auth-service/AuthService'
 
 const LoginPage = () => {
+
   const navigate = useNavigate()
     const [form] = useForm();
     const [username,setUserName] = useState("")
     const [password,setPassword] = useState("")
-    const [error,setError] = useState(null)
+    const [error,setError] = useState<any>(null)
     const handleLogin = () =>
     {
       Auth({username,password}).then((e) =>{
-          navigate('/timesheets')
+         navigate('/timesheets')
         }
       ,(e) =>
       {
@@ -58,5 +59,6 @@ const LoginPage = () => {
     </div>
   )
 }
+
 
 export default LoginPage

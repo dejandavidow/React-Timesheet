@@ -9,6 +9,7 @@ type ClientHeaderProps = {
   searchTerm:string,
   setSearchTerm:(src:string) => void,
   setLetter:(l:string) => void
+  setIsLoaded:(c:boolean) => void
 }
 
 const Memberheader = (props: ClientHeaderProps) => {
@@ -41,6 +42,10 @@ const Memberheader = (props: ClientHeaderProps) => {
     } 
     PostCategory(request).then(x =>
       {
+        if(!x)
+        {
+          props.setIsLoaded(false)
+        }
         props.setNewClientCreated(true);
         handleClose();
         message.success("Member created succesfully")

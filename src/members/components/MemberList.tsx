@@ -1,4 +1,4 @@
-import { Alert, Button, Form, Input, message, Modal, Radio } from 'antd'
+import { Alert, Button, Form, Input, message, Modal, Radio, Spin } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
 import React, {useEffect, useState } from 'react'
 import { ListGroup } from 'react-bootstrap'
@@ -19,6 +19,8 @@ type ClientListProps = {
     setSearchTerm:(c:string) => void,
     letter: string,
     setLetter: (l:string) => void
+    setIsLoaded:(c:boolean) => void
+    isLoaded:boolean
   }
 const MemberList = (props: ClientListProps) => {
   const navigate = useNavigate();
@@ -43,8 +45,17 @@ const MemberList = (props: ClientListProps) => {
   const [hours,setHours] = useState(0);
   const [status,setStatus] = useState("");
   const [role,setRole] = useState("");
+  const [error,setError] = useState<any>(null)
   useEffect(() => {
-    getCategories(props.searchTerm, props.letter, pageNumber,pageSize).then(data => setMembers(data));
+    getCategories(props.searchTerm, props.letter, pageNumber,pageSize).then(data => 
+      {
+        props.setIsLoaded(true);
+          setMembers(data);
+      }
+      ,(err) =>{
+        props.setIsLoaded(true)
+        setError(err)
+      });
     countCategory(props.searchTerm, props.letter).then(data => setpageCount(Math.ceil(data/pageSize)));
     props.setNewClientCreated(false);
     props.setClientDeleted(false);
@@ -71,6 +82,10 @@ const updateClientHandler = () =>
       (
         x =>
         {
+          if(!x)
+          {
+            props.setIsLoaded(false)
+          }
           props.setClientUpdated(true);
           handleClose()
           message.success("Member updated successfully")
@@ -96,6 +111,14 @@ const HandleClick = () =>
       setIsAdmin(true)
     }, 500);
   }
+}
+if(error)
+{
+  return <div>{error}</div>
+}
+else if (!props.isLoaded)
+{
+  return <Spin tip="Loading..." style={{margin:"5vh 60vh"}}/>
 }
  return (
   
@@ -147,6 +170,7 @@ const HandleClick = () =>
       handleShow={handleShow}
       childToParent={childToParent}
       setClientDeleted={props.setClientDeleted}
+      setIsloaded={props.setIsLoaded}
       />
       )}
       </ListGroup> 

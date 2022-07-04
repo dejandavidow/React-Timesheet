@@ -9,6 +9,7 @@ const Member = () => {
     const [clientDeleted,setclientDeleted] = useState<boolean>(false);
     const [clientUpdated,setClientUpdated] = useState<boolean>(false);
     const [letter,setLetter] = useState("");
+    const [isLoaded,setIsLoaded] = useState(false);
   return (<>
   <Header/>
     <div className='container bgcolor'>
@@ -17,6 +18,7 @@ const Member = () => {
          searchTerm={searchTerm}
          setSearchTerm={setSearchTerm}
          setLetter={setLetter}
+         setIsLoaded={setIsLoaded}
         />
         <MemberList
         setNewClientCreated={setNewClientCreated} 
@@ -29,6 +31,8 @@ const Member = () => {
         clientUpdated={clientUpdated}
         letter={letter}
         setLetter={setLetter}
+        isLoaded={isLoaded}
+        setIsLoaded={setIsLoaded}
         />
     </div>
     </>

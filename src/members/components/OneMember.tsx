@@ -19,12 +19,17 @@ type MemberProps =
     childToParent : (member:MemberModel) => void,
     setClientDeleted:(isDeleted:boolean) => void,
     handleShow:() => void
+    setIsloaded:(c:boolean) => void
 }
-const OneMember = ({member,childToParent,setClientDeleted} : MemberProps) => {
+const OneMember = ({member,childToParent,setClientDeleted,setIsloaded} : MemberProps) => {
     const deleteHandler = (id:string | undefined) =>
     {
         deleteCategory(id).then( res =>
           {
+            if(!res)
+            {
+              setIsloaded(false)
+            }
             setClientDeleted(true);
             message.success("Member deleted successfully")
           })
