@@ -135,13 +135,20 @@ export const changePasswordAsync =  async(email:string | undefined,password:stri
     }
     )
 }
-export const getMemberbyEmail =  async (email:string) : Promise<MemberModel>=>
-{
-     const response : MemberModel= await fetch(`https://localhost:44381/api/Member/email/${email}`,
+export const getMemberbyEmail =  async (email:string) : Promise<MemberModel> =>
+{ 
+    const res : MemberModel | any = await fetch(`https://localhost:44381/api/Member/email/${email}`,
     {
         method:'GET',
         headers:authHeader(),
     }
     ).then(res => res.json())
-        return response;
+        // {
+        //     if(!resp.ok)
+        //     {
+        //         return Promise.reject(resp.ErrorMessage)
+        //     }
+        //     else return resp;
+        // })
+        return res;
 }

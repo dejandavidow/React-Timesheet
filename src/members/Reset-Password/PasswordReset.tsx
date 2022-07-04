@@ -14,6 +14,7 @@ const ResetPassword = () => {
     const [checked,setChecked] = useState(false)
     const [changed,setChanged] = useState(false)
     const [success,setSuccess] = useState(true)
+    const [error,setError] = useState<any>(null)
     const navigate = useNavigate();
     const changePassword = () =>
     {
@@ -37,10 +38,11 @@ const ResetPassword = () => {
         setChecked(true)
         setSuccess(false)
       }
+    }, (err) =>
+    {
+      setError(err)
+    })
     }
-      )
-    }
-    
   return ( 
     <div className='container'>
       <br/>
@@ -64,7 +66,8 @@ const ResetPassword = () => {
       />
       }
         <div className='mx-auto loginform'>
-       {
+          {error ? <div style={{color:'red'}}>{error}</div> : null}
+       { 
         success &&
           <Form
             name="basic"
@@ -128,5 +131,6 @@ const ResetPassword = () => {
       
   )
 }
+
 
 export default ResetPassword
