@@ -17,7 +17,7 @@ type CategoryProps =
 const OneCategory = ({category,childToParent,setcategoryDeleted,setIsLoaded}:CategoryProps) => {
   const deleteHandler = (Id:string | undefined) =>
     {
-        deleteCategory("6666CA22-9D71-4BD7-9A06-CDEB8FD42EAA").then(e =>
+        deleteCategory(Id).then(e =>
           {
             if(!e)
             {

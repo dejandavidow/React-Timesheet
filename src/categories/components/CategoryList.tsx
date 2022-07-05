@@ -160,7 +160,7 @@ else{
        <Form.Item label="Category Name" rules={[{ required: true,min:3 }]}>
         <Input onChange={(e) => setName(e.target.value)} value={name}/>
       </Form.Item>
-      <Button htmlType='submit' type='primary'>Create</Button>
+      <Button htmlType='submit' type='primary'>Update</Button>
       <Button onClick={handleClose} style={{marginLeft:"1vh"}}>Cancel</Button>
        </Form>
       </Modal>

@@ -130,6 +130,7 @@ else if (!props.isLoaded)
     description="Only admins can reset passwords!"
     type="error"
     closable
+    onClose={() => setIsAdmin(false)}
     />
     :null
     }

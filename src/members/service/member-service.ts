@@ -143,12 +143,13 @@ export const getMemberbyEmail =  async (email:string) : Promise<MemberModel> =>
         headers:authHeader(),
     }
     ).then(res => res.json())
-        // {
-        //     if(!resp.ok)
-        //     {
-        //         return Promise.reject(resp.ErrorMessage)
-        //     }
-        //     else return resp;
-        // })
+    // .then(  resp =>
+    //     {
+    //         if(!resp.ok)
+    //         {
+    //             return Promise.reject(resp.ErrorMessage)
+    //         }
+    //         else return resp;
+    //     })
         return res;
 }
