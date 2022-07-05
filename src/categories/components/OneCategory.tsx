@@ -17,17 +17,15 @@ type CategoryProps =
 const OneCategory = ({category,childToParent,setcategoryDeleted,setIsLoaded}:CategoryProps) => {
   const deleteHandler = (Id:string | undefined) =>
     {
-        deleteCategory(Id).then(e =>
+        deleteCategory("6666CA22-9D71-4BD7-9A06-CDEB8FD42EAA").then(e =>
           {
             if(!e)
             {
               setIsLoaded(false)
             }
-            setTimeout(() => {
               setcategoryDeleted(true)
               message.success("Category deleted successfully")
-            }, 2000);
-          }
+          },err => console.log(err)
           )
     }
   return (

@@ -48,14 +48,31 @@ export const PostCategory = async(body:CategoryModel) : Promise<any> =>
     })
 }
 
-export const deleteCategory = async (id:string | undefined) : Promise<any>=>
+export const deleteCategory = async (id:string | undefined) : Promise<any> =>
 {
     const request = 
     {
         method: 'DELETE',
         headers: authHeader()
     }
-       await fetch(`https://localhost:44381/api/Category/${id}`,request)
+     await fetch(`https://localhost:44381/api/Category/${id}`,request)
+    //   .then(res =>
+    //     {
+    //         if(res.ok)
+    //         {
+    //             console.log("Request is OK");
+    //         }
+    //         else
+    //         {
+    //             console.log(res.status);
+    //             return Promise.reject(res.statusText)
+    //         }
+    //         return res;
+    //     })
+    //     .then(res => res.json())
+    //     .then(res => console.log(res))
+    //      .catch(err => console.log(err))
+        
       .then(response =>{
         const isJson = response.headers.get('content-type')?.includes('application/json');
         const data = isJson &&  response.json();

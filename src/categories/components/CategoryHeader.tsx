@@ -34,9 +34,7 @@ const CategoryHeader = ({setNewCategoryCreated,searchTerm,setSearchTerm,setLette
         }
         setVisible(false)
           message.success("Category successfully created")
-         setTimeout(() => {
           setNewCategoryCreated(true)
-         }, 3000);
       }
     ,(err) => console.error(err)
     )
