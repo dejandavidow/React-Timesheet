@@ -1,4 +1,5 @@
 import { Alert, message } from "antd"
+import { errorMonitor } from "events"
 import { useState } from "react"
 import { CloseButton, ListGroup } from "react-bootstrap"
 import { ClientModel } from "../model/clientModel"
@@ -27,20 +28,20 @@ const OneClient = ({client,childToParent,setClientDeleted,setIsLoaded}:ClientPro
           { 
             if(!response)
             {
-              setIsLoaded(false)
+              setIsLoaded(false)     
             }
             setClientDeleted(true);
             message.success("Client deleted successfully")
           },
           (err) =>
         { 
-          setError(err)
-          console.log(err);
+        setError(err)
         }       
           )
     }
   return (
     <>
+    {error ? alert(error.message): null}
     <ListGroup.Item key={client.id} className="listhover"><button onClick={() => childToParent(client)} className="btnlist">{client.clientName}</button><CloseButton onClick={() => deleteHandler(client.id)} className="xdugme"/></ListGroup.Item>
     </>
   )

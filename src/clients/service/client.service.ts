@@ -1,5 +1,6 @@
 
 
+import { ok } from "assert";
 import { DeleteExpression, JsonObjectExpression } from "typescript";
 import { authHeader } from "../../Auth/auth-service/AuthService";
 import { ClientModel } from "../model/clientModel";
@@ -54,11 +55,14 @@ export const deleteClient = async (id:string | undefined) : Promise<any>=>
         method: 'DELETE',
         headers: authHeader()
     }
-      await fetch(`https://localhost:44381/api/Client/${id}`,request).then(res => res.json()).then(response =>{
+       await fetch(`https://localhost:44381/api/Client/${id}`,request).then(response =>{
+        const isJson = response.headers.get('content-type')?.includes('application/json');
+        const data = isJson &&  response.json();
         if (!response.ok) {
-            return Promise.reject(response.ErrorMessage);
+            // get error message from body or default to response status
+            const error = (data && response.body) || response.status;
+            return Promise.reject(error);
         }
-        return response;
     })
 }
 

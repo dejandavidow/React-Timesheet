@@ -7,7 +7,7 @@ import bootstrap5Plugin from '@fullcalendar/bootstrap5';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from '@fullcalendar/interaction';
-import listPlugin from '@fullcalendar/list';
+import listPlugin, { NoEventsMountArg } from '@fullcalendar/list';
 import "./style.css";
 import { ClientModel } from "../../clients/model/clientModel";
 import { CategoryModel } from "../../categories/model/CategoryModel";
@@ -38,21 +38,20 @@ const TimeSheet = React.memo(() => {
   const [load,setLoad] = useState(false);
   const [total,setTotal] = useState(0);
   const [error,setError] = useState<any>(null)
+  const [viewChanged,setViewChanged] = useState(false)
   const [isLoaded,setIsLoaded] = useState(false)
-
   
   useEffect(() => {
-    setTotal(totalTimeHandler());
-    if(load){
-        getTimeSheets(start,end).then(data => {
-          setIsLoaded(true)
-          setTimeSheets(data)
-        },err =>
-        {
-          setIsLoaded(true)
-          setError(err)
-        })
-      }
+         var x = totalTimeHandler()
+          if(load)
+          {
+          getTimeSheets(start,end).then(
+            data => {
+            setIsLoaded(true)
+            setTimeSheets(data)
+            setTotal(x);
+            })
+      }  
   }, [start,end,tsCreated,timesheets.length])
   const totalTimeHandler = () =>{
     const timearray : number[]= []
@@ -68,8 +67,8 @@ const TimeSheet = React.memo(() => {
   }
   const handleRangeChange = (arg:DatesSetArg) =>
   {
-    setStart(arg.view.activeStart.toDateString())
-    setEnd(arg.view.activeEnd.toDateString())
+    setStart(arg.view.activeStart.toLocaleDateString())
+    setEnd(arg.view.activeEnd.toLocaleDateString()); 
   }
   const handleMountView = (e:ViewMountArg) =>
   {
@@ -77,23 +76,31 @@ const TimeSheet = React.memo(() => {
   }
   const handleShow = () =>{
     setVisible(true);
+    console.log(date);
+    
   }
 
     const renderEventContent = (e: EventContentArg) => {
       if(!isLoaded)
       {
-        return <Spin tip="Loading..." style={{margin:"5vh 60vh"}}/>
+        return <b>Hours: Loading..</b>
       }
+      else{
       return (
         <>
           <b style={{backgroundColor:e.event.extendedProps.time > 4 ? 'lightgreen' : 'red',width:'100%',height:'100%'}}>Hours: {e.event.extendedProps.time}</b>
         </>
       );
+      }
     };
     const handleDateSelect = (selectInfo: DateSelectArg) => {
-        let date = selectInfo.startStr
-        setDate(date)
-        handleShow()
+      let currentdate = selectInfo.view.calendar.getDate().toLocaleDateString();
+      let datepick = selectInfo.start.toLocaleDateString()
+      if(currentdate === datepick){
+        setDate(selectInfo.startStr);
+        handleShow();  
+      }
+      return selectInfo.view.calendar.unselect()
     }
     const handlePost = () =>
     {
@@ -109,10 +116,6 @@ const TimeSheet = React.memo(() => {
       }
       PostTimeSheet(post).then(x =>
         {
-          if(!x)
-          {
-            setIsLoaded(false)
-          }
           settsCreated(true)
           setVisible(false)
           message.success("Timesheet created successfully",1)
@@ -140,6 +143,10 @@ const TimeSheet = React.memo(() => {
     //   return <div>{error}</div>
     // }
     // else{
+     const noEvent123 = (c:NoEventsMountArg) =>
+      {
+        return <div>No event {c.text}</div>
+      }
   return <>
   <Header/>
   <div className="container bgcolor">
@@ -167,14 +174,16 @@ const TimeSheet = React.memo(() => {
         height={600}
         displayEventTime={false}
         selectable={true}
-        firstDay={1}
-        hiddenDays={[6]}
+        // firstDay={1}
+         hiddenDays={[6]}
         defaultAllDay={true}
         eventDisplay='list-item'
         showNonCurrentDates={false}
         datesSet={handleRangeChange}
         viewDidMount={handleMountView}
         dayMaxEvents={1}
+        noEventsContent
+        noEventsDidMount={noEvent123}
       />
       <div className="container totalhours">
         <p>
