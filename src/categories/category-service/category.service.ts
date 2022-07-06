@@ -56,22 +56,17 @@ export const deleteCategory = async (id:string | undefined) : Promise<any> =>
         headers: authHeader()
     }
      await fetch(`https://localhost:44381/api/Category/${id}`,request)
-    //   .then(res =>
+    //   .then(res => res.json()).then((resp) =>
     //     {
-    //         if(res.ok)
+    //         if(resp.ok)
     //         {
-    //             console.log("Request is OK");
+    //             return resp;
     //         }
     //         else
-    //         {
-    //             console.log(res.status);
-    //             return Promise.reject(res.statusText)
+    //         {     
+    //             return Promise.reject(resp.ErrorMessage)
     //         }
-    //         return res;
     //     })
-    //     .then(res => res.json())
-    //     .then(res => console.log(res))
-    //      .catch(err => console.log(err))
         
       .then(response =>{
         const isJson = response.headers.get('content-type')?.includes('application/json');
@@ -79,8 +74,11 @@ export const deleteCategory = async (id:string | undefined) : Promise<any> =>
         if (!response.ok) {
             // get error message from body or default to response status
             const error = (data && response.body) || response.status;
+            console.log(error);
+            
             return Promise.reject(error);
         }
+        return data;
     })
 }
 

@@ -71,11 +71,9 @@ const updatecategoryHandler = () =>
           {
             props.setIsLoaded(false)
           }
-         setTimeout(() => {
           props.setcategoryUpdated(true);
           handleClose();
           message.success("Category updated successfully")
-         }, 3000);
         }
         )
 }
