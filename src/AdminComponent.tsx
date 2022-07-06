@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { getCurrentUser } from './Auth/auth-service/AuthService'
 import {useNavigate} from 'react-router-dom'
 import ResetPassword from './members/Reset-Password/PasswordReset';
+import Header from './Header';
 const AdminComponent = () => {
     const navigate = useNavigate()
     const user = getCurrentUser();
@@ -15,7 +16,10 @@ const AdminComponent = () => {
         return (
             <div className='container'>
                 {
+                    <>
+                    <Header/>
                     <ResetPassword/>
+                    </>
                 }
                 </div>
           )

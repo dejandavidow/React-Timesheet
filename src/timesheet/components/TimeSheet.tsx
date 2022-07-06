@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import "antd/dist/antd.css";
 import {getTimeSheets, PostTimeSheet } from "../service/timesheet-service";
 import { TsModel } from "../model/TsModel";
-import FullCalendar, {DateSelectArg,DatesSetArg, EventContentArg, ViewMountArg} from "@fullcalendar/react";
+import FullCalendar, {DateSelectArg,DatesSetArg, EventApi, EventContentArg, EventInput, EventSourceInput, ViewMountArg} from "@fullcalendar/react";
 import bootstrap5Plugin from '@fullcalendar/bootstrap5';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from '@fullcalendar/interaction';
-import listPlugin, { NoEventsMountArg } from '@fullcalendar/list';
+import listPlugin, { NoEventsContentArg, NoEventsMountArg } from '@fullcalendar/list';
 import "./style.css";
 import { ClientModel } from "../../clients/model/clientModel";
 import { CategoryModel } from "../../categories/model/CategoryModel";
@@ -34,7 +34,7 @@ const TimeSheet = React.memo(() => {
   const [tsCreated,settsCreated] = useState(false)
   const [start,setStart] = useState("");
   const [end,setEnd] = useState("");
-  const [timesheets,setTimeSheets] = useState<TsModel[]>([]);
+  const [timesheets,setTimeSheets] = useState<EventInput[]>([]);
   const [load,setLoad] = useState(false);
   const [total,setTotal] = useState(0);
   const [error,setError] = useState<any>(null)
@@ -88,11 +88,11 @@ const TimeSheet = React.memo(() => {
       else{
       return (
         <>
-          <b style={{backgroundColor:e.event.extendedProps.time > 4 ? 'lightgreen' : 'red',width:'100%',height:'100%'}}>Hours: {e.event.extendedProps.time}</b>
+          <b style={{backgroundColor:e.event.extendedProps.time > 4 ? 'rgba(0,255,0,0.4)' : 'rgba(255,0,0,0.4)',width:'100%',height:'100%',padding:'10px 0px',margin:0}}>Hours: {e.event.extendedProps.time}</b>   
         </>
       );
-      }
-    };
+    }
+  }
     const handleDateSelect = (selectInfo: DateSelectArg) => {
       let currentdate = selectInfo.view.calendar.getDate().toLocaleDateString();
       let datepick = selectInfo.start.toLocaleDateString()
@@ -143,10 +143,6 @@ const TimeSheet = React.memo(() => {
     //   return <div>{error}</div>
     // }
     // else{
-     const noEvent123 = (c:NoEventsMountArg) =>
-      {
-        return <div>No event {c.text}</div>
-      }
   return <>
   <Header/>
   <div className="container bgcolor">
@@ -168,13 +164,12 @@ const TimeSheet = React.memo(() => {
           left:'dayGridMonth',
           right:'dayGridWeek'
         }}
-        events={timesheets}
+        eventSources={[timesheets]}
         eventContent={renderEventContent}
         select={handleDateSelect}
         height={600}
         displayEventTime={false}
         selectable={true}
-        // firstDay={1}
          hiddenDays={[6]}
         defaultAllDay={true}
         eventDisplay='list-item'
@@ -182,8 +177,6 @@ const TimeSheet = React.memo(() => {
         datesSet={handleRangeChange}
         viewDidMount={handleMountView}
         dayMaxEvents={1}
-        noEventsContent
-        noEventsDidMount={noEvent123}
       />
       <div className="container totalhours">
         <p>
