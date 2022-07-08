@@ -55,19 +55,7 @@ export const deleteCategory = async (id:string | undefined) : Promise<any> =>
         method: 'DELETE',
         headers: authHeader()
     }
-     await fetch(`https://localhost:44381/api/Category/${id}`,request)
-    //   .then(res => res.json()).then((resp) =>
-    //     {
-    //         if(resp.ok)
-    //         {
-    //             return resp;
-    //         }
-    //         else
-    //         {     
-    //             return Promise.reject(resp.ErrorMessage)
-    //         }
-    //     })
-        
+     await fetch(`https://localhost:44381/api/Category/${id}`,request) 
       .then(response =>{
         const isJson = response.headers.get('content-type')?.includes('application/json');
         const data = isJson &&  response.json();
@@ -78,7 +66,6 @@ export const deleteCategory = async (id:string | undefined) : Promise<any> =>
             
             return Promise.reject(error);
         }
-        return data;
     })
 }
 

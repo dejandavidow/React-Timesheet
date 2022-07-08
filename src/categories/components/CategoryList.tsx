@@ -48,10 +48,7 @@ const CategoryList = (props:CategoryListProps) => {
     }
       );
     countCategory(props.searchTerm, props.letter).then(data => setpageCount(Math.ceil(data/pageSize)),(err) => console.log(err));
-    props.setNewCategoryCreated(false);
-    props.setcategoryDeleted(false);
-    props.setcategoryUpdated(false);
-}, [props.newcategoryCreated, props.searchTerm,props.categoryDeleted,props.categoryUpdated,pageNumber,pageCount, props.letter,categories.length])
+}, [props.newcategoryCreated, props.searchTerm,props.categoryDeleted,props.categoryUpdated,pageNumber, props.letter])
 const handlePageClick = (e:{selected: number}) =>
 {
 setPageNumber(e.selected+1);
@@ -65,17 +62,14 @@ const childToParent = (category:CategoryModel) =>
 }
 const updatecategoryHandler = () =>
 {
-      UpdateCategory({id,name},id).then(e =>
+      UpdateCategory({id,name},id).then(() =>
         {
-          if(!e)
-          {
-            props.setIsLoaded(false)
-          }
           props.setcategoryUpdated(true);
-          handleClose();
           message.success("Category updated successfully")
         }
         )
+        handleClose();
+        props.setcategoryUpdated(false)
 }
 const handleFilter = (event: React.MouseEvent<HTMLButtonElement>) =>
 {

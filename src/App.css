@@ -22,3 +22,7 @@
     width: 50vh;
     margin-top: 30vh;
 }
+.navlink:active
+{
+    background-color:orange !important;
+}

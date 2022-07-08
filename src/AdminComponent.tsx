@@ -17,7 +17,7 @@ const AdminComponent = () => {
             <div className='container'>
                 {
                     <>
-                    <Header/>
+                    {/* <Header/> */}
                     <ResetPassword/>
                     </>
                 }

@@ -34,6 +34,8 @@ const ProjectList = (props:ClientListProps) => {
   }
   const handleShow = () =>{
       setShow(true);
+      getMembers().then(x => setMembers(x))
+      getClientList().then(x => setClients(x))
   }
   const [projects, setProjects] = useState<ProjectModel[]>([]);
   const [pageCount,setpageCount] = useState<number>(0);
@@ -59,12 +61,7 @@ const ProjectList = (props:ClientListProps) => {
       setError(err)
     });
     countCategory(props.searchTerm, props.letter).then(data => setpageCount(Math.ceil(data/pageSize)));
-    props.setNewClientCreated(false);
-    props.setClientDeleted(false);
-    props.setClientUpdated(false);
-    getMembers().then(data => setMembers(data));
-    getClientList().then(data => setClients(data))
-}, [props.newClientCreated, props.searchTerm,props.clientDeleted,props.clientUpdated,pageNumber,pageCount, props.letter])
+}, [props.newClientCreated, props.searchTerm,props.clientDeleted,props.clientUpdated,pageNumber, props.letter])
 const handlePageClick = (e:{selected: number}) =>
 {
 setPageNumber(e.selected+1);
@@ -85,14 +82,11 @@ const updateClientHandler = () =>
 {  
       UpdateCategory({id,projectName,description,status,archive,memberId,clientId},id).then(res =>
         {
-          if(!res)
-          {
-            props.setIsLoaded(false)
-          }
           props.setClientUpdated(true);
-          handleClose();
           message.success("Project updated successfully")
         })
+        props.setClientUpdated(false)
+        handleClose();
 }
 const handleFilter = (event: React.MouseEvent<HTMLButtonElement>) =>
 {
@@ -203,6 +197,7 @@ const getMembersHandler = () =>
                     placeholder="Select team member"
                     allowClear
                     onChange={(e:any) => setmemberId(e.target.value)}
+                    //onClick={getMembersHandler}
                   > 
                     {members.map((member) =>
                     <Option key={member.id} value={member.id}>{member.name}</Option>
@@ -215,6 +210,7 @@ const getMembersHandler = () =>
                     allowClear
                     value={clientId}
                     onSelect={(e:any) => setclientId(e.target.value)}
+                    //onClick={getClientsHandler}
                   >
                     {clients.map((client) =>
                     <Option key={client.id} value={client.id}>{client.clientName}</Option>
@@ -225,68 +221,6 @@ const getMembersHandler = () =>
         <Button onClick={handleClose} style={{marginLeft:"1vh"}}>Close</Button>
        </Form>
       </Modal>
-      {/* <Modal show={show} onHide={handleClose}>
-      <Modal.Header closeButton>
-        <Modal.Title>Update Project</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-      <Form noValidate validated={validated}>
-          <Form.Group className="mb-3" >
-          <Form.Label>Project Name:</Form.Label>
-          <Form.Control
-          name='projectName' 
-          required
-          minLength={3} 
-          type="text" 
-          value={childClient?.projectName} 
-          onChange={handleChange}/>
-          <Form.Control.Feedback type='invalid'>Project Name is required, Min lenght:3</Form.Control.Feedback>
-          </Form.Group>
-          <Form.Group className="mb-3">
-          <Form.Label>Description:</Form.Label>
-          <Form.Control
-          type="text"
-          name='description' 
-          value={childClient?.description} 
-          onChange={handleChange}/>
-          <Form.Group className="mb-3" >
-            <Form.Label>Status:</Form.Label>
-            <br></br>
-            <Form.Check  inline label="Active" type="radio" name="status" value='active' onChange={handleChange}/>
-            <Form.Check  inline label="Inactive" type="radio" name="status" value='inactive' onChange={handleChange}/>
-            </Form.Group>
-          </Form.Group>
-          <Form.Group className="mb-3" >
-            <br></br>
-            <Form.Check inline label="Archive" type="radio" name="archive" value='archived' onChange={handleChange}/>
-            </Form.Group>
-          <Form.Group className="mb-3" >
-            <Form.Label>Select member</Form.Label>
-            <Form.Select value={childClient.memberId} onChange={handleChange} name='memberId'>
-            <option>Open this select menu</option>
-            {members.map((member) =>
-            <option value={member.id}>{member.name}</option>
-            )}
-            </Form.Select>
-            </Form.Group>
-            <Form.Group className="mb-3">
-            <Form.Label>Select client</Form.Label>
-            <Form.Select  value={childClient.clientId} onChange={handleChange} name='clientId'>
-            <option>Open this select menu</option>
-            {clients.map((client) =>
-            <option value={client.id}>{client.clientName}</option>
-            )}
-            </Form.Select>
-            </Form.Group>
-      </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          Close
-        </Button>
-        <Button variant="primary" type='submit' onClick={updateClientHandler}>Update Project</Button>
-      </Modal.Footer>
-    </Modal> */}
             </div>
         </>
 

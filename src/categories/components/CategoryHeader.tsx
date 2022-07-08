@@ -26,19 +26,17 @@ const CategoryHeader = ({setNewCategoryCreated,searchTerm,setSearchTerm,setLette
   const CreateCategoryHandler = () =>
   {
     PostCategory({id:undefined,name}).then(
-      e =>
+      () =>
       {
-          if(!e)
-          {
-            setIsLoaded(false)
-          }
-          setVisible(false)
-          message.success("Category successfully created")
-          setNewCategoryCreated(true)
+            message.success("Category successfully created")
+            setNewCategoryCreated(true)
       }
+      
     ,(err) => console.error(err)
     )
+    handleCancel();
     form.resetFields()
+    setNewCategoryCreated(false)
   }
   return (
     <div>

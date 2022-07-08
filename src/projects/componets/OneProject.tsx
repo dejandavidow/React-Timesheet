@@ -25,14 +25,11 @@ const OneProject = ({project,childToParent,setClientDeleted,setIsLoaded}:ClientP
         deleteCategory(id).then(
           res =>
           {
-            if(!res)
-            {
-              setIsLoaded(false)
-            }
             setClientDeleted(true);
             message.success("Project deleted successfully")
           }
         )
+        setClientDeleted(false)
     }
   return (
     <>

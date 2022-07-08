@@ -1,12 +1,14 @@
 
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { getPageCount, onLoadFilteredTimeSheets} from '../../timesheet/service/timesheet-service'
 import SearchHeader from './SearchHeader'
 import Header from '../../Header';
 import { ReportModel } from '../../timesheet/model/ReportModel';
-import { PaginationProps, Spin, Table } from 'antd';
+import { Button, PaginationProps, Spin, Table } from 'antd';
 import type { ColumnsType} from 'antd/lib/table';
-
+import {CSVLink } from 'react-csv';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 const Reports = React.memo(() => {
   const [timesheets,setTimeSheets] = useState<ReportModel[]>([])
   const [categoryId,setcategoryId] = useState("");
@@ -92,6 +94,31 @@ const Reports = React.memo(() => {
       key: 'time',
     }
   ];
+  const headers =[
+      // {label:"ID",key:'id'},
+      {label:"Date",key:'date'},
+      {label:"Member",key:'projectDTO.memberDTO.name'},
+      {label:'Project',key:'projectDTO.projectName'},
+      {label:'Category',key:'categoryDTO.name'},
+      {label:'Description',key:'description'},
+      {label:'Hours',key:'time'},
+      {label:'Overtime',key:'overTime'}
+  ]
+  const head =[['Date','Member','Project','Category','Description','Hours','Overhours']]
+  const createPDF = () =>
+  {
+     const data : any = []
+     timesheets.map((ts) => data.push([ts.date,ts.projectDTO.memberDTO.name,ts.projectDTO.projectName,ts.categoryDTO.name,ts.description,ts.time,ts.overTime]))
+    const doc = new jsPDF();
+    doc.text("Reports",10,10);
+    autoTable(doc,
+      {
+        head:head,
+        body:data,
+        theme:'grid'
+      })
+    doc.save("report.pdf");
+  }
   return (
     <>
     <Header/>
@@ -123,8 +150,12 @@ const Reports = React.memo(() => {
     <div className="container totalhours">
         <p>
           Reports Total:<span style={{ color: "darkorange" }}>{totalHours}</span>
-          {}
         </p>
+        <div className='buttongr'>
+        <Button htmlType='button'>Print report</Button>
+        <Button htmlType='button' onClick={createPDF}>Create PDF</Button>
+        <Button htmlType='button'><CSVLink data={timesheets} headers={headers} filename={'report.csv'} style={{textDecoration:'none'}}>Export to excel</CSVLink></Button>
+        </div>
       </div>
     </div>
 

@@ -17,3 +17,10 @@
 {
   padding: 0vh 3vh !important;
 }
+.buttongr
+{
+  margin-left: 50vh !important;
+  margin-top: 1vh;
+  display: inline-flex;
+  flex-direction: row;
+}

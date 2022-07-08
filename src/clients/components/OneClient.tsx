@@ -26,10 +26,6 @@ const OneClient = ({client,childToParent,setClientDeleted,setIsLoaded}:ClientPro
     {
         deleteClient(id).then((response) =>
           { 
-            if(!response)
-            {
-              setIsLoaded(false)     
-            }
             setClientDeleted(true);
             message.success("Client deleted successfully")
           },
@@ -38,6 +34,7 @@ const OneClient = ({client,childToParent,setClientDeleted,setIsLoaded}:ClientPro
         setError(err)
         }       
           )
+          setClientDeleted(false)
     }
   return (
     <>

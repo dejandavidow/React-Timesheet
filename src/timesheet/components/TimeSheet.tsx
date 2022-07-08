@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import "antd/dist/antd.css";
 import {getTimeSheets, PostTimeSheet } from "../service/timesheet-service";
 import { TsModel } from "../model/TsModel";
-import FullCalendar, {DateSelectArg,DatesSetArg, EventApi, EventContentArg, EventInput, EventSourceInput, ViewMountArg} from "@fullcalendar/react";
+import FullCalendar, {DateSelectArg,DatesSetArg,EventContentArg, EventInput, ViewMountArg} from "@fullcalendar/react";
 import bootstrap5Plugin from '@fullcalendar/bootstrap5';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from '@fullcalendar/interaction';
-import listPlugin, { NoEventsContentArg, NoEventsMountArg } from '@fullcalendar/list';
+import listPlugin from '@fullcalendar/list';
 import "./style.css";
 import { ClientModel } from "../../clients/model/clientModel";
 import { CategoryModel } from "../../categories/model/CategoryModel";
@@ -41,24 +41,23 @@ const TimeSheet = React.memo(() => {
   const [isLoaded,setIsLoaded] = useState(false)
   
   useEffect(() => {
-         var x = totalTimeHandler()
           if(load)
           {
           getTimeSheets(start,end).then(
             data => {
             setIsLoaded(true)
             setTimeSheets(data)
-            setTotal(x);
+            setTotal(totalTimeHandler(data));
             },err => {
               setIsLoaded(true)
               setError(err)
             }
             )
       }  
-  }, [start,end,tsCreated,timesheets.length])
-  const totalTimeHandler = () =>{
+  }, [start,end,tsCreated])
+  const totalTimeHandler = (data:TsModel[]) =>{
     const timearray : number[]= []
-    {timesheets.map((ts) =>
+    {data.map((ts) =>
       {
         timearray.push(Number(ts.time))
       }
@@ -70,17 +69,15 @@ const TimeSheet = React.memo(() => {
   }
   const handleRangeChange = (arg:DatesSetArg) =>
   {
-    setStart(arg.view.activeStart.toLocaleDateString())
-    setEnd(arg.view.activeEnd.toLocaleDateString()); 
+    setStart(arg.startStr.slice(0,10))
+    setEnd(arg.endStr.slice(0,10)); 
   }
   const handleMountView = (e:ViewMountArg) =>
   {
     setLoad(true);
   }
   const handleShow = () =>{
-    setVisible(true);
-    console.log(date);
-    
+    setVisible(true); 
   }
 
     const renderEventContent = (e: EventContentArg) => {
@@ -91,13 +88,9 @@ const TimeSheet = React.memo(() => {
       );
   }
     const handleDateSelect = (selectInfo: DateSelectArg) => {
-      let currentdate = selectInfo.view.calendar.getDate().toLocaleDateString();
-      let datepick = selectInfo.start.toLocaleDateString()
-      if(currentdate === datepick){
-        setDate(selectInfo.startStr);
-        handleShow();  
-      }
-      return selectInfo.view.calendar.unselect()
+      let selectedDate = selectInfo.startStr
+      setDate(selectedDate)
+      handleShow()
     }
     const handlePost = () =>
     {
@@ -114,10 +107,11 @@ const TimeSheet = React.memo(() => {
       PostTimeSheet(post).then(x =>
         {
           settsCreated(true)
-          setVisible(false)
           message.success("Timesheet created successfully",1)
         })
+        settsCreated(false)
       form.resetFields()
+      handleCancel()
     }
     const getCategoriesHandler = () =>
     {
@@ -163,13 +157,14 @@ const TimeSheet = React.memo(() => {
         height={600}
         displayEventTime={false}
         selectable={true}
-         hiddenDays={[6]}
+        hiddenDays={[0]}
         defaultAllDay={true}
         eventDisplay='list-item'
-        showNonCurrentDates={false}
         datesSet={handleRangeChange}
         viewDidMount={handleMountView}
         dayMaxEvents={1}
+        firstDay={1}
+        showNonCurrentDates={false}
       />
       <div className="container totalhours">
         <p>
@@ -179,14 +174,17 @@ const TimeSheet = React.memo(() => {
       </>
     </div>
     <Modal
-        title="Create New Category"
+        title="Create New Timesheet"
         visible={visible}
         footer={false}
         keyboard={true}
         closable={false}
       >
-       <Form onFinish={handlePost} form={form} autoComplete='off'>
-          <Input.Group compact>
+       <Form onFinish={handlePost} 
+            form={form}
+             autoComplete='off'
+            >
+                <Input.Group compact>
                 <Form.Item name="Client" label="Client"  style={{width:350}} className='margins' rules={[{required:true}]}>
                   <Select
                     placeholder="Select client"
@@ -221,14 +219,14 @@ const TimeSheet = React.memo(() => {
                   </Select>
                 </Form.Item>
                 </Input.Group>
-                    <Form.Item name={"Hours"} label="Hours" rules={[{ required: true }]}>
-                             <Input onChange={(value) => setTime(value.target.value)} value={time} style={{width:"250px"}}/>
+                    <Form.Item name={"Hours"} label="Hours" rules={[{ required: true }]}> 
+                             <Input onChange={(value) => setTime(value.target.value)} value={time} style={{width:250}}/>
                     </Form.Item>
                     <Form.Item name={"Overhours"} label="Over Hours">
-                             <Input onChange={(value) => setoverTime(Number(value.target.value))} value={overTime} style={{width:"250px"}}/>
+                             <Input onChange={(value) => setoverTime(Number(value.target.value))} value={overTime} style={{width:250}}/>
                     </Form.Item>
                     <Form.Item name={"Description"} label="Description">
-                             <Input onChange={(value) => setDescription(value.target.value)} value={description} style={{width:"250px"}}/>
+                             <Input onChange={(value) => setDescription(value.target.value)} value={description} style={{width:250}}/>
                     </Form.Item>
       <Button htmlType='submit' type='primary'>Create</Button>
       <Button onClick={handleCancel} style={{marginLeft:"1vh"}}>Cancel</Button>

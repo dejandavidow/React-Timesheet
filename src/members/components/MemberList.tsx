@@ -57,10 +57,7 @@ const MemberList = (props: ClientListProps) => {
         setError(err)
       });
     countCategory(props.searchTerm, props.letter).then(data => setpageCount(Math.ceil(data/pageSize)));
-    props.setNewClientCreated(false);
-    props.setClientDeleted(false);
-    props.setClientUpdated(false);
-}, [props.newClientCreated, props.searchTerm,props.clientDeleted,props.clientUpdated,pageNumber,pageCount, props.letter])
+}, [props.newClientCreated, props.searchTerm,props.clientDeleted,props.clientUpdated,pageNumber, props.letter])
 const handlePageClick = (e:{selected: number}) =>
 {
 setPageNumber(e.selected+1);
@@ -82,15 +79,12 @@ const updateClientHandler = () =>
       (
         x =>
         {
-          if(!x)
-          {
-            props.setIsLoaded(false)
-          }
           props.setClientUpdated(true);
           handleClose()
           message.success("Member updated successfully")
         }
       )
+      props.setClientUpdated(false)
 }
 
 const handleFilter = (event: React.MouseEvent<HTMLButtonElement>) =>

@@ -42,15 +42,13 @@ const Memberheader = (props: ClientHeaderProps) => {
     } 
     PostCategory(request).then(x =>
       {
-        if(!x)
-        {
-          props.setIsLoaded(false)
-        }
         props.setNewClientCreated(true);
         handleClose();
         message.success("Member created succesfully")
       }
-    )}
+    )
+    props.setNewClientCreated(false);
+  }
   return (
       <>
       <h2>Members</h2>
@@ -66,8 +64,8 @@ const Memberheader = (props: ClientHeaderProps) => {
        form={form} 
        autoComplete='off'
        onFinish={CreateClientHandler}
-       labelCol={{ span: 8 }}
-       wrapperCol={{ span: 16 }}
+        labelCol={{ span: 8 }}
+        wrapperCol={{ span: 16 }}
        >
           <Form.Item name="Name" label="Name" rules={[{ required: true,message:'Please input your name'},{type:'string',min:3,message:'Name must be atleast 3 characters.'}]}>
               <Input onChange={(value) => setName(value.target.value)} value={name}/>
@@ -84,6 +82,7 @@ const Memberheader = (props: ClientHeaderProps) => {
           <Form.Item name="hours" label="Hours">
               <Input onChange={(value) => setHours(Number(value.target.value))} value={hours}/>
           </Form.Item>
+          
           <Form.Item label='Status' name='status' rules={[{required:true,message:'Please choose status'}]}>
                 <Radio.Group onChange={(e) => setStatus(e.target.value)} value={status}>
                 <Radio value='active'>Active</Radio>

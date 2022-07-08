@@ -26,13 +26,10 @@ const OneMember = ({member,childToParent,setClientDeleted,setIsloaded} : MemberP
     {
         deleteCategory(id).then( res =>
           {
-            if(!res)
-            {
-              setIsloaded(false)
-            }
             setClientDeleted(true);
             message.success("Member deleted successfully")
           })
+          setClientDeleted(false)
     }
   return (
     <>

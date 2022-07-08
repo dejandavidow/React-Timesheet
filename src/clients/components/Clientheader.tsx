@@ -40,15 +40,12 @@ const Clientheader = (props: ClientHeaderProps) => {
     }
     PostClient(request).then(e =>
       {
-        if(!e)
-        {
-          props.setIsLoaded(false)
-        }
         props.setNewClientCreated(true);
-        handleClose();
         message.success("Client created successfully",2)
       }
       ) 
+      handleClose();
+      props.setNewClientCreated(false)
   }
   return (
       <>

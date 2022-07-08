@@ -49,10 +49,7 @@ export const ClientList = (props: ClientListProps) => {
         setError(err)
        });
     countClients(props.searchTerm, props.letter).then(data => setpageCount(Math.ceil(data/pageSize)));
-    props.setNewClientCreated(false);
-    props.setClientDeleted(false);
-    props.setClientUpdated(false);
-}, [props.newClientCreated, props.searchTerm,props.clientDeleted,props.clientUpdated,pageNumber,pageCount, props.letter])
+}, [props.newClientCreated, props.searchTerm,props.clientDeleted,props.clientUpdated,pageNumber, props.letter])
 const handlePageClick = (e:{selected: number}) =>
 {
 setPageNumber(e.selected+1);
@@ -72,14 +69,11 @@ const updateClientHandler = () =>
 {
       UpdateClient({id,clientName,adress,city,postalCode,country},id).then(e =>
         {
-          if(!e)
-          {
-            props.setIsLoaded(false)
-          }
           props.setClientUpdated(true);
-          handleClose();
           message.success("Client updated successfully")
         })
+        handleClose();
+        props.setClientUpdated(false)
 }
 const handleFilter = (event: React.MouseEvent<HTMLButtonElement>) =>
 {

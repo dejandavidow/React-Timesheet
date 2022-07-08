@@ -23,15 +23,12 @@ const OneCategory = ({category,childToParent,setcategoryDeleted,setIsLoaded}:Cat
   const [error,setError] = useState<string | null>("")
   const deleteHandler = (Id:string | undefined) =>
     {
-        deleteCategory(Id).then(e =>
+        deleteCategory(Id).then(() =>
           {  
-            if(!e)
-            {
-              setIsLoaded(false)
-            }
               setcategoryDeleted(true)
               message.success("Category deleted successfully")
           },(err) => setError(err))
+          setcategoryDeleted(false)
     }
   return (
     <div>
