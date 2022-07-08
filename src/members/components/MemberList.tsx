@@ -114,7 +114,7 @@ const HandleClick = () =>
 }
 if(error)
 {
-  return <div>{error}</div>
+  return <div>{error.message}</div>
 }
 else if (!props.isLoaded)
 {

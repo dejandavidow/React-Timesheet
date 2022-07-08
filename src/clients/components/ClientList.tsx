@@ -89,7 +89,7 @@ const handleFilter = (event: React.MouseEvent<HTMLButtonElement>) =>
 }
 if(error)
 {
-  return <div>{error}</div>
+  return <div>{error.message}</div>
 }
 else if(!props.isLoaded)
 {

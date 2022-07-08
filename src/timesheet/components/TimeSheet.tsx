@@ -38,7 +38,6 @@ const TimeSheet = React.memo(() => {
   const [load,setLoad] = useState(false);
   const [total,setTotal] = useState(0);
   const [error,setError] = useState<any>(null)
-  const [viewChanged,setViewChanged] = useState(false)
   const [isLoaded,setIsLoaded] = useState(false)
   
   useEffect(() => {
@@ -50,7 +49,11 @@ const TimeSheet = React.memo(() => {
             setIsLoaded(true)
             setTimeSheets(data)
             setTotal(x);
-            })
+            },err => {
+              setIsLoaded(true)
+              setError(err)
+            }
+            )
       }  
   }, [start,end,tsCreated,timesheets.length])
   const totalTimeHandler = () =>{
@@ -81,17 +84,11 @@ const TimeSheet = React.memo(() => {
   }
 
     const renderEventContent = (e: EventContentArg) => {
-      if(!isLoaded)
-      {
-        return <b>Hours: Loading..</b>
-      }
-      else{
       return (
         <>
           <b style={{backgroundColor:e.event.extendedProps.time > 4 ? 'rgba(0,255,0,0.4)' : 'rgba(255,0,0,0.4)',width:'100%',height:'100%',padding:'10px 0px',margin:0}}>Hours: {e.event.extendedProps.time}</b>   
         </>
       );
-    }
   }
     const handleDateSelect = (selectInfo: DateSelectArg) => {
       let currentdate = selectInfo.view.calendar.getDate().toLocaleDateString();
@@ -138,12 +135,8 @@ const TimeSheet = React.memo(() => {
       form.resetFields();
       setVisible(false);
     }
-    // if(error)
-    // {
-    //   return <div>{error}</div>
-    // }
-    // else{
   return <>
+  {error ? message.warn(error.message) : null}
   <Header/>
   <div className="container bgcolor">
        <div>

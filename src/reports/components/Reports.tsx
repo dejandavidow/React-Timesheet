@@ -1,12 +1,13 @@
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { getPageCount, onLoadFilteredTimeSheets} from '../../timesheet/service/timesheet-service'
 import SearchHeader from './SearchHeader'
 import Header from '../../Header';
 import { ReportModel } from '../../timesheet/model/ReportModel';
 import { PaginationProps, Spin, Table } from 'antd';
 import type { ColumnsType} from 'antd/lib/table';
-const Reports = () => {
+
+const Reports = React.memo(() => {
   const [timesheets,setTimeSheets] = useState<ReportModel[]>([])
   const [categoryId,setcategoryId] = useState("");
   const [clientId,setclientId] = useState("");
@@ -21,21 +22,41 @@ const Reports = () => {
   const [totalHours,setTotalHours] = useState(0)
   const [isLoaded,setIsLoaded] = useState(false)
   const [error,setError] = useState<any>(null)
+  const [searchCall,setCall] = useState(false)
   useEffect(() => {
-   onLoadFilteredTimeSheets(startDate,endDate,categoryId,projectId,clientId,pageNumber,pageSize,memberId).then(
-    data => 
-    {
-      setIsLoaded(true)
-      setTimeSheets(data)
+    onLoadFilteredTimeSheets(startDate,endDate,categoryId,projectId,clientId,pageNumber,pageSize,memberId).then(
+     data => 
+     {
+       setIsLoaded(true)
+       setTimeSheets(data)
+       setTotalHours(totalTimeHandler(data))
+     }
+     ,(err) =>
+     {
+       setIsLoaded(true)
+       setError(err)
+     });
     }
-    ,(err) =>
-    {
-      setIsLoaded(true)
-      setError(err)
-    });
-   getPageCount(startDate,endDate,categoryId,projectId,clientId,pageNumber,pageSize,memberId).then(data => setpageCount(data));
-   totalTimeHandler()  
-  }, [pageNumber,pageCount,reFetch,timesheets.length])
+   , [pageNumber,reFetch,searchCall])
+   useEffect(() => {
+    getPageCount(startDate,endDate,categoryId,projectId,clientId,pageNumber,pageSize,memberId).then(data =>{
+      setpageCount(data)
+   });
+   
+   }, [searchCall,reFetch])
+   
+   const totalTimeHandler =(tsar:ReportModel[]) =>{
+    const timearray : number[]= []
+    {tsar.map((ts) =>
+      {
+        return timearray.push(Number(ts.time))
+      }
+      )}
+    var sum = timearray.reduce(function(a, b){
+        return a + b;
+    }, 0);
+     return sum;
+  }
   const onChange: PaginationProps['onChange'] = pageNumber => {
     setPageNumber(pageNumber);
   };
@@ -71,22 +92,6 @@ const Reports = () => {
       key: 'time',
     }
   ];
-  const totalTimeHandler = () =>{
-      const timearray : number[]= []
-      {timesheets.map((ts) =>
-        {
-          timearray.push(Number(ts.time))
-        }
-        )}
-      var sum = timearray.reduce(function(a, b){
-          return a + b;
-      }, 0);
-      setTotalHours(sum)
-    }
-    if(error)
-    {
-      return <div>{error.message}</div>
-    }
   return (
     <>
     <Header/>
@@ -111,8 +116,10 @@ const Reports = () => {
     setIsLoaded={setIsLoaded}
     setError={setError}
     memberId={memberId}
+    setCall={setCall}
     />
-    { isLoaded ? <Table dataSource={timesheets} columns={columns} pagination={{position:['bottomCenter'],onChange:onChange,total:pageCount,pageSize:pageSize}}/> : <Spin/>}
+    { isLoaded ? <Table dataSource={timesheets} columns={columns} pagination={{position:['bottomCenter'],onChange:onChange,total:pageCount,pageSize:pageSize}}/> : <Spin tip="Loading..." style={{margin:"5vh 60vh"}}/>}
+    {error ? <p>{error.message}</p> : null}
     <div className="container totalhours">
         <p>
           Reports Total:<span style={{ color: "darkorange" }}>{totalHours}</span>
@@ -122,7 +129,7 @@ const Reports = () => {
     </div>
 
     </>
-  )         
-}
+  )        
+})
 
 export default Reports

@@ -33,8 +33,9 @@ type TsProps ={
   setIsLoaded:(c:boolean) => void
   setError:(c:any) => void
   memberId:string
+  setCall:(c:boolean) => void
 }
-const SearchHeader = ({memberId,setError,setIsLoaded,setcategoryId,setprojectId,setclientId,setStartDate,setEndDate,startDate,endDate,clientId,projectId,categoryId,setTimeSheets,pageNumber,pageSize,setpageCount,setreFetch,setmemberId}:TsProps) => {
+const SearchHeader = ({setCall,memberId,setError,setIsLoaded,setcategoryId,setprojectId,setclientId,setStartDate,setEndDate,startDate,endDate,clientId,projectId,categoryId,setTimeSheets,pageNumber,pageSize,setpageCount,setreFetch,setmemberId}:TsProps) => {
   const [form] = Form.useForm();
   const [categories,setCategories] = useState<CategoryModel[]>([]);
   const [clients,setClients] = useState<ClientModel[]>([]);
@@ -68,6 +69,7 @@ const SearchHeader = ({memberId,setError,setIsLoaded,setcategoryId,setprojectId,
       {
       setIsLoaded(true)
       setTimeSheets(data)
+      setCall(true)
       }
       ,err =>
       {
