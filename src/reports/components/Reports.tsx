@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { getPageCount, onLoadFilteredTimeSheets} from '../../timesheet/service/timesheet-service'
 import SearchHeader from './SearchHeader'
 import Header from '../../Header';
@@ -9,6 +9,7 @@ import type { ColumnsType} from 'antd/lib/table';
 import {CSVLink } from 'react-csv';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import ReactToPrint from 'react-to-print';
 const Reports = React.memo(() => {
   const [timesheets,setTimeSheets] = useState<ReportModel[]>([])
   const [categoryId,setcategoryId] = useState("");
@@ -47,11 +48,23 @@ const Reports = React.memo(() => {
    
    }, [searchCall,reFetch])
    
-   const totalTimeHandler =(tsar:ReportModel[]) =>{
+    const totalTimeHandler =(tsar:ReportModel[]) =>{
     const timearray : number[]= []
     {tsar.map((ts) =>
       {
         return timearray.push(Number(ts.time))
+      }
+      )}
+    var sum = timearray.reduce(function(a, b){
+        return a + b;
+    }, 0);
+     return sum;
+  }
+  const overTimeHandler =(tsar:ReportModel[]) =>{
+    const timearray : number[]= []
+    {tsar.map((ts) =>
+      {
+        return timearray.push(Number(ts.overTime))
       }
       )}
     var sum = timearray.reduce(function(a, b){
@@ -110,6 +123,7 @@ const Reports = React.memo(() => {
      const data : any = []
      timesheets.map((ts) => data.push([ts.date,ts.projectDTO.memberDTO.name,ts.projectDTO.projectName,ts.categoryDTO.name,ts.description,ts.time,ts.overTime]))
     const doc = new jsPDF();
+    let overtime = overTimeHandler(timesheets)
     doc.text("Reports",10,10);
     autoTable(doc,
       {
@@ -117,8 +131,11 @@ const Reports = React.memo(() => {
         body:data,
         theme:'grid'
       })
-    doc.save("report.pdf");
+      doc.text(`Total hours:${totalHours}`,100,10)
+      doc.text(`Over hours:${overtime}`,150,10)
+      doc.save("report.pdf");
   }
+  const printRef = useRef(null);
   return (
     <>
     <Header/>
@@ -145,6 +162,9 @@ const Reports = React.memo(() => {
     memberId={memberId}
     setCall={setCall}
     />
+    <div style={{display:'none'}}>
+    <Table ref={printRef} dataSource={timesheets} columns={columns} pagination={false}/>
+    </div>
     { isLoaded ? <Table dataSource={timesheets} columns={columns} pagination={{position:['bottomCenter'],onChange:onChange,total:pageCount,pageSize:pageSize}}/> : <Spin tip="Loading..." style={{margin:"5vh 60vh"}}/>}
     {error ? <p>{error.message}</p> : null}
     <div className="container totalhours">
@@ -152,7 +172,11 @@ const Reports = React.memo(() => {
           Reports Total:<span style={{ color: "darkorange" }}>{totalHours}</span>
         </p>
         <div className='buttongr'>
-        <Button htmlType='button'>Print report</Button>
+          <ReactToPrint
+          trigger={() => <Button htmlType='button'>Print report</Button> }
+          content={() => printRef.current }
+          
+          />
         <Button htmlType='button' onClick={createPDF}>Create PDF</Button>
         <Button htmlType='button'><CSVLink data={timesheets} headers={headers} filename={'report.csv'} style={{textDecoration:'none'}}>Export to excel</CSVLink></Button>
         </div>

@@ -79,7 +79,6 @@ const TimeSheet = React.memo(() => {
   const handleShow = () =>{
     setVisible(true); 
   }
-
     const renderEventContent = (e: EventContentArg) => {
       return (
         <>
@@ -185,7 +184,7 @@ const TimeSheet = React.memo(() => {
              autoComplete='off'
             >
                 <Input.Group compact>
-                <Form.Item name="Client" label="Client"  style={{width:350}} className='margins' rules={[{required:true}]}>
+                <Form.Item name="Client" label="Client"  style={{width:350}} className='margins' rules={[{required:true,message:'Client is required.'}]}>
                   <Select
                     placeholder="Select client"
                     onClick={getClientsHandler}
@@ -196,7 +195,7 @@ const TimeSheet = React.memo(() => {
                     )}
                   </Select>
                 </Form.Item>
-                <Form.Item name="Category" label="Category" style={{width:350}} className='margins' rules={[{required:true}]}>
+                <Form.Item name="Category" label="Category" style={{width:350}} className='margins' rules={[{required:true,message:'Category is required.'}]}>
                   <Select
                     placeholder="Select category"
                     onClick={getCategoriesHandler}
@@ -207,7 +206,7 @@ const TimeSheet = React.memo(() => {
                     )}
                   </Select>
                 </Form.Item>
-                <Form.Item name="Project" label="Project" style={{width:350}} className='margins' rules={[{required:true}]}>
+                <Form.Item name="Project" label="Project" style={{width:350}} className='margins' rules={[{required:true,message:'Project is required.'}]}>
                   <Select
                     placeholder="Select project"
                     onClick={getProjectsHandler}
@@ -219,7 +218,7 @@ const TimeSheet = React.memo(() => {
                   </Select>
                 </Form.Item>
                 </Input.Group>
-                    <Form.Item name={"Hours"} label="Hours" rules={[{ required: true }]}> 
+                    <Form.Item name={"Hours"} label="Hours" rules={[{ required: true,message:'Hours are required.'}]}> 
                              <Input onChange={(value) => setTime(value.target.value)} value={time} style={{width:250}}/>
                     </Form.Item>
                     <Form.Item name={"Overhours"} label="Over Hours">

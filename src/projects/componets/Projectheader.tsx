@@ -78,7 +78,7 @@ const Projectheader = (props:ClientHeaderProps) => {
        labelCol={{ span: 8 }}
        wrapperCol={{ span: 16 }}
        >
-          <Form.Item name="projectName" label="Project name" rules={[{ required: true,message:'Please input project name name'},{type:'string',min:3,message:'Name must be atleast 3 characters.'}]}>
+          <Form.Item name="projectName" label="Project name" rules={[{ required: true,message:'Project name is required.'},{type:'string',min:3,message:'Name must be atleast 3 characters.'}]}>
               <Input onChange={(value) => setprojectName(value.target.value)} value={projectName}/>
           </Form.Item>
           <Form.Item name="description" label="Description">
@@ -93,7 +93,7 @@ const Projectheader = (props:ClientHeaderProps) => {
           <Form.Item name='archive' label="Archive">
                 <Radio value='archived' onChange={(e) => setArchive(e.target.value)}>Archived</Radio>
           </Form.Item>
-          <Form.Item name="member" label="Member" rules={[{required:true}]}>
+          <Form.Item name="member" label="Member" rules={[{required:true,message:'Please choose member'}]}>
                   <Select
                   onClick={getMembersHandler}
                     placeholder="Select team member"
@@ -105,7 +105,7 @@ const Projectheader = (props:ClientHeaderProps) => {
                     )}
                   </Select>
                 </Form.Item>
-                <Form.Item name="client" label="Client" rules={[{required:true}]}>
+                <Form.Item name="client" label="Client" rules={[{required:true,message:'Please choose client'}]}>
                   <Select
                     placeholder="Select client"
                     allowClear

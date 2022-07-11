@@ -65,7 +65,7 @@ const Clientheader = (props: ClientHeaderProps) => {
        labelCol={{ span: 8 }}
        wrapperCol={{ span: 16 }}
        >
-          <Form.Item name="clientName" label="Name" rules={[{ required: true,message:'Please input client name'},{type:'string',min:3,message:'Name must be atleast 3 characters.'}]}>
+          <Form.Item name="clientName" label="Name" rules={[{ required: true,message:'Client name is required.'},{type:'string',min:3,message:'Name must be atleast 3 characters.'}]}>
               <Input onChange={(value) => setclientName(value.target.value)} value={clientName}/>
           </Form.Item>
           <Form.Item name="adress" label="Adress">

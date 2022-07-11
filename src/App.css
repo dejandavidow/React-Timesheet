@@ -6,23 +6,30 @@
 .link-decor
 {
     text-decoration: none;
-    color: orange !important;
+    color: grey !important;
 }
 .navlink
 {
-    background-color: white !important;
-    border: 0.5px solid black !important;
+    background-color: #DCDCDC !important;
+    border: 0.5px solid grey !important;
+    border-radius: 0;
 }
 .margin
 {
-    margin-top: 5vh;
+    margin-top: 3vh;
 }
 .loginform
 {
     width: 50vh;
     margin-top: 30vh;
 }
-.navlink:active
+.navlink.active
 {
-    background-color:orange !important;
+    background-color: white !important;
+    color:orange !important;
 }
+.loghover:hover
+{
+    color:orange !important; 
+}
+

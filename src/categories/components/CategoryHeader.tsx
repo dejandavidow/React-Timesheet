@@ -53,7 +53,7 @@ const CategoryHeader = ({setNewCategoryCreated,searchTerm,setSearchTerm,setLette
       >
        <Form onFinish={CreateCategoryHandler} form={form} autoComplete='off'  labelCol={{ span: 8 }}
        wrapperCol={{ span: 12 }}>
-       <Form.Item name={"Name"} label="Category Name" rules={[{ required: true,min:3 }]}>
+       <Form.Item name={"Name"} label="Category Name" rules={[{required:true,message:'Please input category name'},{min:3,message:'Minimum name lenght is 3.'}]}>
         <Input onChange={(value) => setName(value.target.value)} value={name}/>
       </Form.Item>
       <Button htmlType='submit' type='primary'>Create</Button>
