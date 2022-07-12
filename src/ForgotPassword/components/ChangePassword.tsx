@@ -18,7 +18,11 @@ const ChangePassword = () => {
      {
       if(res)
       {
-        if(res.errors.Token)
+        if(res.ErrorMessage)
+        {
+          setError(res.ErrorMessage)
+        }
+        else if(res.errors.Token)
         {
           setError(res.errors.Token)
         }
@@ -26,7 +30,7 @@ const ChangePassword = () => {
         {
           setError(res.errors.Password)
         }
-        else 
+        else if(res.errors.ConfirmPassword)
         {
           setError(res.errors.ConfirmPassword)
         }
@@ -43,7 +47,7 @@ const ChangePassword = () => {
   return (
     <>
     <div className='mx-auto loginform'>
-        {error ? <p style={{color:'red',marginLeft:'100px'}}>{error}</p> : null}
+        {error ? <p style={{color:'red',marginLeft:'100px'}}>{error + ""}</p> : null}
                 <Form
                   name="basic2"
                   labelCol={{ span: 8 }}

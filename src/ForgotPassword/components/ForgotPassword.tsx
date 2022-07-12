@@ -22,16 +22,18 @@ const ForgotPassword = () => {
       })
   }
   return (
-    <>
+    <div className='container'>
+    <h2 className='' style={{marginTop:30,color:'rgba(0,0,0,0.5)',textAlign:'center'}}>Forgot Password</h2>
     <div className='mx-auto loginform'>
       {error ? <p style={{color:'red',marginLeft:'100px'}}>{error}</p> : null}
-   <Form
+        <Form
             name="basic"
             labelCol={{ span: 8 }}
             wrapperCol={{ span: 16 }}
             form={form}
             onFinish={checkEmail}
             autoComplete='off'
+            title='[asd'
           >
             <Form.Item
             label="Email"
@@ -50,7 +52,7 @@ const ForgotPassword = () => {
                     </Button>
           </Form>
     </div>
-    </>
+    </div>
   )
 }
 
