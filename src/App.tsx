@@ -5,6 +5,8 @@ import LoginPage from './Auth/components/LoginPage';
 import ProtectedRoute from './Auth/components/ProtectedRoute';
 import Category from './categories/components/Category';
 import Client from './clients/components/Client';
+import ChangePassword from './ForgotPassword/components/ChangePassword';
+import ForgotPassword from './ForgotPassword/components/ForgotPassword';
 import Member from './members/components/Member';
 import Project from './projects/componets/Project';
 import Reports from './reports/components/Reports';
@@ -51,10 +53,11 @@ function App() {
              <AdminComponent/>
             </ProtectedRoute>
         }/>
-         <Route path="/test" element={
-              <ProtectedRoute>
-             <TestComponent/>
-            </ProtectedRoute>
+         <Route path="/forgot-password" element={
+             <ForgotPassword/>
+        }/>
+         <Route path="/reset-password" element={
+             <ChangePassword/>
         }/>
       </Routes>
       </>

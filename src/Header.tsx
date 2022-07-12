@@ -13,7 +13,6 @@ type User =
 const Header = () => {
   const [currentUser,setCurrentUser] = useState<User | undefined>(undefined)
   const [showAdminBoard, setShowAdminBoard] = useState<boolean>(false);
-  const [active,setActive] = useState(false);
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user') || "")
     if(user)
@@ -31,8 +30,7 @@ const Header = () => {
   }
   const content = (
     <div>
-      <p onClick={() => navigate('/admin')}>Reset password</p>
-      <p>Settings</p>
+      <Button style={{color:'orange',textDecoration:'none'}} variant='link' onClick={() => navigate('/forgot-password')}>Reset password</Button>
     </div>
     )
   return (
