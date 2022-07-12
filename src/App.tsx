@@ -8,6 +8,7 @@ import Client from './clients/components/Client';
 import ChangePassword from './ForgotPassword/components/ChangePassword';
 import ForgotPassword from './ForgotPassword/components/ForgotPassword';
 import Member from './members/components/Member';
+import UserChangePassword from './members/Reset-Password/UserChangePassword';
 import Project from './projects/componets/Project';
 import Reports from './reports/components/Reports';
 import TestComponent from './TestComponent';
@@ -58,6 +59,11 @@ function App() {
         }/>
          <Route path="/reset-password" element={
              <ChangePassword/>
+        }/>
+        <Route path="/change-password" element={
+          <ProtectedRoute>
+             <UserChangePassword/>
+            </ProtectedRoute>
         }/>
       </Routes>
       </>

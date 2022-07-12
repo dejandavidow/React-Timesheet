@@ -30,7 +30,7 @@ const Header = () => {
   }
   const content = (
     <div>
-      <Button style={{color:'orange',textDecoration:'none'}} variant='link' onClick={() => navigate('/forgot-password')}>Reset password</Button>
+      <Button style={{color:'orange',textDecoration:'none'}} variant='link' onClick={() => navigate('/change-password')}>Change password</Button>
     </div>
     )
   return (

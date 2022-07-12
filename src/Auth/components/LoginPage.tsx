@@ -49,6 +49,9 @@ const LoginPage = () => {
       >
         <Input.Password onChange={(e) => setPassword(e.target.value)} value={password}/>
       </Form.Item>
+       <a style={{marginLeft:350}} className="login-form-forgot" onClick={() => navigate('/forgot-password')}>
+           Forgot password
+        </a>
       <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
         <Button type="primary" htmlType="submit">
           Login
