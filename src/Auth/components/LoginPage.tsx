@@ -1,4 +1,4 @@
-import { Button, Form, Input, message, Spin } from 'antd'
+import { Button, Form, Input } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -26,7 +26,7 @@ const LoginPage = () => {
   return (
     <div className='container'>
       <div className='loginform mx-auto'>
-      <span style={{color:'red'}}>{error}</span>
+      {error ? <span style={{color:'red',marginLeft:200}}>{error}</span> : null}
         <Form
         name="basic"
         labelCol={{ span: 8 }}
@@ -47,7 +47,7 @@ const LoginPage = () => {
         name="password"
         rules={[{ required: true, message: 'Please input your password!' }]}
       >
-        <Input.Password onChange={(e) => setPassword(e.target.value)} value={password}/>
+        <Input.Password onChange={(value) => setPassword(value.target.value)} value={password}/>
       </Form.Item>
        <a style={{marginLeft:350}} className="login-form-forgot" onClick={() => navigate('/forgot-password')}>
            Forgot password
