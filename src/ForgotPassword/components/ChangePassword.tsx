@@ -1,19 +1,26 @@
 import { Button, Form, Input, message } from 'antd'
 import { useForm } from 'antd/lib/form/Form';
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { resetpassword } from '../service/pwservice';
-
+import {useLocation} from "react-router-dom"
 const ChangePassword = () => {
     const [form] = useForm();
     const [password,setPassword] = useState("")
     const [confirmpassword,setconPassword] = useState("")
-    const [token,setToken] = useState("")
+    const [token,setToken] = useState<string | null>("")
     const [error,setError] = useState<any>(null)
     const navigate = useNavigate();
+    const location = useLocation();
+    const [searchParams, setSearchParams] = useSearchParams();
+    useEffect(() => {
+      const tokenQ = searchParams.get('token')
+      setToken(tokenQ)
+    }, [])
+    
     const changePassword= () =>
     {
-     resetpassword({token,password,confirmpassword})
+     resetpassword({password,confirmpassword},token)
      .then( (res) =>
      {
       if(res)
@@ -44,7 +51,7 @@ const ChangePassword = () => {
       }
      })
     }
-  return (
+  return ( 
     <>
     <div className='mx-auto loginform'>
         {error ? <p style={{color:'red',marginLeft:'100px'}}>{error + ""}</p> : null}
@@ -52,18 +59,15 @@ const ChangePassword = () => {
                   name="basic2"
                   labelCol={{ span: 8 }}
                   wrapperCol={{ span: 16 }}
-                  initialValues={{ remember: true }}
                   onFinish={changePassword}
-                  autoComplete="off"
                   form={form}
                 >
-                    <Form.Item label='Token' name='token'>
-                        <Input value={token} onChange={e => setToken(e.target.value)}/>
+                    <Form.Item name='token'>
+                    <Input type='hidden' value={token ? token : undefined}></Input>
                     </Form.Item>
                   <Form.Item
                     label="Password"
                     name="password"
-                    //rules={[{ required: true, message: 'Password is required', }]}
                   >
                     <Input.Password value={password} onChange={(e) => setPassword(e.target.value)} />
                   </Form.Item>
@@ -71,7 +75,6 @@ const ChangePassword = () => {
                   <Form.Item
                     label="Confirm password"
                     name="confirmpassword"
-                    //rules={[{ required: true, message: 'Confirm password is required' }]}
                   >
                     <Input.Password value={confirmpassword} onChange={(e) => setconPassword(e.target.value)} />
                   </Form.Item>

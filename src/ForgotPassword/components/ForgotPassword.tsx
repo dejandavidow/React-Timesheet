@@ -17,7 +17,8 @@ const ForgotPassword = () => {
           setError(err.ErrorMessage)
         }
         else{
-          navigate('/reset-password')
+          navigate('/')
+          message.success("Reset link is sent,check your email adress.",2)
         }
       })
   }

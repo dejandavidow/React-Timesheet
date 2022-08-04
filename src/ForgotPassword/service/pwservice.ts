@@ -13,9 +13,9 @@ export const forgotpassword = async (body:ForgotModel) : Promise<any>=>
         return response.json()
     }
 }
-export const resetpassword = async (body:ResetModel) =>
+export const resetpassword = async (body:ResetModel,token:string | null) =>
 {
-    var response = await fetch('https://localhost:44381/api/Member/reset-password',
+    var response = await fetch(`https://localhost:44381/api/Member/reset-password?token=${token}`,
     {
         method:'POST',
         headers:{'Content-Type':'application/json'},
