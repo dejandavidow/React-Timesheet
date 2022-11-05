@@ -1,10 +1,8 @@
-import { type } from "os";
 import { authHeader } from "../../Auth/auth-service/AuthService";
 import { ChangePasswordModel } from "../model/ChangePasswordModel";
 import { MemberModel } from "../model/MemberModel";
-import { PasswordResetModel } from "../model/PasswordResetModel";
 
-export const getCategories = async (
+export const getAllMembers = async (
   searchterm: string,
   filterLetter: string,
   pagenumber: number,
@@ -13,7 +11,7 @@ export const getCategories = async (
   const response: MemberModel[] = [];
   if (searchterm === "" && filterLetter === "") {
     await fetch(
-      `https://localhost:44381/api/Member/?PageNumber=${pagenumber}&PageSize=${pagesize}`,
+      `https://localhost:44381/api/Members?PageNumber=${pagenumber}&PageSize=${pagesize}`,
       {
         method: "GET",
         headers: authHeader(),
@@ -23,7 +21,7 @@ export const getCategories = async (
       .then((cl) => cl.map((c: MemberModel) => response.push(c)));
   } else if (searchterm !== "" && filterLetter === "") {
     await fetch(
-      `https://localhost:44381/api/Member/search?${searchterm}?PageNumber=${pagenumber}&PageSize=${pagesize}&search=${searchterm}`,
+      `https://localhost:44381/api/Members/search?PageNumber=${pagenumber}&PageSize=${pagesize}&search=${searchterm}`,
       {
         method: "GET",
         headers: authHeader(),
@@ -33,7 +31,7 @@ export const getCategories = async (
       .then((cl) => cl.map((c: MemberModel) => response.push(c)));
   } else if (searchterm === "" && filterLetter !== "") {
     await fetch(
-      `https://localhost:44381/api/Member/filter?letter=${filterLetter}&PageNumber=${pagenumber}&PageSize=${pagesize}`,
+      `https://localhost:44381/api/Members/filters?letter=${filterLetter}&PageNumber=${pagenumber}&PageSize=${pagesize}`,
       {
         method: "GET",
         headers: authHeader(),
@@ -45,13 +43,13 @@ export const getCategories = async (
   return response;
 };
 
-export const PostCategory = async (body: MemberModel): Promise<any> => {
+export const PostMember = async (body: MemberModel): Promise<any> => {
   const request = {
     method: "POST",
     headers: authHeader(),
     body: JSON.stringify(body),
   };
-  await fetch("https://localhost:44381/api/Member", request).then(
+  await fetch("https://localhost:44381/api/Members", request).then(
     (response) => {
       const isJson = response.headers
         .get("content-type")
@@ -66,12 +64,12 @@ export const PostCategory = async (body: MemberModel): Promise<any> => {
   );
 };
 
-export const deleteCategory = async (id: string | undefined): Promise<any> => {
+export const deleteMember = async (id: string | undefined): Promise<any> => {
   const request = {
     method: "DELETE",
     headers: authHeader(),
   };
-  await fetch(`https://localhost:44381/api/Member/${id}`, request).then(
+  await fetch(`https://localhost:44381/api/Members/${id}`, request).then(
     (response) => {
       const isJson = response.headers
         .get("content-type")
@@ -86,7 +84,7 @@ export const deleteCategory = async (id: string | undefined): Promise<any> => {
   );
 };
 
-export const UpdateCategory = async (
+export const UpdateMember = async (
   body: MemberModel,
   id: string | undefined
 ): Promise<any> => {
@@ -95,7 +93,7 @@ export const UpdateCategory = async (
     headers: authHeader(),
     body: JSON.stringify(body),
   };
-  await fetch(`https://localhost:44381/api/Member/${id}`, request).then(
+  await fetch(`https://localhost:44381/api/Members/${id}`, request).then(
     (response) => {
       const isJson = response.headers
         .get("content-type")
@@ -110,7 +108,7 @@ export const UpdateCategory = async (
   );
 };
 
-export const countCategory = async (searchterm: string, letter: string) => {
+export const countMembers = async (searchterm: string, letter: string) => {
   const request = {
     method: "GET",
     headers: authHeader(),
@@ -118,19 +116,19 @@ export const countCategory = async (searchterm: string, letter: string) => {
 
   if (searchterm !== "" && letter === "") {
     var response: number = await fetch(
-      `https://localhost:44381/api/Member/search-count?search=${searchterm}`,
+      `https://localhost:44381/api/Members/search-count?search=${searchterm}`,
       request
     ).then((response) => response.json());
     return response;
   } else if (searchterm === "" && letter !== "") {
     var response: number = await fetch(
-      `https://localhost:44381/api/Member/filter-count?letter=${letter}`,
+      `https://localhost:44381/api/Members/filter-count?letter=${letter}`,
       request
     ).then((response) => response.json());
     return response;
   } else {
     var response: number = await fetch(
-      `https://localhost:44381/api/Member/search-count?search=${searchterm}`,
+      `https://localhost:44381/api/Members/search-count`,
       request
     ).then((response) => response.json());
     return response;
@@ -138,7 +136,7 @@ export const countCategory = async (searchterm: string, letter: string) => {
 };
 export const getMembers = async (): Promise<MemberModel[]> => {
   const response: MemberModel[] = [];
-  await fetch(`https://localhost:44381/api/Member/`, {
+  await fetch(`https://localhost:44381/api/Members/`, {
     method: "GET",
     headers: authHeader(),
   })
@@ -151,7 +149,7 @@ export const changePasswordAsync = async (
   email: string | undefined,
   password: string
 ) => {
-  await fetch("https://localhost:44381/api/Member/change-password", {
+  await fetch("https://localhost:44381/api/Members/change-password", {
     method: "PUT",
     headers: authHeader(),
     body: JSON.stringify({ email, password }),
@@ -159,25 +157,17 @@ export const changePasswordAsync = async (
 };
 export const getMemberbyEmail = async (email: string): Promise<MemberModel> => {
   const res: MemberModel | any = await fetch(
-    `https://localhost:44381/api/Member/email/${email}`,
+    `https://localhost:44381/api/Members/email/${email}`,
     {
       method: "GET",
       headers: authHeader(),
     }
   ).then((res) => res.json());
-  // .then(  resp =>
-  //     {
-  //         if(!resp.ok)
-  //         {
-  //             return Promise.reject(resp.ErrorMessage)
-  //         }
-  //         else return resp;
-  //     })
   return res;
 };
 export const userChangePassword = async (body: ChangePasswordModel) => {
   var response = await fetch(
-    "https://localhost:44381/api/Member/member/change-password",
+    "https://localhost:44381/api/Members/member/change-password",
     {
       method: "PUT",
       headers: authHeader(),

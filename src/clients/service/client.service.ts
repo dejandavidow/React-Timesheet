@@ -12,7 +12,7 @@ export const getClients = async (
   const response: ClientModel[] = [];
   if (searchterm === "" && filterLetter === "") {
     await fetch(
-      `https://localhost:44381/api/Client/?PageNumber=${pagenumber}&PageSize=${pagesize}`,
+      `https://localhost:44381/api/Clients?PageNumber=${pagenumber}&PageSize=${pagesize}`,
       {
         method: "GET",
         headers: authHeader(),
@@ -22,7 +22,7 @@ export const getClients = async (
       .then((cl) => cl.map((c: ClientModel) => response.push(c)));
   } else if (searchterm !== "" && filterLetter === "") {
     await fetch(
-      `https://localhost:44381/api/Client/search/${searchterm}?PageNumber=${pagenumber}&PageSize=${pagesize}`,
+      `https://localhost:44381/api/Clients/search/${searchterm}?PageNumber=${pagenumber}&PageSize=${pagesize}`,
       {
         method: "GET",
         headers: authHeader(),
@@ -32,7 +32,7 @@ export const getClients = async (
       .then((cl) => cl.map((c: ClientModel) => response.push(c)));
   } else if (searchterm === "" && filterLetter !== "") {
     await fetch(
-      `https://localhost:44381/api/Client/filter?letter=${filterLetter}&PageNumber=${pagenumber}&PageSize=${pagesize}`,
+      `https://localhost:44381/api/Clients/filters?letter=${filterLetter}&PageNumber=${pagenumber}&PageSize=${pagesize}`,
       {
         method: "GET",
         headers: authHeader(),
@@ -50,7 +50,7 @@ export const PostClient = async (body: ClientModel): Promise<any> => {
     headers: authHeader(),
     body: JSON.stringify(body),
   };
-  await fetch("https://localhost:44381/api/Client", request).then(
+  await fetch("https://localhost:44381/api/Clients", request).then(
     (response) => {
       const isJson = response.headers
         .get("content-type")
@@ -70,7 +70,7 @@ export const deleteClient = async (id: string | undefined): Promise<any> => {
     method: "DELETE",
     headers: authHeader(),
   };
-  await fetch(`https://localhost:44381/api/Client/${id}`, request).then(
+  await fetch(`https://localhost:44381/api/Clients/${id}`, request).then(
     (response) => {
       const isJson = response.headers
         .get("content-type")
@@ -94,7 +94,7 @@ export const UpdateClient = async (
     headers: authHeader(),
     body: JSON.stringify(body),
   };
-  await fetch(`https://localhost:44381/api/Client/${id}`, request).then(
+  await fetch(`https://localhost:44381/api/Clients/${id}`, request).then(
     (response) => {
       const isJson = response.headers
         .get("content-type")
@@ -117,19 +117,19 @@ export const countClients = async (searchterm: string, letter: string) => {
 
   if (searchterm !== "" && letter === "") {
     var response: number = await fetch(
-      `https://localhost:44381/api/Client/count/?search=${searchterm}`,
+      `https://localhost:44381/api/Clients/search-count?search=${searchterm}`,
       request
     ).then((response) => response.json());
     return response;
   } else if (searchterm === "" && letter !== "") {
     var response: number = await fetch(
-      `https://localhost:44381/api/Client/filter/count?letter=${letter}`,
+      `https://localhost:44381/api/Clients/filter-count?letter=${letter}`,
       request
     ).then((response) => response.json());
     return response;
   } else {
     var response: number = await fetch(
-      `https://localhost:44381/api/Client/count/?search=${searchterm}`,
+      `https://localhost:44381/api/Clients/search-count`,
       request
     ).then((response) => response.json());
     return response;
@@ -137,7 +137,7 @@ export const countClients = async (searchterm: string, letter: string) => {
 };
 export const getClientList = async (): Promise<ClientModel[]> => {
   const response: ClientModel[] = [];
-  await fetch(`https://localhost:44381/api/Client/`, {
+  await fetch(`https://localhost:44381/api/Clients/`, {
     method: "GET",
     headers: authHeader(),
   })

@@ -6,7 +6,7 @@ import { getClientList } from "../../clients/service/client.service";
 import { MemberModel } from "../../members/model/MemberModel";
 import { getMembers } from "../../members/service/member-service";
 import { ProjectModel } from "../model/ProjectModel";
-import { PostCategory } from "../service/project-service";
+import { PostProject } from "../service/project-service";
 type ClientHeaderProps = {
   setNewClientCreated: (isCreated: boolean) => void;
   searchTerm: string;
@@ -41,7 +41,7 @@ const Projectheader = (props: ClientHeaderProps) => {
       memberId,
       clientId,
     };
-    PostCategory(request).then((res) => {
+    PostProject(request).then((res) => {
       props.setNewClientCreated(true);
       message.success("Project created successfully");
     });

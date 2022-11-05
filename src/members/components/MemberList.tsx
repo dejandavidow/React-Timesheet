@@ -6,11 +6,7 @@ import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
 import { getCurrentUser } from "../../Auth/auth-service/AuthService";
 import { MemberModel } from "../model/MemberModel";
-import {
-  countCategory,
-  getCategories,
-  UpdateCategory,
-} from "../service/member-service";
+import { countMembers, getAllMembers, UpdateMember } from "../service/member-service";
 import OneMember from "./OneMember";
 type ClientListProps = {
   newClientCreated: boolean;
@@ -51,7 +47,7 @@ const MemberList = (props: ClientListProps) => {
   const [role, setRole] = useState("");
   const [error, setError] = useState<any>(null);
   useEffect(() => {
-    getCategories(props.searchTerm, props.letter, pageNumber, pageSize).then(
+    getAllMembers(props.searchTerm, props.letter, pageNumber, pageSize).then(
       (data) => {
         props.setIsLoaded(true);
         setMembers(data);
@@ -61,7 +57,7 @@ const MemberList = (props: ClientListProps) => {
         setError(err);
       }
     );
-    countCategory(props.searchTerm, props.letter).then((data) =>
+    countMembers(props.searchTerm, props.letter).then((data) =>
       setpageCount(Math.ceil(data / pageSize))
     );
   }, [
@@ -86,7 +82,7 @@ const MemberList = (props: ClientListProps) => {
     handleShow();
   };
   const updateClientHandler = () => {
-    UpdateCategory(
+    UpdateMember(
       { id, name, username, email, password, hours, status, role },
       id
     ).then((x) => {

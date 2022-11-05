@@ -1,6 +1,6 @@
 import { authHeader } from "../../Auth/auth-service/AuthService";
 import { ProjectModel } from "../model/ProjectModel";
-export const getCategories = async (
+export const getProjects = async (
   searchterm: string,
   filterLetter: string,
   pagenumber: number,
@@ -9,7 +9,7 @@ export const getCategories = async (
   const response: ProjectModel[] = [];
   if (searchterm === "" && filterLetter === "") {
     await fetch(
-      `https://localhost:44381/api/Project/?PageNumber=${pagenumber}&PageSize=${pagesize}`,
+      `https://localhost:44381/api/Projects?PageNumber=${pagenumber}&PageSize=${pagesize}`,
       {
         method: "GET",
         headers: authHeader(),
@@ -19,7 +19,7 @@ export const getCategories = async (
       .then((cl) => cl.map((c: ProjectModel) => response.push(c)));
   } else if (searchterm !== "" && filterLetter === "") {
     await fetch(
-      `https://localhost:44381/api/Project/search?${searchterm}?PageNumber=${pagenumber}&PageSize=${pagesize}&search=${searchterm}`,
+      `https://localhost:44381/api/Projects/search?${searchterm}?PageNumber=${pagenumber}&PageSize=${pagesize}`,
       {
         method: "GET",
         headers: authHeader(),
@@ -29,7 +29,7 @@ export const getCategories = async (
       .then((cl) => cl.map((c: ProjectModel) => response.push(c)));
   } else if (searchterm === "" && filterLetter !== "") {
     await fetch(
-      `https://localhost:44381/api/Project/filter?letter=${filterLetter}&PageNumber=${pagenumber}&PageSize=${pagesize}`,
+      `https://localhost:44381/api/Projects/filters?letter=${filterLetter}&PageNumber=${pagenumber}&PageSize=${pagesize}`,
       {
         method: "GET",
         headers: authHeader(),
@@ -41,20 +41,19 @@ export const getCategories = async (
   return response;
 };
 
-export const PostCategory = async (body: ProjectModel): Promise<any> => {
+export const PostProject = async (body: ProjectModel): Promise<any> => {
   const request = {
     method: "POST",
     headers: authHeader(),
     body: JSON.stringify(body),
   };
-  await fetch("https://localhost:44381/api/Project", request).then(
+  await fetch("https://localhost:44381/api/Projects", request).then(
     (response) => {
       const isJson = response.headers
         .get("content-type")
         ?.includes("application/json");
       const data = isJson && response.json();
       if (!response.ok) {
-        // get error message from body or default to response status
         const error = (data && response.body) || response.status;
         return Promise.reject(error);
       }
@@ -62,19 +61,18 @@ export const PostCategory = async (body: ProjectModel): Promise<any> => {
   );
 };
 
-export const deleteCategory = async (id: string | undefined): Promise<any> => {
+export const deleteProject = async (id: string | undefined): Promise<any> => {
   const request = {
     method: "DELETE",
     headers: authHeader(),
   };
-  await fetch(`https://localhost:44381/api/Project/${id}`, request).then(
+  await fetch(`https://localhost:44381/api/Projects/${id}`, request).then(
     (response) => {
       const isJson = response.headers
         .get("content-type")
         ?.includes("application/json");
       const data = isJson && response.json();
       if (!response.ok) {
-        // get error message from body or default to response status
         const error = (data && response.body) || response.status;
         return Promise.reject(error);
       }
@@ -82,7 +80,7 @@ export const deleteCategory = async (id: string | undefined): Promise<any> => {
   );
 };
 
-export const UpdateCategory = async (
+export const UpdateProject = async (
   body: ProjectModel,
   id: string | undefined
 ): Promise<any> => {
@@ -91,14 +89,13 @@ export const UpdateCategory = async (
     headers: authHeader(),
     body: JSON.stringify(body),
   };
-  await fetch(`https://localhost:44381/api/Project/${id}`, request).then(
+  await fetch(`https://localhost:44381/api/Projects/${id}`, request).then(
     (response) => {
       const isJson = response.headers
         .get("content-type")
         ?.includes("application/json");
       const data = isJson && response.json();
       if (!response.ok) {
-        // get error message from body or default to response status
         const error = (data && response.body) || response.status;
         return Promise.reject(error);
       }
@@ -106,7 +103,7 @@ export const UpdateCategory = async (
   );
 };
 
-export const countCategory = async (searchterm: string, letter: string) => {
+export const countProjects = async (searchterm: string, letter: string) => {
   const request = {
     method: "GET",
     headers: authHeader(),
@@ -114,19 +111,19 @@ export const countCategory = async (searchterm: string, letter: string) => {
 
   if (searchterm !== "" && letter === "") {
     var response: number = await fetch(
-      `https://localhost:44381/api/Project/search-count?search=${searchterm}`,
+      `https://localhost:44381/api/Projects/search-count?search=${searchterm}`,
       request
     ).then((response) => response.json());
     return response;
   } else if (searchterm === "" && letter !== "") {
     var response: number = await fetch(
-      `https://localhost:44381/api/Project/filter-count?letter=${letter}`,
+      `https://localhost:44381/api/Projects/filter-count?letter=${letter}`,
       request
     ).then((response) => response.json());
     return response;
   } else {
     var response: number = await fetch(
-      `https://localhost:44381/api/Project/search-count?search=${searchterm}`,
+      `https://localhost:44381/api/Projects/search-count`,
       request
     ).then((response) => response.json());
     return response;
@@ -134,7 +131,7 @@ export const countCategory = async (searchterm: string, letter: string) => {
 };
 export const getProjectList = async (): Promise<ProjectModel[]> => {
   const response: ProjectModel[] = [];
-  await fetch(`https://localhost:44381/api/Project/`, {
+  await fetch(`https://localhost:44381/api/Projects/`, {
     method: "GET",
     headers: authHeader(),
   })

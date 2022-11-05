@@ -1,6 +1,6 @@
 import { LoginModel } from "../model/LoginModel";
 export const Auth = async (body: LoginModel): Promise<any> => {
-  await fetch("https://localhost:44381/api/Member/login", {
+  await fetch("https://localhost:44381/api/Members/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",

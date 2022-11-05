@@ -38,7 +38,7 @@ const CategoryList = (props: CategoryListProps) => {
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const [name, setName] = useState("");
-  const [id, setId] = useState<string | undefined>(undefined);
+  const [id, setId] = useState<string | undefined>(undefined)
   useEffect(() => {
     getCategories(props.searchTerm, props.letter, pageNumber, pageSize).then(
       (data) => {

@@ -10,7 +10,7 @@ export const getCategories = async (
 
   if (searchterm === "" && filterLetter === "") {
     await fetch(
-      `https://localhost:44381/api/Category/?PageNumber=${pagenumber}&PageSize=${pagesize}`,
+      `https://localhost:44381/api/Categories?PageNumber=${pagenumber}&PageSize=${pagesize}`,
       {
         method: "GET",
         headers: authHeader(),
@@ -22,7 +22,7 @@ export const getCategories = async (
       });
   } else if (searchterm !== "" && filterLetter === "") {
     await fetch(
-      `https://localhost:44381/api/Category/search?${searchterm}?PageNumber=${pagenumber}&PageSize=${pagesize}&search=${searchterm}`,
+      `https://localhost:44381/api/Categories/search?PageNumber=${pagenumber}&PageSize=${pagesize}&search=${searchterm}`,
       {
         method: "GET",
         headers: authHeader(),
@@ -32,7 +32,7 @@ export const getCategories = async (
       .then((cl) => cl.map((c: CategoryModel) => response.push(c)));
   } else if (searchterm === "" && filterLetter !== "") {
     await fetch(
-      `https://localhost:44381/api/Category/filter?letter=${filterLetter}&PageNumber=${pagenumber}&PageSize=${pagesize}`,
+      `https://localhost:44381/api/Categories/filters?letter=${filterLetter}&PageNumber=${pagenumber}&PageSize=${pagesize}`,
       {
         method: "GET",
         headers: authHeader(),
@@ -50,7 +50,7 @@ export const PostCategory = async (body: CategoryModel): Promise<any> => {
     headers: authHeader(),
     body: JSON.stringify(body),
   };
-  await fetch("https://localhost:44381/api/Category", request).then(
+  await fetch("https://localhost:44381/api/Categories", request).then(
     (response) => {
       const isJson = response.headers
         .get("content-type")
@@ -70,7 +70,7 @@ export const deleteCategory = async (id: string | undefined): Promise<any> => {
     method: "DELETE",
     headers: authHeader(),
   };
-  await fetch(`https://localhost:44381/api/Category/${id}`, request).then(
+  await fetch(`https://localhost:44381/api/Categories/${id}`, request).then(
     (response) => {
       const isJson = response.headers
         .get("content-type")
@@ -96,7 +96,7 @@ export const UpdateCategory = async (
     headers: authHeader(),
     body: JSON.stringify(body),
   };
-  await fetch(`https://localhost:44381/api/Category/${id}`, request).then(
+  await fetch(`https://localhost:44381/api/Categories/${id}`, request).then(
     (response) => {
       const isJson = response.headers
         .get("content-type")
@@ -122,7 +122,7 @@ export const countCategory = async (
 
   if (searchterm !== "" && letter === "") {
     var res = await fetch(
-      `https://localhost:44381/api/Category/search-count?search=${searchterm}`,
+      `https://localhost:44381/api/Categories/search-count?search=${searchterm}`,
       request
     ).then(
       (response) => response.json(),
@@ -130,12 +130,12 @@ export const countCategory = async (
     );
   } else if (searchterm === "" && letter !== "") {
     var res = await fetch(
-      `https://localhost:44381/api/Category/count?letter=${letter}`,
+      `https://localhost:44381/api/Categories/filter-count?letter=${letter}`,
       request
     ).then((response) => response.json());
   } else {
     var res = await fetch(
-      `https://localhost:44381/api/Category/search-count/?search=${searchterm}`,
+      `https://localhost:44381/api/Categories/search-count`,
       request
     ).then((response) => response.json());
   }
@@ -143,7 +143,7 @@ export const countCategory = async (
 };
 export const getCategoriesList = async (): Promise<CategoryModel[]> => {
   const response: CategoryModel[] = [];
-  await fetch(`https://localhost:44381/api/Category/`, {
+  await fetch(`https://localhost:44381/api/Categories/`, {
     method: "GET",
     headers: authHeader(),
   })

@@ -2,7 +2,7 @@ import { Button, Form, Input, message, Modal, Radio } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import React, { useState } from "react";
 import { MemberModel } from "../model/MemberModel";
-import { PostCategory } from "../service/member-service";
+import { PostMember } from "../service/member-service";
 type ClientHeaderProps = {
   setNewClientCreated: (isCreated: boolean) => void;
   searchTerm: string;
@@ -37,7 +37,7 @@ const Memberheader = (props: ClientHeaderProps) => {
       status,
       role,
     };
-    PostCategory(request).then((x) => {
+    PostMember(request).then((x) => {
       props.setNewClientCreated(true);
       handleClose();
       message.success("Member created succesfully");

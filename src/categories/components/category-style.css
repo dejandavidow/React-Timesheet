@@ -80,7 +80,8 @@ background:none;
  {
    margin-top: 3vh;
    margin-left: 1vh;
-   padding: 0.5vh;
+   padding: 10px !important;
+   width: 30px !important;
    color: orange;
    border: 0.5px solid grey;
  }

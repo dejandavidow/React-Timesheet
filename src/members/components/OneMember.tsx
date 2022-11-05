@@ -1,9 +1,8 @@
 import { message } from "antd";
 import React from "react";
 import { CloseButton, ListGroup } from "react-bootstrap";
-
 import { MemberModel } from "../model/MemberModel";
-import { deleteCategory } from "../service/member-service";
+import { deleteMember } from "../service/member-service";
 type MemberProps = {
   member: {
     id: string | undefined;
@@ -27,7 +26,7 @@ const OneMember = ({
   setIsloaded,
 }: MemberProps) => {
   const deleteHandler = (id: string | undefined) => {
-    deleteCategory(id).then((res) => {
+    deleteMember(id).then((res) => {
       setClientDeleted(true);
       message.success("Member deleted successfully");
     });

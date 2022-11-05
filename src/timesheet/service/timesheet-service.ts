@@ -12,7 +12,7 @@ export const getPageCount = async (
   memberId: string
 ): Promise<any> => {
   var response: number = await fetch(
-    `https://localhost:44381/api/TimeSheet/filters-count?FilterStart=${startDate}&FilterEnd=${endDate}&ClientId=${clientId}&ProjectId=${projectId}&CategoryId=${categoryId}&MemberId=${memberId}&PageNumber=${pageNumber}&PageSize=${pageSize}`,
+    `https://localhost:44381/api/TimeSheets/filters-count?FilterStart=${startDate}&FilterEnd=${endDate}&ClientId=${clientId}&ProjectId=${projectId}&CategoryId=${categoryId}&MemberId=${memberId}&PageNumber=${pageNumber}&PageSize=${pageSize}`,
     {
       method: "GET",
       headers: authHeader(),
@@ -26,7 +26,7 @@ export const getTimeSheets = async (
 ): Promise<TsModel[]> => {
   const response: TsModel[] = [];
   await fetch(
-    `https://localhost:44381/api/TimeSheet?Start=${start}&End=${end}`,
+    `https://localhost:44381/api/TimeSheets?Start=${start}&End=${end}`,
     {
       method: "GET",
       headers: authHeader(),
@@ -48,7 +48,7 @@ export const getFilteredTimeSheets = async (
 ): Promise<ReportModel[]> => {
   const response: ReportModel[] = [];
   await fetch(
-    `https://localhost:44381/api/TimeSheet/filters?FilterStart=${startDate}&FilterEnd=${endDate}&ClientId=${clientId}&ProjectId=${projectId}&CategoryId=${categoryId}&MemberId=${memberId}&PageNumber=${pageNumber}&PageSize=${pageSize}`,
+    `https://localhost:44381/api/TimeSheets/filters?FilterStart=${startDate}&FilterEnd=${endDate}&ClientId=${clientId}&ProjectId=${projectId}&CategoryId=${categoryId}&MemberId=${memberId}&PageNumber=${pageNumber}&PageSize=${pageSize}`,
     {
       method: "GET",
       headers: authHeader(),
@@ -70,7 +70,7 @@ export const onLoadFilteredTimeSheets = async (
 ): Promise<ReportModel[]> => {
   const response: ReportModel[] = [];
   await fetch(
-    `https://localhost:44381/api/TimeSheet/filters?FilterStart=${startDate}&FilterEnd=${endDate}&ClientId=${clientId}&ProjectId=${projectId}&CategoryId=${categoryId}&MemberId=${memberId}&PageNumber=${pageNumber}&PageSize=${pageSize}`,
+    `https://localhost:44381/api/TimeSheets/filters?FilterStart=${startDate}&FilterEnd=${endDate}&ClientId=${clientId}&ProjectId=${projectId}&CategoryId=${categoryId}&MemberId=${memberId}&PageNumber=${pageNumber}&PageSize=${pageSize}`,
     {
       method: "GET",
       headers: authHeader(),
@@ -86,7 +86,7 @@ export const PostTimeSheet = async (body: TsModel): Promise<any> => {
     headers: authHeader(),
     body: JSON.stringify(body),
   };
-  await fetch("https://localhost:44381/api/TimeSheet/", request).then(
+  await fetch("https://localhost:44381/api/TimeSheets/", request).then(
     (response) => {
       const isJson = response.headers
         .get("content-type")
@@ -100,22 +100,3 @@ export const PostTimeSheet = async (body: TsModel): Promise<any> => {
     }
   );
 };
-
-// fetch('https://reqres.in/invalid-url', requestOptions)
-// .then(async response => {
-//     const isJson = response.headers.get('content-type')?.includes('application/json');
-//     const data = isJson && await response.json();
-
-//     // check for error response
-//     if (!response.ok) {
-//         // get error message from body or default to response status
-//         const error = (data && data.message) || response.status;
-//         return Promise.reject(error);
-//     }
-
-//     this.setState({ postId: data.id })
-// })
-// .catch(error => {
-//     this.setState({ errorMessage: error.toString() });
-//     console.error('There was an error!', error);
-// });

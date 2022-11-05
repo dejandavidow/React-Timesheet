@@ -9,9 +9,9 @@ import { MemberModel } from "../../members/model/MemberModel";
 import { getMembers } from "../../members/service/member-service";
 import { ProjectModel } from "../model/ProjectModel";
 import {
-  countCategory,
-  getCategories,
-  UpdateCategory,
+  countProjects,
+  getProjects,
+  UpdateProject,
 } from "../service/project-service";
 import OneProject from "./OneProject";
 type ClientListProps = {
@@ -56,7 +56,7 @@ const ProjectList = (props: ClientListProps) => {
   const [error, setError] = useState<any>(null);
   const { Option } = Select;
   useEffect(() => {
-    getCategories(props.searchTerm, props.letter, pageNumber, pageSize).then(
+    getProjects(props.searchTerm, props.letter, pageNumber, pageSize).then(
       (data) => {
         props.setIsLoaded(true);
         setProjects(data);
@@ -66,7 +66,7 @@ const ProjectList = (props: ClientListProps) => {
         setError(err);
       }
     );
-    countCategory(props.searchTerm, props.letter).then((data) =>
+    countProjects(props.searchTerm, props.letter).then((data) =>
       setpageCount(Math.ceil(data / pageSize))
     );
   }, [
@@ -92,7 +92,7 @@ const ProjectList = (props: ClientListProps) => {
     setclientId(client.clientDTO.id);
   };
   const updateClientHandler = () => {
-    UpdateCategory(
+    UpdateProject(
       { id, projectName, description, status, archive, memberId, clientId },
       id
     ).then((res) => {
@@ -106,12 +106,6 @@ const ProjectList = (props: ClientListProps) => {
     props.setSearchTerm("");
     const button: HTMLButtonElement = event.currentTarget;
     props.setLetter(button.value);
-  };
-  const getMembersHandler = () => {
-    getMembers().then((data) => setMembers(data));
-  };
-  const getClientsHandler = () => {
-    getClientList().then((data) => setClients(data));
   };
   if (error) {
     return <div>{error.message}</div>;
@@ -351,7 +345,6 @@ const ProjectList = (props: ClientListProps) => {
           pageCount={pageCount}
           previousLabel="<previous"
           className="pagination"
-          //renderOnZeroPageCount={null}
         />
         <Modal
           title="Update project"

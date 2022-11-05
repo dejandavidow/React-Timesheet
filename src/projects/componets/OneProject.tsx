@@ -1,8 +1,7 @@
 import { message } from "antd";
-import React from "react";
 import { CloseButton, ListGroup } from "react-bootstrap";
 import { ProjectModel } from "../model/ProjectModel";
-import { deleteCategory } from "../service/project-service";
+import { deleteProject } from "../service/project-service";
 type ClientProps = {
   project: {
     id: string | undefined;
@@ -25,7 +24,7 @@ const OneProject = ({
   setIsLoaded,
 }: ClientProps) => {
   const deleteHandler = (id: string | undefined) => {
-    deleteCategory(id).then((res) => {
+    deleteProject(id).then((res) => {
       setClientDeleted(true);
       message.success("Project deleted successfully");
     });
